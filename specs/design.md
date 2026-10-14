@@ -75,6 +75,7 @@ tests/         domain.test.ts, storage.test.ts, checklist-manual.md
 - ADR-002 Dados no aparelho com AsyncStorage
 - ADR-003 Arredondamento do preço sugerido ao centavo mais próximo
 - ADR-004 Dinheiro em centavos inteiros
+- ADR-005 Expo SDK 57, React Navigation e ferramentas de teste
 
 ## 9. Rastreabilidade
 Cada RF/RN aparece em ao menos uma tarefa (`tasks.md`) e um teste. A matriz está no fim do `tasks.md`.
