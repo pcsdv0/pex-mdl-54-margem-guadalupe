@@ -80,6 +80,9 @@ export function criarRepositorio(): Repositorio {
   };
 }
 
+/** Instância usada pelo app. */
+export const repositorio: Repositorio = criarRepositorio();
+
 export function novoId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
