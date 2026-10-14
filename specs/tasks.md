@@ -6,7 +6,7 @@
 | --- | --- | --- | --- | --- |
 | T01 | Criar projeto Expo (TypeScript), configurar Jest e estrutura de pastas de `src/` | design §7 | — | [x] |
 | T02 | `calcularMargem` + testes | RN-01, CA-02 | T01 | [x] |
-| T03 | `calcularPrecoSugerido` + testes (inclui R$ 4,00 / 25% → R$ 5,33) | RN-02, RN-06, CA-01 | T01 | [ ] |
+| T03 | `calcularPrecoSugerido` + testes (inclui R$ 4,00 / 25% → R$ 5,33) | RN-02, RN-06, CA-01 | T01 | [x] |
 | T04 | `calcularVariacaoCusto` + testes | RN-04, CA-05, CA-06 | T01 | [ ] |
 | T05 | `statusMargem(preço, custo, margem desejada)` + testes (inclui R$ 5,33 com margem 25% → verde) | RN-03, RN-05, CA-03, CA-04, CA-11 | T02, T03 | [ ] |
 | T06 | `validarProduto` e `validarCusto` + testes | RN-07, CA-10 | T01 | [ ] |

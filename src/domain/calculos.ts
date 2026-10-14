@@ -8,3 +8,12 @@ export function calcularMargem(precoCentavos: number, custoCentavos: number): nu
   }
   return ((precoCentavos - custoCentavos) * 100) / precoCentavos;
 }
+
+/**
+ * RN-02 e RN-06: preço sugerido = custo ÷ (1 − margem desejada), arredondado ao
+ * centavo mais próximo (ADR-003). Calculado só com inteiros, para evitar erro de
+ * ponto flutuante (410 ÷ 0,8 = 512,4999…).
+ */
+export function calcularPrecoSugerido(custoCentavos: number, margemDesejada: number): number {
+  return Math.round((custoCentavos * 100) / (100 - margemDesejada));
+}
