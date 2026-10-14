@@ -17,3 +17,14 @@ export function calcularMargem(precoCentavos: number, custoCentavos: number): nu
 export function calcularPrecoSugerido(custoCentavos: number, margemDesejada: number): number {
   return Math.round((custoCentavos * 100) / (100 - margemDesejada));
 }
+
+/** RN-04: variação = (novo − anterior) ÷ anterior, em %. Sem custo anterior → null ("—"). */
+export function calcularVariacaoCusto(
+  anteriorCentavos: number | null,
+  novoCentavos: number,
+): number | null {
+  if (anteriorCentavos === null || anteriorCentavos <= 0) {
+    return null;
+  }
+  return ((novoCentavos - anteriorCentavos) * 100) / anteriorCentavos;
+}

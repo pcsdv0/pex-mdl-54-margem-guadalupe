@@ -1,4 +1,8 @@
-import { calcularMargem, calcularPrecoSugerido } from '../src/domain/calculos';
+import {
+  calcularMargem,
+  calcularPrecoSugerido,
+  calcularVariacaoCusto,
+} from '../src/domain/calculos';
 
 describe('calcularMargem (RN-01)', () => {
   test('CA-02: custo R$ 4,00 e preço R$ 5,00 → margem 20%', () => {
@@ -59,5 +63,28 @@ describe('calcularPrecoSugerido (RN-02, RN-06)', () => {
         expect(Number.isInteger(calcularPrecoSugerido(custo, margem))).toBe(true);
       }
     }
+  });
+});
+
+describe('calcularVariacaoCusto (RN-04)', () => {
+  test('CA-05: custo anterior R$ 4,00 e novo R$ 4,40 → +10%', () => {
+    expect(calcularVariacaoCusto(400, 440)).toBeCloseTo(10, 10);
+  });
+
+  test('queda de custo → variação negativa', () => {
+    expect(calcularVariacaoCusto(400, 380)).toBeCloseTo(-5, 10);
+  });
+
+  test('custo igual → variação zero', () => {
+    expect(calcularVariacaoCusto(400, 400)).toBe(0);
+  });
+
+  test('CA-06: sem custo anterior → sem variação (null)', () => {
+    expect(calcularVariacaoCusto(null, 400)).toBeNull();
+  });
+
+  test('custo anterior zero ou negativo → sem variação (null)', () => {
+    expect(calcularVariacaoCusto(0, 400)).toBeNull();
+    expect(calcularVariacaoCusto(-10, 400)).toBeNull();
   });
 });
