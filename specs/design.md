@@ -1,6 +1,6 @@
 # design.md
 
-> Estado: **v1.0 — para aprovação do líder (portão 2).** Só vale depois do `requirements.md` aprovado. Cada decisão aponta para os requisitos que atende.
+> Estado: **v1.1 — aprovada pelo líder (portão 2).** Mudanças da v1.1 no registro de mudanças do `requirements.md`. Só vale depois do `requirements.md` aprovado. Cada decisão aponta para os requisitos que atende.
 
 ## 1. Visão geral
 App mobile em React Native + Expo (TypeScript), 100% local. Três camadas, para que a lógica seja testável sem interface:
@@ -13,12 +13,14 @@ screens/ (interface)  →  domain/ (regras puras, sem React)  →  storage/ (Asy
 | Tela | Função | Atende |
 | --- | --- | --- |
 | Lista de produtos (inicial) | Cartões com nome, preço, margem atual e semáforo; botão "Novo produto"; botão "Carregar exemplos" quando vazia | RF-03, RF-08 |
-| Produto (cadastro/edição) | Formulário nome, custo, preço, margem desejada; excluir | RF-01, RF-02 |
-| Nova compra | Campo "novo custo"; ao confirmar, mostra o resultado | RF-04 |
-| Resultado da compra | Nova margem, variação do custo, alerta, preço sugerido; botões "Aplicar preço sugerido" e "Manter preço" | RF-04, RF-05 |
+| Produto (cadastro/edição) | Formulário nome, custo, preço, margem desejada. Na edição: botões "Nova compra" e "Ver histórico" no topo, custo só leitura, botão excluir (apaga o produto e o histórico dele, com confirmação) | RF-01, RF-02, RF-04, RF-06 |
+| Nova compra | Campo "novo custo" (validado, RN-07); ao confirmar, grava a compra (novo `RegistroCusto` e `custoAtual`) e mostra o resultado | RF-04 |
+| Resultado da compra | Nova margem, variação do custo, alerta, preço sugerido; botões "Aplicar preço sugerido" (atualiza o preço e volta para a lista) e "Manter preço" (só volta para a lista) | RF-04, RF-05 |
 | Histórico de custos | Lista de data e custo, com variação entre compras | RF-06 |
 
-Fluxo principal (RNF-03): Lista → toque no produto → "Nova compra" → informar custo → Resultado (3 toques até o resultado).
+Fluxo principal (RNF-03): Lista → toque no produto (abre a tela Produto) → "Nova compra" → informar custo → "Confirmar" → Resultado (3 toques até o resultado; digitar não conta).
+
+Histórico: Lista → toque no produto → "Ver histórico".
 
 Navegação: pilha simples (React Navigation, native stack).
 
@@ -36,21 +38,22 @@ App
 ```
 
 ## 4. Modelo de dados
-- `Produto`: `id: string`, `nome: string`, `custoAtual: number` (centavos), `precoVenda: number` (centavos), `margemDesejada: number` (1–99).
+- `Produto`: `id: string`, `nome: string`, `custoAtual: number` (centavos), `precoVenda: number` (centavos), `margemDesejada: number` (inteiro, 1–99).
 - `RegistroCusto`: `id: string`, `produtoId: string`, `custo: number` (centavos), `data: string` (ISO).
-- Ao cadastrar um produto, grava-se o primeiro `RegistroCusto`. Cada nova compra grava outro e atualiza `custoAtual`.
+- Ao cadastrar um produto, grava-se o primeiro `RegistroCusto`. Cada nova compra grava outro e atualiza `custoAtual`; por isso o custo não é editável no formulário de edição.
+- Excluir um produto exclui também os `RegistroCusto` dele.
 
 ## 5. Módulo de domínio (`src/domain`)
 Funções puras, sem dependência de React ou de armazenamento:
-- `calcularMargem(precoCentavos, custoCentavos): number` — RN-01
-- `calcularPrecoSugerido(custoCentavos, margemDesejada): number` — RN-02, RN-06
-- `calcularVariacaoCusto(anterior | null, novo): number | null` — RN-04
-- `statusMargem(margemAtual, margemDesejada): 'verde' | 'vermelho'` — RN-03, RN-05
-- `validarProduto(dados): erros` — RN-07
-- `formatarReais(centavos)`, `formatarPercentual(valor)`, `parseReais(texto)` — RNF-02
+- `calcularMargem(precoCentavos, custoCentavos): number` — RN-01. Preço ≤ 0 lança erro (a validação impede esse caso na tela).
+- `calcularPrecoSugerido(custoCentavos, margemDesejada): number` — RN-02, RN-06. Calculado só com inteiros: `Math.round(custo × 100 ÷ (100 − margem))`, para evitar erro de ponto flutuante (410 ÷ 0,8 = 512,4999…). Custo 0 → 0.
+- `calcularVariacaoCusto(anterior | null, novo): number | null` — RN-04. Anterior nulo (ou ≤ 0) → `null`.
+- `statusMargem(precoCentavos, custoCentavos, margemDesejada): 'verde' | 'vermelho'` — RN-03, RN-05. Verde quando preço ≥ `calcularPrecoSugerido(custo, margem)`.
+- `validarProduto(dados): erros` e `validarCusto(texto): erro` — RN-07 (o segundo também na Nova compra).
+- `formatarReais(centavos)`, `formatarPercentual(valor, comSinal?)`, `formatarData(iso)`, `parseReais(texto)` — RNF-02, RN-08.
 
 ## 6. Armazenamento (`src/storage`)
-`AsyncStorage` com uma chave por coleção (`produtos`, `historico`), serializada em JSON. Interface `repositorio` com `listar`, `salvar`, `excluir`, para trocar a implementação sem tocar nas telas. Atende RF-07.
+`AsyncStorage` com uma chave por coleção (`produtos`, `historico`), serializada em JSON. Interface `repositorio` com `listar`, `salvar`, `excluir`, para trocar a implementação sem tocar nas telas. `excluir` de um produto remove também o histórico dele. Atende RF-07, RF-02.
 
 ## 7. Estrutura de pastas
 ```
