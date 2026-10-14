@@ -1,5 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { EXEMPLOS, carregarExemplos } from '../src/data/exemplos';
+import { calcularMargem, statusMargem } from '../src/domain/calculos';
+import { formatarPercentual } from '../src/domain/formatacao';
 import {
   cadastrarProduto,
   criarRepositorio,
@@ -95,5 +98,38 @@ describe('repositório com AsyncStorage (RF-07)', () => {
     await cadastrarProduto(criarRepositorio(), ARROZ);
     expect(JSON.parse((await AsyncStorage.getItem('produtos')) ?? 'null')).toHaveLength(1);
     expect(JSON.parse((await AsyncStorage.getItem('historico')) ?? 'null')).toHaveLength(1);
+  });
+});
+
+describe('produtos de exemplo (RF-08, requirements §9)', () => {
+  test('valores exatamente como em requirements §9', () => {
+    expect(EXEMPLOS).toEqual([
+      { nome: 'Arroz 1 kg', custoAtual: 400, precoVenda: 550, margemDesejada: 25 },
+      { nome: 'Feijão 1 kg', custoAtual: 620, precoVenda: 850, margemDesejada: 25 },
+      { nome: 'Açúcar 1 kg', custoAtual: 330, precoVenda: 450, margemDesejada: 25 },
+      { nome: 'Óleo de soja 900 ml', custoAtual: 680, precoVenda: 890, margemDesejada: 20 },
+      { nome: 'Café 250 g', custoAtual: 950, precoVenda: 1290, margemDesejada: 25 },
+      { nome: 'Leite 1 L', custoAtual: 410, precoVenda: 540, margemDesejada: 20 },
+      { nome: 'Macarrão 500 g', custoAtual: 300, precoVenda: 420, margemDesejada: 25 },
+      { nome: 'Refrigerante 2 L', custoAtual: 650, precoVenda: 800, margemDesejada: 25 },
+    ]);
+  });
+
+  test('na carga, só o refrigerante nasce vermelho (18,8% contra 25%)', () => {
+    const vermelhos = EXEMPLOS.filter(
+      (p) => statusMargem(p.precoVenda, p.custoAtual, p.margemDesejada) === 'vermelho',
+    );
+    expect(vermelhos.map((p) => p.nome)).toEqual(['Refrigerante 2 L']);
+    expect(formatarPercentual(calcularMargem(800, 650))).toBe('18,8%');
+  });
+
+  test('carregar exemplos grava os 8 produtos, cada um com o primeiro registro de custo', async () => {
+    const repo = criarRepositorio();
+    await carregarExemplos(repo);
+    const produtos = await repo.listarProdutos();
+    expect(produtos.map((p) => p.nome)).toEqual(EXEMPLOS.map((e) => e.nome));
+    for (const p of produtos) {
+      expect((await repo.listarHistorico(p.id)).map((h) => h.custo)).toEqual([p.custoAtual]);
+    }
   });
 });
