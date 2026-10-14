@@ -37,7 +37,7 @@ App
    └─ HistoricoScreen    (LinhaHistorico)
 ```
 
-Todas as telas usam `Botao` (botão grande, área de toque ≥ 56 px). `EstadoVazio`, `LinhaInfo` e `LinhaHistorico` ficam dentro da tela que os usa.
+Todas as telas usam `Botao` (botão grande, área de toque ≥ 56 px). `Campo` é o campo de texto base (rótulo, erro, só leitura), usado no nome do produto e por `CampoMoeda` e `CampoPercentual`. `EstadoVazio`, `LinhaInfo` e `LinhaHistorico` ficam dentro da tela que os usa.
 
 ## 4. Modelo de dados
 - `Produto`: `id: string`, `nome: string`, `custoAtual: number` (centavos), `precoVenda: number` (centavos), `margemDesejada: number` (inteiro, 1–99).
@@ -64,7 +64,7 @@ src/
   storage/     repositorio.ts
   data/        exemplos.ts
   screens/     ListaProdutos, ProdutoForm, NovaCompra, ResultadoCompra, Historico
-  components/  ProdutoCard, SemaforoBadge, AlertaBanner, CampoMoeda, CampoPercentual, Botao
+  components/  ProdutoCard, SemaforoBadge, AlertaBanner, Campo, CampoMoeda, CampoPercentual, Botao
   navigation/  index.tsx
   theme/       cores.ts
 tests/         domain.test.ts, storage.test.ts, checklist-manual.md
