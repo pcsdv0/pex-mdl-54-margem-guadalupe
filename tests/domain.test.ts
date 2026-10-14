@@ -4,6 +4,12 @@ import {
   calcularVariacaoCusto,
   statusMargem,
 } from '../src/domain/calculos';
+import {
+  formatarData,
+  formatarPercentual,
+  formatarReais,
+  parseReais,
+} from '../src/domain/formatacao';
 import { validarCusto, validarProduto } from '../src/domain/validacao';
 
 describe('calcularMargem (RN-01)', () => {
@@ -182,5 +188,92 @@ describe('validarProduto e validarCusto (RN-07)', () => {
   test('vários erros ao mesmo tempo', () => {
     const erros = validarProduto({ nome: '', custo: null, preco: null, margemDesejada: null });
     expect(Object.keys(erros).sort()).toEqual(['custo', 'margemDesejada', 'nome', 'preco']);
+  });
+});
+
+describe('formatarReais (RNF-02)', () => {
+  test('centavos → R$ com vírgula', () => {
+    expect(formatarReais(533)).toBe('R$ 5,33');
+    expect(formatarReais(500)).toBe('R$ 5,00');
+    expect(formatarReais(5)).toBe('R$ 0,05');
+    expect(formatarReais(0)).toBe('R$ 0,00');
+  });
+
+  test('milhares com ponto', () => {
+    expect(formatarReais(123456)).toBe('R$ 1.234,56');
+    expect(formatarReais(100000000)).toBe('R$ 1.000.000,00');
+  });
+
+  test('valor negativo', () => {
+    expect(formatarReais(-150)).toBe('-R$ 1,50');
+  });
+});
+
+describe('formatarPercentual (RN-01, RN-04)', () => {
+  test('1 casa decimal com vírgula', () => {
+    expect(formatarPercentual(20)).toBe('20,0%');
+    expect(formatarPercentual(27.2727)).toBe('27,3%');
+    expect(formatarPercentual(18.75)).toBe('18,8%');
+  });
+
+  test('CA-11: margem 24,95% aparece como 25,0%', () => {
+    expect(formatarPercentual((133 * 100) / 533)).toBe('25,0%');
+  });
+
+  test('margem negativa', () => {
+    expect(formatarPercentual(-25)).toBe('-25,0%');
+  });
+
+  test('CA-05: variação com sinal → +10,0%', () => {
+    expect(formatarPercentual(10, true)).toBe('+10,0%');
+    expect(formatarPercentual(-5, true)).toBe('-5,0%');
+    expect(formatarPercentual(0, true)).toBe('0,0%');
+  });
+
+  test('valor que arredonda para zero não mostra sinal', () => {
+    expect(formatarPercentual(-0.01)).toBe('0,0%');
+    expect(formatarPercentual(0.01, true)).toBe('0,0%');
+  });
+
+  test('CA-06: sem variação (null) → "—"', () => {
+    expect(formatarPercentual(null, true)).toBe('—');
+  });
+});
+
+describe('formatarData (RN-08)', () => {
+  test('ISO → dd/mm/aaaa no horário local', () => {
+    const iso = new Date(2026, 9, 4, 15, 30).toISOString();
+    expect(formatarData(iso)).toBe('04/10/2026');
+  });
+});
+
+describe('parseReais (RN-08)', () => {
+  test('aceita vírgula ou ponto como separador decimal', () => {
+    expect(parseReais('5,33')).toBe(533);
+    expect(parseReais('5.33')).toBe(533);
+  });
+
+  test('aceita inteiro, uma casa e espaços nas pontas', () => {
+    expect(parseReais('5')).toBe(500);
+    expect(parseReais('5,5')).toBe(550);
+    expect(parseReais(' 4,40 ')).toBe(440);
+    expect(parseReais('0,05')).toBe(5);
+    expect(parseReais(',50')).toBe(50);
+  });
+
+  test('zero é lido (a validação é que recusa)', () => {
+    expect(parseReais('0')).toBe(0);
+    expect(parseReais('0,00')).toBe(0);
+  });
+
+  test('evita erro de ponto flutuante (4,35 → 435, 1,15 → 115)', () => {
+    expect(parseReais('4,35')).toBe(435);
+    expect(parseReais('1.15')).toBe(115);
+  });
+
+  test('recusa vazio, texto, negativo, mais de 2 casas e separador de milhar', () => {
+    for (const texto of ['', '   ', 'abc', '-4', '5,333', '1.234', '1.234,56', '5,3,3', ',', 'R$ 5']) {
+      expect(parseReais(texto)).toBeNull();
+    }
   });
 });
