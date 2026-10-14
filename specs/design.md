@@ -49,7 +49,7 @@ Funções puras, sem dependência de React ou de armazenamento:
 - `calcularPrecoSugerido(custoCentavos, margemDesejada): number` — RN-02, RN-06. Calculado só com inteiros: `Math.round(custo × 100 ÷ (100 − margem))`, para evitar erro de ponto flutuante (410 ÷ 0,8 = 512,4999…). Custo 0 → 0.
 - `calcularVariacaoCusto(anterior | null, novo): number | null` — RN-04. Anterior nulo (ou ≤ 0) → `null`.
 - `statusMargem(precoCentavos, custoCentavos, margemDesejada): 'verde' | 'vermelho'` — RN-03, RN-05. Verde quando preço ≥ `calcularPrecoSugerido(custo, margem)`.
-- `validarProduto(dados): erros` e `validarCusto(texto): erro` — RN-07 (o segundo também na Nova compra).
+- `validarProduto(dados): erros` e `validarCusto(custoCentavos | null): erro | null` — RN-07 (o segundo também na Nova compra). Recebem valores já lidos por `parseReais` (`null` = vazio ou ilegível); `erros` é um objeto campo → mensagem, vazio quando tudo está certo.
 - `formatarReais(centavos)`, `formatarPercentual(valor, comSinal?)`, `formatarData(iso)`, `parseReais(texto)` — RNF-02, RN-08.
 
 ## 6. Armazenamento (`src/storage`)
