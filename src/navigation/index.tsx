@@ -2,6 +2,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HistoricoScreen } from '../screens/Historico';
 import { ListaProdutosScreen } from '../screens/ListaProdutos';
 import { NovaCompraScreen } from '../screens/NovaCompra';
 import { ProdutoFormScreen } from '../screens/ProdutoForm';
@@ -50,6 +51,11 @@ export function Navegacao() {
           name="ResultadoCompra"
           component={ResultadoCompraScreen}
           options={{ title: 'Resultado da compra' }}
+        />
+        <Stack.Screen
+          name="Historico"
+          component={HistoricoScreen}
+          options={{ title: 'Histórico de custos' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -17,7 +17,7 @@
 | T11 | Navegação em pilha e tela Lista de produtos (com estado vazio e carga de exemplos) | RF-03, RF-08 | T05, T08, T09, T10 | [x] |
 | T12 | Tela Produto (cadastro, edição com custo só leitura, exclusão com histórico; botões "Nova compra" e "Ver histórico") | RF-01, RF-02 | T06, T08, T10 | [x] |
 | T13 | Telas Nova compra (valida e grava ao confirmar) e Resultado (aplicar ou manter preço) | RF-04, RF-05, CA-11 | T03, T04, T05, T06, T08, T10, T12 | [x] |
-| T14 | Tela Histórico de custos | RF-06, CA-08 | T04, T07, T08, T12 | [ ] |
+| T14 | Tela Histórico de custos | RF-06, CA-08 | T04, T07, T08, T12 | [x] |
 | T15 | Checklist de teste manual (`tests/checklist-manual.md`) cobrindo CA-01 a CA-11, executado no Expo Go | todos os CA | T11–T14 | [ ] |
 | T16 | Revisão final: rodar testes e `tsc`, conferir o fora do escopo, atualizar README com como rodar | RNF-04 | T15 | [ ] |
 
