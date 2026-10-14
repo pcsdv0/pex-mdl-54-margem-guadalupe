@@ -1,6 +1,6 @@
 # requirements.md
 
-> Estado: **v1.1 — aprovada pelo líder (portão 1).** Mudanças desde a v1.0 no registro de mudanças, no fim. Fonte da verdade do problema. Qualquer mudança aqui vem antes de mudar design, tarefas ou código.
+> Estado: **v1.2 — aprovada pelo líder (portão 1).** Mudanças desde a v1.0 no registro de mudanças, no fim. Fonte da verdade do problema. Qualquer mudança aqui vem antes de mudar design, tarefas ou código.
 
 ## 1. Problema (na visão do comerciante)
 O Mercado de Guadalupe é uma mercearia de bairro: o cliente entra e compra. O custo de compra dos produtos muda com promoções e reajustes dos fornecedores, mas o preço de venda costuma ser mantido por hábito. Sem registro, o comerciante não sabe se ainda lucra o que pretende em cada produto.
@@ -36,12 +36,26 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 | RF-06 | Consultar o histórico de custos do produto (data e custo, mais recente primeiro) | RN-04 |
 | RF-07 | Guardar os dados no aparelho, preservando-os ao fechar o app | — |
 | RF-08 | Carregar produtos de exemplo para demonstração | — |
+| RF-09 | **Resposta em destaque:** na tela de resultado, um cartão grande responde à pergunta do app ("Venda a R$ 5,87 para manter 25% de margem"). Abaixo dele, a situação atual: preço, margem e semáforo com ícone e texto | RN-01, RN-02, RN-05, RN-06 |
+| RF-10 | **"Como chegamos nisso":** área que abre e fecha, com a conta feita com os números do produto e em linguagem simples (ex.: "R$ 4,40 ÷ (1 − 0,25) = R$ 5,87" e "(R$ 5,50 − R$ 4,40) ÷ R$ 5,50 = 20,0%") | RN-01, RN-02, RN-06 |
+| RF-11 | **Prévia ao digitar:** na tela Nova compra, enquanto o novo custo é digitado, mostrar em tempo real a margem com o preço atual, o semáforo e o preço sugerido. Sem valor válido, mostrar só uma orientação | RN-01, RN-02, RN-05, RN-08 |
+| RF-12 | **Lista mais útil:** produtos abaixo da meta primeiro (depois em ordem alfabética); resumo de uma frase no topo ("1 de 8 produtos abaixo da meta"), sem gráficos nem painéis; busca por nome (sem diferenciar maiúsculas e acentos); filtro Todos / Abaixo da meta / Na meta. O cartão vermelho mostra o preço sugerido ("Sugerido: R$ 8,67") | RN-02, RN-05 |
+| RF-13 | **Ajuda embutida:** textos curtos de apoio nos campos do formulário e um botão "?" no topo das telas, que abre uma tela de ajuda: o que é margem, margem desejada, preço sugerido e semáforo, com o exemplo do arroz | RN-01, RN-02, RN-05 |
+| RF-14 | **Feedback:** aviso rápido na tela depois de cadastrar, salvar, aplicar preço, manter preço e excluir. Mensagens de erro sempre junto ao campo. A exclusão é confirmada numa janela do próprio app | RN-07 |
+| RF-15 | **Boas-vindas:** na primeira abertura, um cartão curto (3 linhas) explica o que o app faz. Pode ser dispensado e não volta depois (fica guardado no aparelho) | — |
+| RF-16 | **Histórico com sentido da variação:** cada compra mostra seta para cima e "subiu" (vermelho) ou seta para baixo e "caiu" (verde), além da variação em % | RN-04 |
 
 ## 6. Requisitos não funcionais
 - RNF-01 Funciona offline.
 - RNF-02 Interface em português do Brasil, valores em R$ (formato 5,33), leitura conforme RN-08.
 - RNF-03 Registrar uma nova compra em no máximo 3 toques a partir da lista.
 - RNF-04 Fórmulas cobertas por testes automatizados.
+- RNF-05 **Tema único:** cores, espaçamentos (escala de 4/8), 5 tamanhos de fonte, raios e sombras definidos em `src/theme`. Nenhuma cor ou tamanho solto nas telas e componentes (verificado por teste automatizado).
+- RNF-06 **Contraste:** texto com contraste mínimo de 4,5:1 sobre o fundo (verificado por teste automatizado). Semáforo sempre com cor + ícone + palavra ("Na meta", "Abaixo da meta").
+- RNF-07 **Toque e destaque:** áreas de toque de pelo menos 48 px; um botão principal por tela, claramente destacado; botões secundários visualmente mais fracos.
+- RNF-08 **Números em destaque:** preço e margem grandes e alinhados (algarismos de largura fixa); rótulos pequenos e discretos.
+- RNF-09 **Teclado:** o teclado não cobre o campo em foco; tecla "próximo" passa ao campo seguinte; foco automático no primeiro campo.
+- RNF-10 **Acessibilidade:** botões e ícones com rótulo de acessibilidade (`accessibilityLabel`) em português.
 
 ## 7. Critérios de aceite
 - **CA-01 (RF-04, RN-02, RN-06)** Dado custo R$ 4,00 e margem desejada 25%, quando registro a compra, então o preço sugerido é R$ 5,33.
@@ -55,9 +69,19 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - **CA-09 (RF-07)** Ao fechar e reabrir o app, produtos e histórico continuam lá.
 - **CA-10 (RN-07)** Custo zero, negativo ou vazio é recusado com mensagem clara, no cadastro do produto e na tela Nova compra.
 - **CA-11 (RF-05, RN-05)** Dado custo R$ 4,00, preço R$ 5,00 e margem desejada 25%, quando aplico o preço sugerido (R$ 5,33), então o produto fica verde e sem alerta, embora a margem real seja 24,95% (exibida 25,0%).
+- **CA-12 (RF-09)** Dado o arroz (preço R$ 5,50, margem desejada 25%) e nova compra a R$ 4,40, a tela de resultado mostra em destaque "Venda a R$ 5,87 para manter 25% de margem" e, abaixo, preço R$ 5,50, margem 20,0% e "Abaixo da meta".
+- **CA-13 (RF-10)** No mesmo caso, "Como chegamos nisso" mostra "R$ 4,40 ÷ (1 − 0,25) = R$ 5,87" e "(R$ 5,50 − R$ 4,40) ÷ R$ 5,50 = 20,0%".
+- **CA-14 (RF-11)** Na Nova compra do arroz (preço R$ 5,50, margem 25%), ao digitar 4,40 e antes de confirmar, a prévia mostra margem 20,0%, "Abaixo da meta" e sugerido R$ 5,87. Com o campo vazio ou inválido, não mostra números.
+- **CA-15 (RF-12)** Com os exemplos carregados, o topo mostra "1 de 8 produtos abaixo da meta", o refrigerante aparece primeiro e o cartão dele mostra "Sugerido: R$ 8,67".
+- **CA-16 (RF-12)** A busca "feijao" mostra só "Feijão 1 kg"; o filtro "Abaixo da meta" mostra só o refrigerante; uma busca sem resultado mostra uma mensagem.
+- **CA-17 (RF-13)** O botão "?" abre a ajuda com margem, margem desejada, preço sugerido, semáforo e o exemplo do arroz; os campos do formulário mostram texto de apoio.
+- **CA-18 (RF-14)** Depois de salvar, aplicar preço e excluir aparece um aviso na tela; excluir pede confirmação numa janela do app.
+- **CA-19 (RF-15)** O cartão de boas-vindas aparece na primeira abertura; depois de dispensado, não volta ao reabrir o app.
+- **CA-20 (RF-16)** No histórico do arroz após a compra a R$ 4,40, a linha de R$ 4,40 mostra seta para cima, "subiu" e +10,0%; a de R$ 4,00 mostra "—".
+- **CA-21 (RNF-05, RNF-06)** O teste automatizado confirma contraste ≥ 4,5:1 nos pares de texto do tema e nenhuma cor ou tamanho de fonte solto em `src/screens` e `src/components`.
 
 ## 8. Fora do escopo (MVP)
-Estoque, vendas no caixa, relatórios e painéis, login, app do cliente, backend e servidor, entrega e pedidos, leitor de código de barras, impostos e despesas fixas.
+Estoque, vendas no caixa, relatórios, painéis e gráficos, tema escuro, animações pesadas, login, app do cliente, backend e servidor, entrega e pedidos, leitor de código de barras, impostos e despesas fixas.
 
 ## 9. Produtos de exemplo (RF-08)
 Valores **ilustrativos**, para demonstração; trocar pelos reais do mercado antes da apresentação, se possível.
@@ -92,3 +116,4 @@ Valores **ilustrativos**, para demonstração; trocar pelos reais do mercado ant
 | v1.1 | 14/10/2026 | **design §5:** contrato das bordas das funções de domínio (preço ≤ 0, custo anterior nulo, custo zero, cálculo com inteiros). | Evitar divisão por zero e erro de ponto flutuante (ex.: 410 ÷ 0,8 = 512,4999…). |
 | v1.1 | 14/10/2026 | **design §5:** `validarCusto` recebe centavos já lidos, e não o texto digitado. | A T06 não depende da T07 (`parseReais`); assim a ordem das tarefas continua válida. |
 | v1.1 | 14/10/2026 | **design §3/§7 e T10:** componentes `Botao` (botão grande) e `Campo` (campo de texto base, também usado no nome); `EstadoVazio`, `LinhaInfo` e `LinhaHistorico` ficam dentro das telas. | Botões grandes em todas as telas pedem um componente comum; os outros três não estavam na lista de pastas do §7. |
+| v1.2 | 14/10/2026 | **RF-09 a RF-16, RNF-05 a RNF-10, CA-12 a CA-21:** resposta em destaque, "Como chegamos nisso", prévia ao digitar, lista com resumo/ordem/busca/filtro, ajuda embutida, avisos de confirmação, boas-vindas, setas no histórico, tema único, contraste, toque, teclado e acessibilidade. Gráficos, tema escuro e animações pesadas entram no "fora do escopo". As regras RN-01 a RN-08 não mudaram. | Melhorar a usabilidade e a didática. O diagnóstico das telas da v1.1 mostrou que a resposta ao comerciante ficava escondida entre outros números, que as contas não eram explicadas, que a lista não dizia o que precisava de atenção e que não havia retorno depois das ações. |

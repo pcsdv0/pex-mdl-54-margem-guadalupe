@@ -1,6 +1,6 @@
 # tasks.md
 
-> Estado: **v1.1 — aprovada pelo líder (portão 3).** Mudanças da v1.1 no registro de mudanças do `requirements.md`. Só vale depois do `design.md` aprovado. Tarefas pequenas, na ordem de dependência. Marque `[x]` ao concluir; um commit por tarefa, com o ID no início da mensagem (ex.: `T04: calcular preço sugerido`).
+> Estado: **v1.2 — aprovada pelo líder (portão 3).** Mudanças da v1.1 e da v1.2 no registro de mudanças do `requirements.md`. Só vale depois do `design.md` aprovado. Tarefas pequenas, na ordem de dependência. Marque `[x]` ao concluir; um commit por tarefa, com o ID no início da mensagem (ex.: `T04: calcular preço sugerido`).
 
 | ID | Tarefa | Liga a | Depende de | Feito |
 | --- | --- | --- | --- | --- |
@@ -21,6 +21,25 @@
 | T15 | Checklist de teste manual (`tests/checklist-manual.md`) cobrindo CA-01 a CA-11, executado no Expo Go | todos os CA | T11–T14 | [ ] |
 | T16 | Revisão final: rodar testes e `tsc`, conferir o fora do escopo, atualizar README com como rodar | RNF-04 | T15 | [x] |
 
+### v1.2 — usabilidade e didática
+Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência), **C** (se sobrar tempo). Funções novas de domínio nascem com teste antes.
+
+| ID | Bloco | Tarefa | Liga a | Depende de | Feito |
+| --- | --- | --- | --- | --- | --- |
+| T17 | A | `situacaoProduto`, `fraseResposta`, `explicarPrecoSugerido`, `explicarMargem` + testes | RF-09, RF-10, RF-11, CA-12, CA-13, CA-14 | T05 | [ ] |
+| T18 | A | `organizarLista` e `resumoLista` + testes | RF-12, CA-15, CA-16 | T05 | [ ] |
+| T19 | B | Tema em tokens (`tema.ts`: cores, espaço 4/8, 5 tamanhos de fonte, raios, sombra, toque 48) e `contraste.ts` + teste de contraste ≥ 4,5:1 | RNF-05, RNF-06, CA-21 | T10 | [ ] |
+| T20 | B | Ícones (`@expo/vector-icons`) e componentes base revisados: `Botao` (principal/secundário/texto), `Icone`, `SemaforoBadge`, `Campo` (apoio, "próximo"), `LinhaValor`, `CartaoSituacao`, `AvisoProvider`, `DialogoConfirmacao`, `BotaoAjuda` | RNF-06, RNF-07, RNF-08, RNF-09, RNF-10, RF-14 | T19 | [ ] |
+| T21 | A | Tela Ajuda e botão "?" no cabeçalho de todas as telas | RF-13, CA-17 | T20 | [ ] |
+| T22 | A | Lista: resumo, ordem, busca, filtro, sugerido no cartão vermelho, mensagem de busca vazia | RF-12, CA-15, CA-16 | T18, T20 | [ ] |
+| T23 | A | Tela Produto: cartão de situação, "Nova compra" como principal, textos de apoio, teclado ("próximo", foco), confirmação de exclusão no app e avisos | RF-13, RF-14, RNF-07, RNF-09, CA-17, CA-18 | T17, T20 | [ ] |
+| T24 | A | Nova compra com prévia em tempo real | RF-11, RNF-09, CA-14 | T17, T20 | [ ] |
+| T25 | A | Resultado: resposta em destaque, situação atual, "Como chegamos nisso" e avisos | RF-09, RF-10, RF-14, CA-12, CA-13, CA-18 | T17, T20 | [ ] |
+| T26 | C | `sentidoVariacao` + testes e histórico com seta e palavra | RF-16, CA-20 | T20 | [ ] |
+| T27 | C | Preferência de boas-vindas (`preferencias.ts`) + testes e `CartaoBoasVindas` na lista | RF-15, CA-19 | T22 | [ ] |
+| T28 | B | Varredura final: teste que proíbe cor e tamanho soltos em telas e componentes; rótulos de acessibilidade | RNF-05, RNF-10, CA-21 | T21–T27 | [ ] |
+| T29 | — | Checklist manual com CA-12 a CA-21 e README atualizado | todos os CA novos | T28 | [ ] |
+
 ## Matriz de rastreabilidade
 | Requisito | Tarefas | Teste |
 | --- | --- | --- |
@@ -37,3 +56,16 @@
 | RN-04 | T04 | domain.test (CA-05, CA-06) |
 | RN-07 | T06 | domain.test (CA-10) |
 | RNF-02, RN-08 | T07 | domain.test (formatação e leitura) |
+| RF-09 | T17, T25 | domain.test (fraseResposta, CA-12), checklist CA-12 |
+| RF-10 | T17, T25 | domain.test (explicações, CA-13), checklist CA-13 |
+| RF-11 | T17, T24 | domain.test (situacaoProduto, CA-14), checklist CA-14 |
+| RF-12 | T18, T22 | domain.test (organizarLista, resumoLista, CA-15, CA-16), checklist CA-15/16 |
+| RF-13 | T21, T23 | checklist CA-17 |
+| RF-14 | T20, T23, T25 | checklist CA-18 |
+| RF-15 | T27 | storage.test (preferências), checklist CA-19 |
+| RF-16 | T26 | domain.test (sentidoVariacao), checklist CA-20 |
+| RNF-05 | T19, T28 | tema.test (sem cor ou tamanho solto, CA-21) |
+| RNF-06 | T19, T20 | tema.test (contraste, CA-21), checklist |
+| RNF-07, RNF-08 | T20, T22–T25 | checklist |
+| RNF-09 | T20, T23, T24 | checklist (só no aparelho) |
+| RNF-10 | T20, T28 | checklist |
