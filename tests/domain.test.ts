@@ -16,7 +16,9 @@ import {
   explicarPrecoSugerido,
   fraseResposta,
 } from '../src/domain/explicacao';
+import { organizarLista, resumoLista } from '../src/domain/lista';
 import { validarCusto, validarProduto } from '../src/domain/validacao';
+import { EXEMPLOS } from '../src/data/exemplos';
 
 describe('calcularMargem (RN-01)', () => {
   test('CA-02: custo R$ 4,00 e preço R$ 5,00 → margem 20%', () => {
@@ -346,5 +348,70 @@ describe('explicarMargem (RF-10)', () => {
     const passos = explicarMargem(400, 500);
     expect(passos).toContain('(R$ 4,00 − R$ 5,00) ÷ R$ 4,00 = -25,0%');
     expect(passos.join(' ')).toMatch(/faltam R\$ 1,00/);
+  });
+});
+
+describe('organizarLista e resumoLista (RF-12)', () => {
+  const nomes = (lista: { nome: string }[]) => lista.map((p) => p.nome);
+
+  test('CA-15: abaixo da meta primeiro, depois em ordem alfabética', () => {
+    const lista = organizarLista(EXEMPLOS, { busca: '', filtro: 'todos' });
+    expect(nomes(lista)).toEqual([
+      'Refrigerante 2 L',
+      'Açúcar 1 kg',
+      'Arroz 1 kg',
+      'Café 250 g',
+      'Feijão 1 kg',
+      'Leite 1 L',
+      'Macarrão 500 g',
+      'Óleo de soja 900 ml',
+    ]);
+  });
+
+  test('CA-15: resumo "1 de 8 produtos abaixo da meta"', () => {
+    expect(resumoLista(EXEMPLOS)).toBe('1 de 8 produtos abaixo da meta');
+  });
+
+  test('resumo quando todos estão na meta, com singular e plural', () => {
+    const naMeta = EXEMPLOS.filter((p) => p.nome !== 'Refrigerante 2 L');
+    expect(resumoLista(naMeta)).toBe('Todos os 7 produtos estão na meta');
+    expect(resumoLista(naMeta.slice(0, 1))).toBe('O produto está na meta');
+    const refri = EXEMPLOS.filter((p) => p.nome === 'Refrigerante 2 L');
+    expect(resumoLista(refri)).toBe('1 de 1 produto abaixo da meta');
+    expect(resumoLista([])).toBe('Nenhum produto cadastrado');
+  });
+
+  test('CA-16: busca sem diferenciar maiúsculas e acentos', () => {
+    expect(nomes(organizarLista(EXEMPLOS, { busca: 'feijao', filtro: 'todos' }))).toEqual([
+      'Feijão 1 kg',
+    ]);
+    expect(nomes(organizarLista(EXEMPLOS, { busca: '  ÓLEO ', filtro: 'todos' }))).toEqual([
+      'Óleo de soja 900 ml',
+    ]);
+  });
+
+  test('CA-16: filtros "Abaixo da meta" e "Na meta"', () => {
+    expect(nomes(organizarLista(EXEMPLOS, { busca: '', filtro: 'abaixo' }))).toEqual([
+      'Refrigerante 2 L',
+    ]);
+    expect(organizarLista(EXEMPLOS, { busca: '', filtro: 'na-meta' })).toHaveLength(7);
+  });
+
+  test('CA-16: busca sem resultado devolve lista vazia', () => {
+    expect(organizarLista(EXEMPLOS, { busca: 'picanha', filtro: 'todos' })).toEqual([]);
+  });
+
+  test('busca e filtro juntos', () => {
+    expect(organizarLista(EXEMPLOS, { busca: 'ar', filtro: 'na-meta' }).map((p) => p.nome)).toEqual([
+      'Açúcar 1 kg',
+      'Arroz 1 kg',
+      'Macarrão 500 g',
+    ]);
+  });
+
+  test('não altera a lista original', () => {
+    const copia = [...EXEMPLOS];
+    organizarLista(EXEMPLOS, { busca: '', filtro: 'todos' });
+    expect(EXEMPLOS).toEqual(copia);
   });
 });
