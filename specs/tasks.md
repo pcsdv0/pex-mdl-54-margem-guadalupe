@@ -11,7 +11,7 @@
 | T05 | `statusMargem(preço, custo, margem desejada)` + testes (inclui R$ 5,33 com margem 25% → verde) | RN-03, RN-05, CA-03, CA-04, CA-11 | T02, T03 | [x] |
 | T06 | `validarProduto` e `validarCusto` + testes | RN-07, CA-10 | T01 | [x] |
 | T07 | Formatação e leitura de valores (`formatarReais`, `formatarPercentual`, `formatarData`, `parseReais`) + testes | RNF-02, RN-08 | T01 | [x] |
-| T08 | Repositório com AsyncStorage (produtos e histórico; excluir produto apaga o histórico dele) + testes com mock | RF-07, RF-02, CA-09 | T01 | [ ] |
+| T08 | Repositório com AsyncStorage (produtos e histórico; excluir produto apaga o histórico dele) + testes com mock | RF-07, RF-02, CA-09 | T01 | [x] |
 | T09 | Dados de exemplo (`exemplos.ts`) e função de carga | RF-08 | T08 | [ ] |
 | T10 | Componentes base: `SemaforoBadge`, `AlertaBanner`, `CampoMoeda`, `CampoPercentual`, tema | design §3 | T07 | [ ] |
 | T11 | Navegação em pilha e tela Lista de produtos (com estado vazio e carga de exemplos) | RF-03, RF-08 | T05, T08, T09, T10 | [ ] |
