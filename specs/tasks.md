@@ -4,7 +4,7 @@
 
 | ID | Tarefa | Liga a | Depende de | Feito |
 | --- | --- | --- | --- | --- |
-| T01 | Criar projeto Expo (TypeScript), configurar Jest e estrutura de pastas de `src/` | design §7 | — | [ ] |
+| T01 | Criar projeto Expo (TypeScript), configurar Jest e estrutura de pastas de `src/` | design §7 | — | [x] |
 | T02 | `calcularMargem` + testes | RN-01, CA-02 | T01 | [ ] |
 | T03 | `calcularPrecoSugerido` + testes (inclui R$ 4,00 / 25% → R$ 5,33) | RN-02, RN-06, CA-01 | T01 | [ ] |
 | T04 | `calcularVariacaoCusto` + testes | RN-04, CA-05, CA-06 | T01 | [ ] |
