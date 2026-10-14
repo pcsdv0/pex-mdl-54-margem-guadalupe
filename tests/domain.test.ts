@@ -4,6 +4,7 @@ import {
   calcularVariacaoCusto,
   statusMargem,
 } from '../src/domain/calculos';
+import { validarCusto, validarProduto } from '../src/domain/validacao';
 
 describe('calcularMargem (RN-01)', () => {
   test('CA-02: custo R$ 4,00 e preço R$ 5,00 → margem 20%', () => {
@@ -131,5 +132,55 @@ describe('statusMargem (RN-03, RN-05)', () => {
 
   test('demonstração: arroz com novo custo R$ 4,40 e preço R$ 5,50 → vermelho', () => {
     expect(statusMargem(550, 440, 25)).toBe('vermelho');
+  });
+});
+
+describe('validarProduto e validarCusto (RN-07)', () => {
+  const valido = { nome: 'Arroz 1 kg', custo: 400, preco: 550, margemDesejada: 25 };
+
+  test('produto válido → sem erros', () => {
+    expect(validarProduto(valido)).toEqual({});
+  });
+
+  test('nome vazio ou só espaços → erro no nome', () => {
+    expect(validarProduto({ ...valido, nome: '' }).nome).toBeDefined();
+    expect(validarProduto({ ...valido, nome: '   ' }).nome).toBeDefined();
+  });
+
+  test('CA-10: custo zero, negativo ou vazio é recusado com mensagem', () => {
+    for (const custo of [0, -100, null]) {
+      expect(validarProduto({ ...valido, custo }).custo).toMatch(/custo/i);
+      expect(validarCusto(custo)).toMatch(/custo/i);
+    }
+  });
+
+  test('custo válido na Nova compra → sem erro', () => {
+    expect(validarCusto(440)).toBeNull();
+  });
+
+  test('preço zero, negativo ou vazio → erro no preço', () => {
+    for (const preco of [0, -1, null]) {
+      expect(validarProduto({ ...valido, preco }).preco).toMatch(/preço/i);
+    }
+  });
+
+  test('preço abaixo do custo é aceito (margem negativa é permitida)', () => {
+    expect(validarProduto({ ...valido, preco: 300 })).toEqual({});
+  });
+
+  test('margem desejada aceita 1 e 99', () => {
+    expect(validarProduto({ ...valido, margemDesejada: 1 })).toEqual({});
+    expect(validarProduto({ ...valido, margemDesejada: 99 })).toEqual({});
+  });
+
+  test('margem desejada fora de 1–99, não inteira ou vazia → erro', () => {
+    for (const margemDesejada of [0, 100, -5, 25.5, null]) {
+      expect(validarProduto({ ...valido, margemDesejada }).margemDesejada).toBeDefined();
+    }
+  });
+
+  test('vários erros ao mesmo tempo', () => {
+    const erros = validarProduto({ nome: '', custo: null, preco: null, margemDesejada: null });
+    expect(Object.keys(erros).sort()).toEqual(['custo', 'margemDesejada', 'nome', 'preco']);
   });
 });
