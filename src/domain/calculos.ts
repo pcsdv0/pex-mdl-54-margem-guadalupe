@@ -42,3 +42,22 @@ export function statusMargem(
 ): Status {
   return precoCentavos >= calcularPrecoSugerido(custoCentavos, margemDesejada) ? 'verde' : 'vermelho';
 }
+
+export interface Situacao {
+  margem: number;
+  status: Status;
+  precoSugerido: number;
+}
+
+/** Margem atual, semáforo e preço sugerido de um produto (RF-09, RF-11, RF-12). */
+export function situacaoProduto(
+  precoCentavos: number,
+  custoCentavos: number,
+  margemDesejada: number,
+): Situacao {
+  return {
+    margem: calcularMargem(precoCentavos, custoCentavos),
+    status: statusMargem(precoCentavos, custoCentavos, margemDesejada),
+    precoSugerido: calcularPrecoSugerido(custoCentavos, margemDesejada),
+  };
+}

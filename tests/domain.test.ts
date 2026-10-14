@@ -2,6 +2,7 @@ import {
   calcularMargem,
   calcularPrecoSugerido,
   calcularVariacaoCusto,
+  situacaoProduto,
   statusMargem,
 } from '../src/domain/calculos';
 import {
@@ -10,6 +11,11 @@ import {
   formatarReais,
   parseReais,
 } from '../src/domain/formatacao';
+import {
+  explicarMargem,
+  explicarPrecoSugerido,
+  fraseResposta,
+} from '../src/domain/explicacao';
 import { validarCusto, validarProduto } from '../src/domain/validacao';
 
 describe('calcularMargem (RN-01)', () => {
@@ -275,5 +281,70 @@ describe('parseReais (RN-08)', () => {
     for (const texto of ['', '   ', 'abc', '-4', '5,333', '1.234', '1.234,56', '5,3,3', ',', 'R$ 5']) {
       expect(parseReais(texto)).toBeNull();
     }
+  });
+});
+
+describe('situacaoProduto (RF-09, RF-11)', () => {
+  test('CA-14: arroz a R$ 5,50, margem 25% e custo digitado R$ 4,40', () => {
+    const s = situacaoProduto(550, 440, 25);
+    expect(formatarPercentual(s.margem)).toBe('20,0%');
+    expect(s.status).toBe('vermelho');
+    expect(s.precoSugerido).toBe(587);
+  });
+
+  test('produto na meta', () => {
+    expect(situacaoProduto(550, 400, 25)).toEqual({
+      margem: calcularMargem(550, 400),
+      status: 'verde',
+      precoSugerido: 533,
+    });
+  });
+});
+
+describe('fraseResposta (RF-09)', () => {
+  test('CA-12: "Venda a R$ 5,87 para manter 25% de margem"', () => {
+    expect(fraseResposta(587, 25)).toBe('Venda a R$ 5,87 para manter 25% de margem');
+  });
+});
+
+describe('explicarPrecoSugerido (RF-10)', () => {
+  test('CA-13: mostra a conta com os números do produto', () => {
+    const passos = explicarPrecoSugerido(440, 25);
+    expect(passos).toContain('R$ 4,40 ÷ (1 − 0,25) = R$ 5,87');
+  });
+
+  test('explica em linguagem simples o que significa a margem desejada', () => {
+    const texto = explicarPrecoSugerido(440, 25).join(' ');
+    expect(texto).toMatch(/25% do preço/);
+    expect(texto).toMatch(/75%/);
+  });
+
+  test('avisa do arredondamento quando a conta não fecha em centavos', () => {
+    expect(explicarPrecoSugerido(440, 25).join(' ')).toMatch(/arredond/i);
+  });
+
+  test('não fala em arredondamento quando a conta é exata', () => {
+    // R$ 3,00 ÷ 0,75 = R$ 4,00 exatos
+    const passos = explicarPrecoSugerido(300, 25);
+    expect(passos).toContain('R$ 3,00 ÷ (1 − 0,25) = R$ 4,00');
+    expect(passos.join(' ')).not.toMatch(/arredond/i);
+  });
+
+  test('margem de um dígito vira 0,07 na conta', () => {
+    expect(explicarPrecoSugerido(1000, 7)).toContain('R$ 10,00 ÷ (1 − 0,07) = R$ 10,75');
+  });
+});
+
+describe('explicarMargem (RF-10)', () => {
+  test('CA-13: mostra a conta da margem atual', () => {
+    const passos = explicarMargem(550, 440);
+    expect(passos).toContain('(R$ 5,50 − R$ 4,40) ÷ R$ 5,50 = 20,0%');
+    expect(passos.join(' ')).toMatch(/sobram R\$ 1,10/);
+  });
+
+  test('preço abaixo do custo: explica que falta dinheiro', () => {
+    const passos = explicarMargem(400, 500);
+    expect(passos).toContain('(R$ 4,00 − R$ 5,00) ÷ R$ 4,00 = -25,0%');
+    expect(passos.join(' ')).toMatch(/faltam R\$ 1,00/);
   });
 });
