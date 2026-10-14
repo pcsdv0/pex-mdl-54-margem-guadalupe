@@ -3,7 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ListaProdutosScreen } from '../screens/ListaProdutos';
+import { NovaCompraScreen } from '../screens/NovaCompra';
 import { ProdutoFormScreen } from '../screens/ProdutoForm';
+import { ResultadoCompraScreen } from '../screens/ResultadoCompra';
 import { cores, fonte } from '../theme/cores';
 
 export type Rotas = {
@@ -38,6 +40,16 @@ export function Navegacao() {
           options={({ route }) => ({
             title: route.params.produtoId ? 'Produto' : 'Novo produto',
           })}
+        />
+        <Stack.Screen
+          name="NovaCompra"
+          component={NovaCompraScreen}
+          options={{ title: 'Nova compra' }}
+        />
+        <Stack.Screen
+          name="ResultadoCompra"
+          component={ResultadoCompraScreen}
+          options={{ title: 'Resultado da compra' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
