@@ -91,3 +91,4 @@ Valores **ilustrativos**, para demonstração; trocar pelos reais do mercado ant
 | v1.1 | 14/10/2026 | **RN-04 e RN-08 (nova):** variação com sinal; leitura de valores com vírgula ou ponto, até 2 casas, sem milhar; data dd/mm/aaaa. | Formatos não estavam definidos. |
 | v1.1 | 14/10/2026 | **design §5:** contrato das bordas das funções de domínio (preço ≤ 0, custo anterior nulo, custo zero, cálculo com inteiros). | Evitar divisão por zero e erro de ponto flutuante (ex.: 410 ÷ 0,8 = 512,4999…). |
 | v1.1 | 14/10/2026 | **design §5:** `validarCusto` recebe centavos já lidos, e não o texto digitado. | A T06 não depende da T07 (`parseReais`); assim a ordem das tarefas continua válida. |
+| v1.1 | 14/10/2026 | **design §3/§7 e T10:** componente `Botao` (botão grande); `EstadoVazio`, `LinhaInfo` e `LinhaHistorico` ficam dentro das telas. | Botões grandes em todas as telas pedem um componente comum; os outros três não estavam na lista de pastas do §7. |
