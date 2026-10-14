@@ -5,14 +5,48 @@ Protótipo mobile (React Native + Expo) feito com a metodologia **Spec-Driven De
 
 **A pergunta que o app responde:** dado o custo que paguei hoje, a que preço devo vender para manter a minha margem?
 
+## Como instalar
+
+Requisitos: [Node.js](https://nodejs.org) 20 ou mais novo (testado com 22) e o app **Expo Go** no celular (Play Store ou App Store).
+
+```bash
+npm install
+```
+
+## Como rodar
+
+```bash
+npx expo start
+```
+
+Abra o **Expo Go** no celular e leia o QR code que aparece no terminal (no iPhone, use a câmera). O celular e o computador precisam estar na mesma rede Wi-Fi. Se a rede bloquear, use `npx expo start --tunnel`.
+
+Na primeira vez, toque em **"Carregar exemplos"** para ver 8 produtos com valores ilustrativos (não são preços reais do mercado).
+
+## Como testar
+
+```bash
+npm test           # testes automáticos das fórmulas, validações e armazenamento
+npx tsc --noEmit   # checagem de tipos do TypeScript
+```
+
+Teste de tela: siga `tests/checklist-manual.md` no Expo Go e preencha a coluna "Resultado".
+
 ## Estrutura
 
 | Pasta | Conteúdo |
 | --- | --- |
 | `specs/` | `requirements.md`, `design.md` e `tasks.md` (a fonte da verdade do projeto) |
-| `docs/` | Glossário, documento da entrevista e `adr/` (decisões de arquitetura) |
-| `src/` | Código do app (só depois do `tasks.md` aprovado) |
-| `tests/` | Testes da fórmula e checklist de teste manual |
+| `docs/` | Glossário, entrevista, `adr/` (decisões de arquitetura), `depois.md` (ideias fora do escopo) e `processo-sdd.md` (requisito → tarefa → commit → teste) |
+| `src/domain/` | Regras de cálculo puras, em centavos: `calculos.ts`, `validacao.ts`, `formatacao.ts` |
+| `src/storage/` | `repositorio.ts`: dados no aparelho com AsyncStorage |
+| `src/data/` | `exemplos.ts`: produtos de exemplo (ilustrativos) |
+| `src/screens/` | Telas: Lista de produtos, Produto, Nova compra, Resultado, Histórico |
+| `src/components/` | `ProdutoCard`, `SemaforoBadge`, `AlertaBanner`, `Campo`, `CampoMoeda`, `CampoPercentual`, `Botao` |
+| `src/navigation/` | Navegação em pilha |
+| `src/theme/` | Cores e tamanhos de fonte |
+| `tests/` | `domain.test.ts`, `storage.test.ts`, `setup.ts` e `checklist-manual.md` |
+| `App.tsx`, `index.ts` | Entrada do app |
 
 ## Equipe e papéis
 
