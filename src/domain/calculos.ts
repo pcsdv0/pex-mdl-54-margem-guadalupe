@@ -28,3 +28,17 @@ export function calcularVariacaoCusto(
   }
   return ((novoCentavos - anteriorCentavos) * 100) / anteriorCentavos;
 }
+
+export type Status = 'verde' | 'vermelho';
+
+/**
+ * RN-03 e RN-05 (v1.1): verde quando o preço de venda ≥ preço sugerido; vermelho
+ * (com alerta) quando abaixo. Assim, aplicar o preço sugerido sempre deixa verde (CA-11).
+ */
+export function statusMargem(
+  precoCentavos: number,
+  custoCentavos: number,
+  margemDesejada: number,
+): Status {
+  return precoCentavos >= calcularPrecoSugerido(custoCentavos, margemDesejada) ? 'verde' : 'vermelho';
+}

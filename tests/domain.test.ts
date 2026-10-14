@@ -2,6 +2,7 @@ import {
   calcularMargem,
   calcularPrecoSugerido,
   calcularVariacaoCusto,
+  statusMargem,
 } from '../src/domain/calculos';
 
 describe('calcularMargem (RN-01)', () => {
@@ -86,5 +87,49 @@ describe('calcularVariacaoCusto (RN-04)', () => {
   test('custo anterior zero ou negativo → sem variação (null)', () => {
     expect(calcularVariacaoCusto(0, 400)).toBeNull();
     expect(calcularVariacaoCusto(-10, 400)).toBeNull();
+  });
+});
+
+describe('statusMargem (RN-03, RN-05)', () => {
+  test('CA-03: margem atual 20,0% e desejada 25% → vermelho (com alerta)', () => {
+    expect(statusMargem(500, 400, 25)).toBe('vermelho');
+  });
+
+  test('CA-04: margem atual 30% e desejada 25% → verde (sem alerta)', () => {
+    // custo R$ 7,00 e preço R$ 10,00 → margem 30%
+    expect(statusMargem(1000, 700, 25)).toBe('verde');
+  });
+
+  test('CA-11: depois de aplicar o preço sugerido R$ 5,33 o produto fica verde', () => {
+    const sugerido = calcularPrecoSugerido(400, 25);
+    expect(sugerido).toBe(533);
+    expect(calcularMargem(sugerido, 400)).toBeLessThan(25); // 24,95% por causa do arredondamento
+    expect(statusMargem(sugerido, 400, 25)).toBe('verde');
+  });
+
+  test('um centavo abaixo do preço sugerido → vermelho', () => {
+    expect(statusMargem(532, 400, 25)).toBe('vermelho');
+  });
+
+  test('margem exatamente igual à desejada → verde', () => {
+    expect(statusMargem(400, 300, 25)).toBe('verde');
+  });
+
+  test('preço sugerido aplicado deixa verde para qualquer custo e margem', () => {
+    for (const custo of [1, 10, 99, 410, 1234]) {
+      for (const margem of [1, 20, 25, 33, 99]) {
+        expect(statusMargem(calcularPrecoSugerido(custo, margem), custo, margem)).toBe('verde');
+      }
+    }
+  });
+
+  test('exemplos de requirements §9: só o refrigerante nasce vermelho', () => {
+    expect(statusMargem(550, 400, 25)).toBe('verde'); // arroz
+    expect(statusMargem(540, 410, 20)).toBe('verde'); // leite
+    expect(statusMargem(800, 650, 25)).toBe('vermelho'); // refrigerante
+  });
+
+  test('demonstração: arroz com novo custo R$ 4,40 e preço R$ 5,50 → vermelho', () => {
+    expect(statusMargem(550, 440, 25)).toBe('vermelho');
   });
 });
