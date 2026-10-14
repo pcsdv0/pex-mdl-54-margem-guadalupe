@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ListaProdutosScreen } from '../screens/ListaProdutos';
+import { ProdutoFormScreen } from '../screens/ProdutoForm';
 import { cores, fonte } from '../theme/cores';
 
 export type Rotas = {
@@ -30,6 +31,13 @@ export function Navegacao() {
           name="ListaProdutos"
           component={ListaProdutosScreen}
           options={{ title: 'Meus produtos' }}
+        />
+        <Stack.Screen
+          name="ProdutoForm"
+          component={ProdutoFormScreen}
+          options={({ route }) => ({
+            title: route.params.produtoId ? 'Produto' : 'Novo produto',
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>
