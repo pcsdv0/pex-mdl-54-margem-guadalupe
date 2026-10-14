@@ -1,0 +1,12 @@
+# ADR-005 — Expo SDK 57, React Navigation e ferramentas de teste
+- **Status:** aceita
+- **Contexto:** na T01 foi preciso escolher a versão do Expo e configurar os testes. O template atual do Expo traz um `AGENTS.md` que recomenda o Expo Router, mas o design (§2) pede React Navigation com pilha nativa. O template usa TypeScript 6, que não carrega mais os tipos de `@types/*` por padrão.
+- **Decisão:**
+  - Expo SDK 57 (a versão estável mais recente em 14/10/2026, a que o Expo Go da loja abre), template `blank-typescript`.
+  - Navegação com `@react-navigation/native-stack`, como no design; o `AGENTS.md` do template não foi copiado.
+  - Testes com `jest-expo`, lendo só `tests/`, e o mock oficial do AsyncStorage em `tests/setup.ts`.
+  - `tsconfig.json` com `"types": ["jest", "node"]`.
+  - Sem suporte web no projeto. Para conferir as telas durante o desenvolvimento, `react-dom` e `react-native-web` foram instalados temporariamente e removidos sem commit.
+  - Na exibição, valores com milhar aparecem como "R$ 1.234,56" (padrão brasileiro). Na digitação, a RN-08 recusa o separador de milhar, e o campo de edição mostra o valor sem ele ("1234,56").
+- **Consequências:** o app abre no Expo Go atual por QR code. Uma versão futura do Expo Go pode exigir atualizar o SDK (`npx expo install --fix`). Nenhuma dependência além das previstas no design.
+- **Atende:** RNF-01, RNF-04; design §2 e §7.
