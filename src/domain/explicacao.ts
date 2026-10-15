@@ -1,6 +1,11 @@
 // RF-09 e RF-10: textos que explicam as contas com os números do produto.
 // Funções puras; os números vêm de calculos.ts e o formato de formatacao.ts.
-import { calcularMargem, calcularPrecoSugerido } from './calculos';
+import {
+  calcularMargem,
+  calcularPrecoSugerido,
+  calcularVariacaoCusto,
+  variacaoSuspeita,
+} from './calculos';
 import { formatarPercentual, formatarReais } from './formatacao';
 
 /** 25 → "0,25"; 7 → "0,07". Margem desejada é inteira de 1 a 99 (RN-07). */
@@ -42,4 +47,14 @@ export function explicarMargem(precoCentavos: number, custoCentavos: number): st
     sobra,
     `(${preco} − ${custo}) ÷ ${preco} = ${margem}`,
   ];
+}
+
+/** RF-18 e RN-09: "Confira o valor…" quando a variação passa de ±50%; null quando está dentro. */
+export function avisoConferencia(custoAnteriorCentavos: number, novoCustoCentavos: number): string | null {
+  const variacao = calcularVariacaoCusto(custoAnteriorCentavos, novoCustoCentavos);
+  if (variacao === null || !variacaoSuspeita(variacao)) {
+    return null;
+  }
+  const sentido = variacao > 0 ? 'subiu' : 'caiu';
+  return `Confira o valor: o custo ${sentido} ${formatarPercentual(Math.abs(variacao))} em relação ao custo atual (${formatarReais(custoAnteriorCentavos)}).`;
 }

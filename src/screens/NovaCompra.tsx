@@ -2,12 +2,14 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AlertaBanner } from '../components/AlertaBanner';
 import { Botao } from '../components/Botao';
 import { CampoMoeda, erroFormatoMoeda } from '../components/CampoMoeda';
 import { CartaoSituacao } from '../components/CartaoSituacao';
 import { Icone } from '../components/Icone';
 import { LinhaValor } from '../components/LinhaValor';
 import { situacaoProduto } from '../domain/calculos';
+import { avisoConferencia } from '../domain/explicacao';
 import { formatarReais, parseReais } from '../domain/formatacao';
 import { validarCusto } from '../domain/validacao';
 import { Rotas } from '../navigation';
@@ -61,6 +63,8 @@ export function NovaCompraScreen({ navigation, route }: Props) {
   const previa = valido
     ? situacaoProduto(produto.precoVenda, valor!, produto.margemDesejada)
     : null;
+  // RF-18 e RN-09: só avisa; a compra pode ser confirmada mesmo assim.
+  const conferir = valido ? avisoConferencia(produto.custoAtual, valor!) : null;
 
   return (
     <KeyboardAvoidingView
@@ -91,6 +95,7 @@ export function NovaCompraScreen({ navigation, route }: Props) {
 
         {previa ? (
           <View style={estilos.previa} accessibilityLiveRegion="polite">
+            {conferir ? <AlertaBanner mensagem={conferir} /> : null}
             <CartaoSituacao
               titulo="Prévia: se mantiver o preço atual"
               precoVenda={produto.precoVenda}

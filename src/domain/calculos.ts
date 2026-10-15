@@ -71,3 +71,11 @@ export function sentidoVariacao(variacao: number | null): Sentido | null {
   if (variacao < 0) return 'caiu';
   return 'igual';
 }
+
+/** RN-09: limite, em %, acima do qual a variação do custo pede conferência. */
+export const LIMITE_CONFERENCIA = 50;
+
+/** RN-09: true quando a variação passa de +50% ou fica abaixo de −50%. Exatamente ±50% não avisa. */
+export function variacaoSuspeita(variacao: number | null): boolean {
+  return variacao !== null && Math.abs(variacao) > LIMITE_CONFERENCIA;
+}

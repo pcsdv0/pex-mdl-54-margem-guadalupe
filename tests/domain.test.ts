@@ -5,6 +5,7 @@ import {
   sentidoVariacao,
   situacaoProduto,
   statusMargem,
+  variacaoSuspeita,
 } from '../src/domain/calculos';
 import {
   formatarData,
@@ -13,6 +14,7 @@ import {
   parseReais,
 } from '../src/domain/formatacao';
 import {
+  avisoConferencia,
   explicarMargem,
   explicarPrecoSugerido,
   fraseResposta,
@@ -426,5 +428,46 @@ describe('sentidoVariacao (RF-16)', () => {
 
   test('CA-20: primeira compra não tem sentido (null, exibe "—")', () => {
     expect(sentidoVariacao(null)).toBeNull();
+  });
+});
+
+describe('variacaoSuspeita (RN-09)', () => {
+  test('CA-25: acima de +50% ou abaixo de −50% é suspeita', () => {
+    expect(variacaoSuspeita(calcularVariacaoCusto(400, 650))).toBe(true); // +62,5%
+    expect(variacaoSuspeita(calcularVariacaoCusto(400, 190))).toBe(true); // −52,5%
+  });
+
+  test('CA-25: dentro dos limites não avisa, inclusive exatamente ±50%', () => {
+    expect(variacaoSuspeita(calcularVariacaoCusto(400, 440))).toBe(false); // +10%
+    expect(variacaoSuspeita(calcularVariacaoCusto(400, 600))).toBe(false); // +50%
+    expect(variacaoSuspeita(calcularVariacaoCusto(400, 200))).toBe(false); // −50%
+    expect(variacaoSuspeita(0)).toBe(false);
+  });
+
+  test('sem custo anterior não avisa', () => {
+    expect(variacaoSuspeita(null)).toBe(false);
+  });
+});
+
+describe('avisoConferencia (RF-18)', () => {
+  test('CA-25: custo que subiu demais', () => {
+    expect(avisoConferencia(400, 650)).toBe(
+      'Confira o valor: o custo subiu 62,5% em relação ao custo atual (R$ 4,00).',
+    );
+  });
+
+  test('CA-25: custo que caiu demais', () => {
+    expect(avisoConferencia(400, 190)).toBe(
+      'Confira o valor: o custo caiu 52,5% em relação ao custo atual (R$ 4,00).',
+    );
+  });
+
+  test('erro de digitação típico: 440 no lugar de 4,40', () => {
+    expect(avisoConferencia(400, 44000)).toMatch(/^Confira o valor: o custo subiu/);
+  });
+
+  test('CA-25: dentro dos limites não há aviso', () => {
+    expect(avisoConferencia(400, 440)).toBeNull();
+    expect(avisoConferencia(400, 600)).toBeNull();
   });
 });

@@ -47,7 +47,7 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | T30 | Toque duplo não duplica: `carregarExemplos` sem carga repetida + testes; bloqueio de segundo toque em cadastro, carga de exemplos, nova compra e aplicar preço | RF-01, RF-08, CA-22 | T29 | [x] |
 | T31 | Tela Produto não sobrescreve o que foi digitado e não salvo ao voltar ao foco | RF-02, CA-23 | T29 | [x] |
 | T32 | `apagarTodosOsDados` + testes; botão "Apagar todos os dados" na Ajuda com confirmação; boas-vindas voltam | RF-17, CA-24 | T29 | [x] |
-| T33 | `variacaoSuspeita` e `avisoConferencia` + testes; aviso "Confira o valor" na prévia da Nova compra | RF-18, RN-09, CA-25 | T29 | [ ] |
+| T33 | `variacaoSuspeita` e `avisoConferencia` + testes; aviso "Confira o valor" na prévia da Nova compra | RF-18, RN-09, CA-25 | T29 | [x] |
 | T34 | Alinhar design ao código (§2 rótulos, §5 frases do resumo, §6 nomes do repositório, §10 tamanhos de fonte), `tests/README.md` e nota do ADR-005 | design, RNF-05 | T33 | [ ] |
 | T35 | T15 cobrindo CA-01 a CA-25; T16 reaberta até a T15 fechar | tasks | T34 | [ ] |
 | T36 | Checklist manual com CA-22 a CA-25; README com a equipe; `docs/entrevista.md`; desfazer última compra em `docs/depois.md` | todos os CA novos | T35 | [ ] |
