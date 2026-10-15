@@ -1,24 +1,37 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useCallback, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
+import { useAviso } from '../components/Aviso';
 import { Botao } from '../components/Botao';
 import { Campo } from '../components/Campo';
 import { CampoMoeda, centavosParaCampo, erroFormatoMoeda } from '../components/CampoMoeda';
 import { CampoPercentual, lerPercentual } from '../components/CampoPercentual';
+import { CartaoSituacao } from '../components/CartaoSituacao';
+import { DialogoConfirmacao } from '../components/DialogoConfirmacao';
+import { situacaoProduto } from '../domain/calculos';
 import { parseReais } from '../domain/formatacao';
 import { ErrosProduto, validarProduto } from '../domain/validacao';
 import { Rotas } from '../navigation';
 import { cadastrarProduto, Produto, repositorio } from '../storage/repositorio';
-import { cores, espaco } from '../theme/tema';
+import { cores, espaco, fonte, linha, peso } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'ProdutoForm'>;
 
-// RF-01 e RF-02: cadastro, edição (custo só leitura) e exclusão do produto.
+// RF-01, RF-02, RF-13 e RF-14: cadastro e edição com textos de apoio, avisos e exclusão confirmada.
 export function ProdutoFormScreen({ navigation, route }: Props) {
   const produtoId = route.params.produtoId;
   const edicao = produtoId !== undefined;
+  const avisar = useAviso();
 
   const [produto, setProduto] = useState<Produto | null>(null);
   const [nome, setNome] = useState('');
@@ -26,6 +39,12 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
   const [preco, setPreco] = useState('');
   const [margem, setMargem] = useState('');
   const [erros, setErros] = useState<ErrosProduto>({});
+  const [confirmarExclusao, setConfirmarExclusao] = useState(false);
+
+  // RNF-09: "próximo" leva ao campo seguinte.
+  const refCusto = useRef<TextInput>(null);
+  const refPreco = useRef<TextInput>(null);
+  const refMargem = useRef<TextInput>(null);
 
   // Recarrega ao voltar para a tela: o custo e o preço podem ter mudado numa nova compra.
   useFocusEffect(
@@ -71,97 +90,163 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
       margemDesejada: dados.margemDesejada!,
     };
     if (produto) {
-      await repositorio.salvarProduto({ ...produto, ...valores });
+      const atualizado = { ...produto, ...valores };
+      await repositorio.salvarProduto(atualizado);
+      setProduto(atualizado);
+      avisar('Alterações salvas');
     } else {
       await cadastrarProduto(repositorio, { ...valores, custoAtual: dados.custo! });
+      avisar('Produto cadastrado');
+      navigation.goBack();
     }
-    navigation.goBack();
   }
 
-  function confirmarExclusao() {
+  async function excluir() {
     if (!produto) return;
-    Alert.alert(
-      'Excluir produto?',
-      `"${produto.nome}" e o histórico de custos dele serão apagados.`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Excluir',
-          style: 'destructive',
-          onPress: async () => {
-            await repositorio.excluirProduto(produto.id);
-            navigation.popToTop();
-          },
-        },
-      ],
-    );
+    setConfirmarExclusao(false);
+    await repositorio.excluirProduto(produto.id);
+    avisar(`"${produto.nome}" foi excluído`);
+    navigation.popToTop();
   }
 
   if (edicao && !produto) {
     return <View style={estilos.tela} />;
   }
 
+  const situacao = produto
+    ? situacaoProduto(produto.precoVenda, produto.custoAtual, produto.margemDesejada)
+    : null;
+
   return (
     <KeyboardAvoidingView
       style={estilos.tela}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView contentContainerStyle={estilos.conteudo} keyboardShouldPersistTaps="handled">
-        {produto ? (
-          <View style={estilos.acoes}>
+      <ScrollView
+        contentContainerStyle={estilos.conteudo}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+      >
+        {produto && situacao ? (
+          <View style={estilos.secao}>
+            <Text style={estilos.nomeProduto}>{produto.nome}</Text>
+            <CartaoSituacao
+              titulo="Situação atual"
+              precoVenda={produto.precoVenda}
+              margemDesejada={produto.margemDesejada}
+              situacao={situacao}
+              mostrarSugerido
+            />
             <Botao
               titulo="Nova compra"
+              icone="cart-outline"
               onPress={() => navigation.navigate('NovaCompra', { produtoId: produto.id })}
             />
             <Botao
-              titulo="Ver histórico"
+              titulo="Ver histórico de custos"
+              icone="time-outline"
               variante="secundario"
               onPress={() => navigation.navigate('Historico', { produtoId: produto.id })}
             />
           </View>
         ) : null}
 
-        <Campo rotulo="Nome do produto" valor={nome} onChange={setNome} erro={erros.nome} />
-        {produto ? (
-          <CampoMoeda
-            rotulo="Custo atual"
-            valor={custo}
-            somenteLeitura
-            dica='Para mudar o custo, use "Nova compra".'
+        <View style={estilos.secao}>
+          {produto ? (
+            <Text style={estilos.tituloSecao} accessibilityRole="header">
+              Dados do produto
+            </Text>
+          ) : null}
+          <Campo
+            rotulo="Nome do produto"
+            valor={nome}
+            onChange={setNome}
+            erro={erros.nome}
+            dica="Como vai aparecer na lista. Ex.: Arroz 1 kg"
+            autoFocus={!edicao}
+            tecla="next"
+            aoConfirmar={() => (produto ? refPreco : refCusto).current?.focus()}
           />
-        ) : (
+          {produto ? (
+            <CampoMoeda
+              rotulo="Custo atual"
+              valor={custo}
+              somenteLeitura
+              dica='Para mudar o custo, use "Nova compra".'
+            />
+          ) : (
+            <CampoMoeda
+              ref={refCusto}
+              rotulo="Custo"
+              valor={custo}
+              onChange={setCusto}
+              erro={erros.custo}
+              dica="Quanto você paga ao fornecedor por unidade."
+              tecla="next"
+              aoConfirmar={() => refPreco.current?.focus()}
+            />
+          )}
           <CampoMoeda
-            rotulo="Custo (quanto você paga)"
-            valor={custo}
-            onChange={setCusto}
-            erro={erros.custo}
+            ref={refPreco}
+            rotulo="Preço de venda"
+            valor={preco}
+            onChange={setPreco}
+            erro={erros.preco}
+            dica="Quanto o cliente paga por unidade."
+            tecla="next"
+            aoConfirmar={() => refMargem.current?.focus()}
           />
-        )}
-        <CampoMoeda
-          rotulo="Preço de venda"
-          valor={preco}
-          onChange={setPreco}
-          erro={erros.preco}
-        />
-        <CampoPercentual
-          rotulo="Margem desejada"
-          valor={margem}
-          onChange={setMargem}
-          erro={erros.margemDesejada}
-          dica="Quanto do preço você quer que sobre de lucro (1 a 99)."
-        />
+          <CampoPercentual
+            ref={refMargem}
+            rotulo="Margem desejada"
+            valor={margem}
+            onChange={setMargem}
+            erro={erros.margemDesejada}
+            dica="Quanto % do preço de venda você quer que sobre. Ex.: 25"
+            tecla="done"
+            aoConfirmar={salvar}
+          />
+          {produto ? (
+            <Botao titulo="Salvar alterações" variante="secundario" onPress={salvar} />
+          ) : (
+            <Botao titulo="Salvar produto" icone="checkmark" onPress={salvar} />
+          )}
+        </View>
 
-        <Botao titulo="Salvar" onPress={salvar} />
         {produto ? (
-          <Botao titulo="Excluir produto" variante="texto" perigo onPress={confirmarExclusao} />
+          <Botao
+            titulo="Excluir produto"
+            icone="trash-outline"
+            variante="texto"
+            perigo
+            onPress={() => setConfirmarExclusao(true)}
+          />
         ) : null}
       </ScrollView>
+
+      <DialogoConfirmacao
+        visivel={confirmarExclusao}
+        titulo="Excluir produto?"
+        mensagem={`"${produto?.nome ?? ''}" e o histórico de custos dele serão apagados. Não dá para desfazer.`}
+        textoConfirmar="Excluir"
+        onConfirmar={excluir}
+        onCancelar={() => setConfirmarExclusao(false)}
+      />
     </KeyboardAvoidingView>
   );
 }
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.l, gap: espaco.l, paddingBottom: espaco.xl * 2 },
-  acoes: { gap: 12, marginBottom: espaco.s },
+  conteudo: { padding: espaco.l, gap: espaco.xl, paddingBottom: espaco.xxl },
+  secao: { gap: espaco.l },
+  nomeProduto: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto },
+  tituloSecao: {
+    fontSize: fonte.subtitulo,
+    fontWeight: peso.forte,
+    color: cores.texto,
+    paddingTop: espaco.l,
+    borderTopWidth: linha.fina,
+    borderTopColor: cores.borda,
+  },
 });
