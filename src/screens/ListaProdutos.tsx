@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useAviso } from '../components/Aviso';
@@ -33,10 +33,6 @@ export function ListaProdutosScreen({ navigation }: Props) {
   const avisar = useAviso();
   const [boasVindas, setBoasVindas] = useState(false);
 
-  // RF-15: cartão de boas-vindas até ser dispensado.
-  useEffect(() => {
-    boasVindasDispensada().then((dispensada) => setBoasVindas(!dispensada));
-  }, []);
 
   async function onDispensarBoasVindas() {
     setBoasVindas(false);
@@ -51,9 +47,12 @@ export function ListaProdutosScreen({ navigation }: Props) {
     setProdutos(await repositorio.listarProdutos());
   }, []);
 
+  // RF-15 e RF-17: a cada volta à lista, relê produtos e a preferência de boas-vindas
+  // (depois de "Apagar todos os dados" o cartão volta).
   useFocusEffect(
     useCallback(() => {
       recarregar();
+      boasVindasDispensada().then((dispensada) => setBoasVindas(!dispensada));
     }, [recarregar]),
   );
 

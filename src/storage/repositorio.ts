@@ -2,6 +2,8 @@
 // Repositorio; trocar o AsyncStorage por outra coisa não mexe nas telas.
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { CHAVE_BOAS_VINDAS } from './preferencias';
+
 /** Modelo de dados (design §4). Dinheiro em centavos. */
 export interface Produto {
   id: string;
@@ -122,4 +124,12 @@ export async function registrarCompra(
   const atualizado: Produto = { ...produto, custoAtual: novoCusto };
   await repo.salvarProduto(atualizado);
   return { produto: atualizado, custoAnterior };
+}
+
+/**
+ * RF-17: apaga produtos, histórico e preferências do app, voltando ao estado de primeira
+ * abertura. Não toca em outras chaves do aparelho.
+ */
+export async function apagarTodosOsDados(): Promise<void> {
+  await AsyncStorage.multiRemove([CHAVE_PRODUTOS, CHAVE_HISTORICO, CHAVE_BOAS_VINDAS]);
 }

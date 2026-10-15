@@ -5,6 +5,7 @@ import { calcularMargem, statusMargem } from '../src/domain/calculos';
 import { formatarPercentual } from '../src/domain/formatacao';
 import { boasVindasDispensada, dispensarBoasVindas } from '../src/storage/preferencias';
 import {
+  apagarTodosOsDados,
   cadastrarProduto,
   criarRepositorio,
   registrarCompra,
@@ -155,5 +156,34 @@ describe('preferências: boas-vindas (RF-15)', () => {
     expect(await boasVindasDispensada()).toBe(true);
     // "reabrir o app": a leitura vem do armazenamento, não da memória
     expect(await AsyncStorage.getItem('boasVindasDispensada')).toBe('true');
+  });
+});
+
+describe('apagar todos os dados (RF-17)', () => {
+  test('CA-24: apaga produtos, histórico e a preferência de boas-vindas', async () => {
+    const repo = criarRepositorio();
+    const p = await cadastrarProduto(repo, ARROZ);
+    await registrarCompra(repo, p, 440);
+    await dispensarBoasVindas();
+
+    await apagarTodosOsDados();
+
+    expect(await repo.listarProdutos()).toEqual([]);
+    expect(await repo.listarHistorico(p.id)).toEqual([]);
+    expect(await boasVindasDispensada()).toBe(false);
+  });
+
+  test('não mexe em outras chaves do aparelho', async () => {
+    await AsyncStorage.setItem('outra-coisa', 'x');
+    await apagarTodosOsDados();
+    expect(await AsyncStorage.getItem('outra-coisa')).toBe('x');
+  });
+
+  test('depois de apagar, carregar exemplos funciona de novo', async () => {
+    const repo = criarRepositorio();
+    await carregarExemplos(repo);
+    await apagarTodosOsDados();
+    await carregarExemplos(repo);
+    expect(await repo.listarProdutos()).toHaveLength(8);
   });
 });
