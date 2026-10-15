@@ -1,17 +1,19 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useAviso } from '../components/Aviso';
 import { Botao } from '../components/Botao';
 import { CampoBusca } from '../components/CampoBusca';
+import { CartaoBoasVindas } from '../components/CartaoBoasVindas';
 import { FiltroSegmentado } from '../components/FiltroSegmentado';
 import { Icone } from '../components/Icone';
 import { ProdutoCard } from '../components/ProdutoCard';
 import { carregarExemplos, EXEMPLOS } from '../data/exemplos';
 import { Filtro, organizarLista, resumoLista } from '../domain/lista';
 import { Rotas } from '../navigation';
+import { boasVindasDispensada, dispensarBoasVindas } from '../storage/preferencias';
 import { Produto, repositorio } from '../storage/repositorio';
 import { cores, espaco, fonte, linha, peso, raio } from '../theme/tema';
 
@@ -29,6 +31,21 @@ export function ListaProdutosScreen({ navigation }: Props) {
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState<Filtro>('todos');
   const avisar = useAviso();
+  const [boasVindas, setBoasVindas] = useState(false);
+
+  // RF-15: cartão de boas-vindas até ser dispensado.
+  useEffect(() => {
+    boasVindasDispensada().then((dispensada) => setBoasVindas(!dispensada));
+  }, []);
+
+  async function onDispensarBoasVindas() {
+    setBoasVindas(false);
+    await dispensarBoasVindas();
+  }
+
+  const cartaoBoasVindas = boasVindas ? (
+    <CartaoBoasVindas onDispensar={onDispensarBoasVindas} />
+  ) : null;
 
   const recarregar = useCallback(async () => {
     setProdutos(await repositorio.listarProdutos());
@@ -57,7 +74,12 @@ export function ListaProdutosScreen({ navigation }: Props) {
   }
 
   if (produtos.length === 0) {
-    return <EstadoVazio onCarregarExemplos={onCarregarExemplos} onNovoProduto={novoProduto} />;
+    return (
+      <ScrollView style={estilos.tela} contentContainerStyle={estilos.rolagemVazia}>
+        {cartaoBoasVindas}
+        <EstadoVazio onCarregarExemplos={onCarregarExemplos} onNovoProduto={novoProduto} />
+      </ScrollView>
+    );
   }
 
   const visiveis = organizarLista(produtos, { busca, filtro });
@@ -65,6 +87,7 @@ export function ListaProdutosScreen({ navigation }: Props) {
 
   const cabecalho = (
     <View style={estilos.cabecalho}>
+      {cartaoBoasVindas}
       <View
         style={[estilos.resumo, algumAbaixo ? estilos.resumoAlerta : estilos.resumoOk]}
         accessibilityRole="summary"
@@ -123,7 +146,7 @@ function EstadoVazio({
   onNovoProduto: () => void;
 }) {
   return (
-    <View style={[estilos.centro, estilos.vazio]}>
+    <View style={estilos.vazio}>
       <Icone nome="pricetags-outline" tamanho="grande" cor="primaria" />
       <Text style={estilos.titulo}>Nenhum produto cadastrado</Text>
       <Text style={estilos.texto}>
@@ -168,7 +191,8 @@ const estilos = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: cores.fundo,
   },
-  vazio: { padding: espaco.xl, gap: espaco.l },
+  rolagemVazia: { flexGrow: 1, padding: espaco.l, gap: espaco.l, justifyContent: 'center' },
+  vazio: { alignItems: 'center', padding: espaco.l, gap: espaco.l },
   titulo: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto, textAlign: 'center' },
   texto: { fontSize: fonte.corpo, color: cores.texto, textAlign: 'center' },
   botoes: { alignSelf: 'stretch', gap: espaco.m },

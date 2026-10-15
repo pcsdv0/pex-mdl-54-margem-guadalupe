@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EXEMPLOS, carregarExemplos } from '../src/data/exemplos';
 import { calcularMargem, statusMargem } from '../src/domain/calculos';
 import { formatarPercentual } from '../src/domain/formatacao';
+import { boasVindasDispensada, dispensarBoasVindas } from '../src/storage/preferencias';
 import {
   cadastrarProduto,
   criarRepositorio,
@@ -131,5 +132,15 @@ describe('produtos de exemplo (RF-08, requirements §9)', () => {
     for (const p of produtos) {
       expect((await repo.listarHistorico(p.id)).map((h) => h.custo)).toEqual([p.custoAtual]);
     }
+  });
+});
+
+describe('preferências: boas-vindas (RF-15)', () => {
+  test('CA-19: aparece na primeira abertura e, depois de dispensado, não volta', async () => {
+    expect(await boasVindasDispensada()).toBe(false);
+    await dispensarBoasVindas();
+    expect(await boasVindasDispensada()).toBe(true);
+    // "reabrir o app": a leitura vem do armazenamento, não da memória
+    expect(await AsyncStorage.getItem('boasVindasDispensada')).toBe('true');
   });
 });
