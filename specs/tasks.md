@@ -64,8 +64,8 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | RF-14 | T20, T23, T25 | checklist CA-18 |
 | RF-15 | T27 | storage.test (preferências), checklist CA-19 |
 | RF-16 | T26 | domain.test (sentidoVariacao), checklist CA-20 |
-| RNF-05 | T19, T28 | tema.test (sem cor ou tamanho solto, CA-21) |
+| RNF-05 | T19, T28 | varredura.test (sem cor ou tamanho solto, CA-21) |
 | RNF-06 | T19, T20 | tema.test (contraste, CA-21), checklist |
 | RNF-07, RNF-08 | T20, T22–T25 | checklist |
 | RNF-09 | T20, T23, T24 | checklist (só no aparelho) |
-| RNF-10 | T20, T28 | checklist |
+| RNF-10 | T20, T28 | varredura.test (rótulo em todo Pressable), checklist |

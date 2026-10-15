@@ -103,7 +103,7 @@ src/
                Aviso, DialogoConfirmacao, BotaoAjuda, CartaoBoasVindas
   navigation/  index.tsx
   theme/       tema.ts (tokens), contraste.ts (cálculo de contraste WCAG)
-tests/         domain.test.ts, storage.test.ts, tema.test.ts, checklist-manual.md
+tests/         domain.test.ts, storage.test.ts, tema.test.ts (contraste), varredura.test.ts (tokens e rótulos), checklist-manual.md
 ```
 
 ## 8. Decisões de arquitetura
@@ -118,7 +118,7 @@ tests/         domain.test.ts, storage.test.ts, tema.test.ts, checklist-manual.m
 Cada RF/RN aparece em ao menos uma tarefa (`tasks.md`) e um teste. A matriz está no fim do `tasks.md`.
 
 ## 10. Tema e interação (v1.2)
-Tokens em `src/theme/tema.ts`; telas e componentes só usam tokens (RNF-05, verificado em `tests/tema.test.ts`).
+Tokens em `src/theme/tema.ts`; telas e componentes só usam tokens (RNF-05, verificado em `tests/varredura.test.ts`).
 - **Cores:** fundo, superfície, texto, texto suave, borda, primária (+ texto sobre primária), verde/vermelho (+ fundos claros), perigo. Todo par texto/fundo usado tem contraste ≥ 4,5:1 (RNF-06, verificado com `contraste.ts`).
 - **Espaço:** escala 4, 8, 12, 16, 24, 32.
 - **Fonte:** 5 tamanhos: legenda 14, corpo 17, subtítulo 20, título 26, número 34. Pesos: normal, médio, forte. Números com `fontVariant: ['tabular-nums']` (RNF-08).
