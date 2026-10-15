@@ -28,7 +28,7 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | --- | --- | --- | --- | --- | --- |
 | T17 | A | `situacaoProduto`, `fraseResposta`, `explicarPrecoSugerido`, `explicarMargem` + testes | RF-09, RF-10, RF-11, CA-12, CA-13, CA-14 | T05 | [x] |
 | T18 | A | `organizarLista` e `resumoLista` + testes | RF-12, CA-15, CA-16 | T05 | [x] |
-| T19 | B | Tema em tokens (`tema.ts`: cores, espaço 4/8, 5 tamanhos de fonte, raios, sombra, toque 48) e `contraste.ts` + teste de contraste ≥ 4,5:1 | RNF-05, RNF-06, CA-21 | T10 | [ ] |
+| T19 | B | Tema em tokens (`tema.ts`: cores, espaço 4/8, 5 tamanhos de fonte, raios, sombra, toque 48) e `contraste.ts` + teste de contraste ≥ 4,5:1 | RNF-05, RNF-06, CA-21 | T10 | [x] |
 | T20 | B | Ícones (`@expo/vector-icons`) e componentes base revisados: `Botao` (principal/secundário/texto), `Icone`, `SemaforoBadge`, `Campo` (apoio, "próximo"), `LinhaValor`, `CartaoSituacao`, `AvisoProvider`, `DialogoConfirmacao`, `BotaoAjuda` | RNF-06, RNF-07, RNF-08, RNF-09, RNF-10, RF-14 | T19 | [ ] |
 | T21 | A | Tela Ajuda e botão "?" no cabeçalho de todas as telas | RF-13, CA-17 | T20 | [ ] |
 | T22 | A | Lista: resumo, ordem, busca, filtro, sugerido no cartão vermelho, mensagem de busca vazia | RF-12, CA-15, CA-16 | T18, T20 | [ ] |
