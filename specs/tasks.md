@@ -51,7 +51,7 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | T34 | Alinhar design ao código (§2 rótulos, §5 frases do resumo, §6 nomes do repositório, §10 tamanhos de fonte), `tests/README.md` e nota do ADR-005 | design, RNF-05 | T33 | [x] |
 | T35 | T15 cobrindo CA-01 a CA-25; T16 reaberta até a T15 fechar | tasks | T34 | [x] |
 | T36 | Checklist manual com CA-22 a CA-25; README com a equipe; `docs/entrevista.md`; desfazer última compra em `docs/depois.md` | todos os CA novos | T35 | [x] |
-| T37 | `docs/processo-sdd.md` atualizado para a v1.3 com os hashes reais do git log | RNF-04 | T36 | [ ] |
+| T37 | `docs/processo-sdd.md` atualizado para a v1.3 com os hashes reais do git log | RNF-04 | T36 | [x] |
 
 ## Matriz de rastreabilidade
 | Requisito | Tarefas | Teste |

@@ -1,29 +1,41 @@
 # Processo SDD: do requisito ao commit
 
-Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um requisito do `specs/requirements.md` (v1.1) à tarefa do `specs/tasks.md` que o implementou, ao commit e ao teste que o cobre.
+Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um requisito do `specs/requirements.md` (v1.3) à tarefa do `specs/tasks.md` que o implementou, ao commit e ao teste que o cobre. Todos os hashes citados existem no histórico (`git log --oneline`).
 
 ## Linha do tempo
 
-1. `b652499`: specs v1.0 (requirements, design, tasks), ADRs e CLAUDE.md.
-2. `5a84044` **spec: v1.1**: a revisão das specs, **antes de qualquer código**, achou um erro de regra. Aplicar o preço sugerido (R$ 5,33 para custo R$ 4,00 e margem 25%) deixava a margem em 24,95% e o produto continuava vermelho. A RN-05 foi corrigida e entrou o CA-11. Detalhes no registro de mudanças do `requirements.md` §11.
-3. `aa02270` a `4efaca8`: tarefas T01 a T16, um commit por tarefa. Nas tarefas de domínio (T02 a T09), os testes foram escritos e vistos falhando antes da implementação.
-4. Três ajustes de spec feitos durante o código, cada um em commit próprio antes da tarefa que dependia dele:
-   - `d120ebe`: assinatura de `validarCusto`;
-   - `38ba135` e `dc53bf6`: componentes `Botao` e `Campo`;
-   - `1a6432a`: ADR-005 citado no design.
+1. **v1.0** — `b652499`: specs v1.0 (requirements, design, tasks), ADRs e CLAUDE.md.
+2. **v1.1** — `5a84044` *spec*: a revisão das specs, **antes de qualquer código**, achou um erro de regra. Aplicar o preço sugerido (R$ 5,33 para custo R$ 4,00 e margem 25%) deixava a margem em 24,95%, e o produto continuava vermelho. A RN-05 foi corrigida e entrou o CA-11.
+3. **Protótipo** — `aa02270` a `4efaca8`: tarefas T01 a T16, um commit por tarefa. Nas tarefas de domínio (T02 a T09), os testes foram escritos e vistos falhando antes da implementação. Ajustes de spec durante o código, cada um em commit próprio antes da tarefa que dependia dele: `d120ebe`, `38ba135`, `dc53bf6`, `1a6432a`.
+4. **v1.2 (usabilidade e didática)** — `30362fe` *spec*: diagnóstico das telas e RF-09 a RF-16, RNF-05 a RNF-10, CA-12 a CA-21. Tarefas T17 a T29 (`da6779a` a `81c47c5`), com um ajuste de spec no meio (`c84e646`).
+5. **v1.3 (correções da auditoria)** — `03be394` *spec*: uma auditoria só de leitura comparou spec, código, testes e documentos. Achou dois erros que a v1.2 não pegou:
+   - um toque duplo em "Carregar exemplos" ou "Salvar produto" duplicava produtos;
+   - a tela Produto apagava o que tinha sido digitado e não salvo ao voltar da Ajuda.
+
+   Também entraram "Apagar todos os dados" (RF-17) e o aviso "Confira o valor" (RN-09, RF-18). Tarefas T30 a T37 (`a16e4fd` em diante). O design foi alinhado ao código, e a T16 foi reaberta porque depende da T15, que ainda não foi executada no celular.
 
 ## Requisitos funcionais
 
 | Requisito | Tarefa | Commit | Teste |
 | --- | --- | --- | --- |
-| RF-01 Cadastrar produto | T06, T12 | `e1dbb06`, `a16c0ea` | `domain.test` › validarProduto e validarCusto (RN-07); checklist CA-10 |
-| RF-02 Editar e excluir (exclui o histórico) | T08, T12 | `cc525ba`, `a16c0ea` | `storage.test` › "RF-02: excluir produto apaga também o histórico dele"; checklist RF-02 |
+| RF-01 Cadastrar produto (sem duplicar) | T06, T12, T30 | `e1dbb06`, `a16c0ea`, `a16e4fd` | `domain.test` › validarProduto (RN-07); checklist CA-10, CA-22 |
+| RF-02 Editar e excluir (exclui o histórico; não perde o digitado) | T08, T12, T31 | `cc525ba`, `a16c0ea`, `d6d3f91` | `storage.test` › "excluir produto apaga também o histórico dele"; checklist RF-02, CA-23 |
 | RF-03 Lista com margem e semáforo | T05, T11 | `1bd948f`, `594a81f` | `domain.test` › statusMargem (CA-03, CA-04); checklist |
 | RF-04 Nova compra e resultado | T03, T04, T13 | `e4177e2`, `62cc925`, `a849974` | `domain.test` › CA-01, CA-05, CA-06; `storage.test` › "registrar compra…"; checklist CA-05 |
 | RF-05 Aplicar ou manter preço | T05, T13 | `1bd948f`, `a849974` | `domain.test` › CA-11; checklist CA-07, CA-11 |
 | RF-06 Histórico de custos | T08, T14 | `cc525ba`, `f492649` | `storage.test` › CA-08; checklist CA-06/CA-08 |
 | RF-07 Dados no aparelho | T08 | `cc525ba` | `storage.test` › CA-09 (novo repositório lê os mesmos dados); checklist CA-09 |
-| RF-08 Produtos de exemplo | T09, T11 | `164cf3e`, `594a81f` | `storage.test` › produtos de exemplo (valores de §9, só o refrigerante vermelho) |
+| RF-08 Produtos de exemplo (sem duplicar) | T09, T11, T30 | `164cf3e`, `594a81f`, `a16e4fd` | `storage.test` › valores de §9; CA-22 (dois toques → 8 produtos) |
+| RF-09 Resposta em destaque | T17, T25 | `da6779a`, `335702f` | `domain.test` › fraseResposta (CA-12); checklist CA-12 |
+| RF-10 "Como chegamos nisso" | T17, T25 | `da6779a`, `335702f` | `domain.test` › explicarPrecoSugerido, explicarMargem (CA-13); checklist CA-13 |
+| RF-11 Prévia ao digitar | T17, T24 | `da6779a`, `1c246a5` | `domain.test` › situacaoProduto (CA-14); checklist CA-14 |
+| RF-12 Lista com resumo, ordem, busca e filtro | T18, T22 | `30ff853`, `0c7c1a5` | `domain.test` › organizarLista, resumoLista (CA-15, CA-16); checklist |
+| RF-13 Ajuda embutida | T21, T23 | `68c47f2`, `6199a5b` | checklist CA-17 |
+| RF-14 Avisos e erro junto ao campo | T20, T23, T25 | `07a8f25`, `6199a5b`, `335702f` | checklist CA-18 |
+| RF-15 Boas-vindas | T27 | `39578c5` | `storage.test` › preferências (CA-19); checklist CA-19 |
+| RF-16 Histórico com seta e palavra | T26 | `a7abad7` | `domain.test` › sentidoVariacao (CA-20); checklist CA-20 |
+| RF-17 Apagar todos os dados | T32 | `d0a51f9` | `storage.test` › apagarTodosOsDados (CA-24); checklist CA-24 |
+| RF-18 Conferência do custo | T33 | `c092e6a` | `domain.test` › avisoConferencia (CA-25); checklist CA-25 |
 
 ## Regras de negócio
 
@@ -37,8 +49,24 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 | RN-06 Arredondamento | T03 | `e4177e2` | `domain.test` › "arredonda ao centavo mais próximo, sem erro de ponto flutuante (512,5 → 513)" |
 | RN-07 Validação | T06 | `e1dbb06` | `domain.test` › validarProduto e validarCusto (CA-10) |
 | RN-08 Leitura de valores e datas | T07 | `c98b7e9` | `domain.test` › parseReais e formatarData |
+| RN-09 Conferência do custo (±50%) | T33 | `c092e6a` | `domain.test` › variacaoSuspeita (CA-25, inclusive exatamente ±50%) |
+
+## Requisitos não funcionais
+
+| Requisito | Tarefa | Commit | Teste |
+| --- | --- | --- | --- |
+| RNF-01 Offline | T08 | `cc525ba` | Leitura do código: nenhuma chamada de rede em `src` |
+| RNF-02 pt-BR e R$ | T07 | `c98b7e9` | `domain.test` › formatação e leitura |
+| RNF-03 3 toques até o resultado | T13, T24 | `a849974`, `1c246a5` | checklist RNF-03 |
+| RNF-04 Fórmulas com testes | todas de domínio | — | `npm test` |
+| RNF-05 Tema único | T19, T28, T34 | `d344e0e`, `060d48e`, `8ac1d96` | `varredura.test` (sem cor ou tamanho solto, CA-21) |
+| RNF-06 Contraste e semáforo com ícone e palavra | T19, T20 | `d344e0e`, `07a8f25` | `tema.test` (contraste ≥ 4,5:1, CA-21); checklist |
+| RNF-07 Toque ≥ 48 px, um botão principal | T20, T22–T25 | `07a8f25` … `335702f` | `tema.test` (toque mínimo); checklist (só no aparelho) |
+| RNF-08 Números em destaque | T20 | `07a8f25` | checklist |
+| RNF-09 Teclado | T20, T23, T24 | `07a8f25`, `6199a5b`, `1c246a5` | checklist (só no aparelho; **ainda não verificado**) |
+| RNF-10 Acessibilidade | T20, T28 | `07a8f25`, `060d48e` | `varredura.test` (rótulo em todo elemento tocável); checklist |
 
 ## Situação na entrega
 
-- Testes automáticos: 63 passando (`npm test`); `npx tsc --noEmit` sem erros.
-- Teste de tela: conferido no navegador pelo assistente. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`). Por isso a T15 continua `[ ]` no `tasks.md`.
+- Testes automáticos: 193 passando em 4 suítes (`npm test`); `npx tsc --noEmit` sem erros; `npx expo-doctor` 21/21.
+- Teste de tela: conferido no navegador (Expo web) pelo assistente, incluindo o roteiro da demonstração completo na v1.3. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`). Por isso T15 e T16 continuam `[ ]` no `tasks.md`.
