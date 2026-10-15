@@ -3,18 +3,32 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
+import { useAviso } from '../components/Aviso';
 import { Botao } from '../components/Botao';
+import { CampoBusca } from '../components/CampoBusca';
+import { FiltroSegmentado } from '../components/FiltroSegmentado';
+import { Icone } from '../components/Icone';
 import { ProdutoCard } from '../components/ProdutoCard';
-import { carregarExemplos } from '../data/exemplos';
+import { carregarExemplos, EXEMPLOS } from '../data/exemplos';
+import { Filtro, organizarLista, resumoLista } from '../domain/lista';
 import { Rotas } from '../navigation';
 import { Produto, repositorio } from '../storage/repositorio';
-import { cores, espaco, fonte } from '../theme/tema';
+import { cores, espaco, fonte, linha, peso, raio } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'ListaProdutos'>;
 
-// RF-03 e RF-08: lista de produtos com margem e semáforo; estado vazio com carga de exemplos.
+const FILTROS: { valor: Filtro; rotulo: string }[] = [
+  { valor: 'todos', rotulo: 'Todos' },
+  { valor: 'abaixo', rotulo: 'Abaixo da meta' },
+  { valor: 'na-meta', rotulo: 'Na meta' },
+];
+
+// RF-03, RF-08 e RF-12: lista com resumo, busca, filtro e os abaixo da meta primeiro.
 export function ListaProdutosScreen({ navigation }: Props) {
   const [produtos, setProdutos] = useState<Produto[] | null>(null);
+  const [busca, setBusca] = useState('');
+  const [filtro, setFiltro] = useState<Filtro>('todos');
+  const avisar = useAviso();
 
   const recarregar = useCallback(async () => {
     setProdutos(await repositorio.listarProdutos());
@@ -29,6 +43,7 @@ export function ListaProdutosScreen({ navigation }: Props) {
   async function onCarregarExemplos() {
     await carregarExemplos(repositorio);
     await recarregar();
+    avisar(`${EXEMPLOS.length} produtos de exemplo carregados`);
   }
 
   const novoProduto = () => navigation.navigate('ProdutoForm', {});
@@ -42,17 +57,50 @@ export function ListaProdutosScreen({ navigation }: Props) {
   }
 
   if (produtos.length === 0) {
-    return (
-      <EstadoVazio onCarregarExemplos={onCarregarExemplos} onNovoProduto={novoProduto} />
-    );
+    return <EstadoVazio onCarregarExemplos={onCarregarExemplos} onNovoProduto={novoProduto} />;
   }
+
+  const visiveis = organizarLista(produtos, { busca, filtro });
+  const algumAbaixo = organizarLista(produtos, { busca: '', filtro: 'abaixo' }).length > 0;
+
+  const cabecalho = (
+    <View style={estilos.cabecalho}>
+      <View
+        style={[estilos.resumo, algumAbaixo ? estilos.resumoAlerta : estilos.resumoOk]}
+        accessibilityRole="summary"
+      >
+        <Icone
+          nome={algumAbaixo ? 'alert-circle' : 'checkmark-circle'}
+          cor={algumAbaixo ? 'vermelho' : 'verde'}
+        />
+        <Text style={estilos.resumoTexto}>{resumoLista(produtos)}</Text>
+      </View>
+      <CampoBusca valor={busca} onChange={setBusca} />
+      <FiltroSegmentado opcoes={FILTROS} selecionado={filtro} onChange={setFiltro} />
+    </View>
+  );
 
   return (
     <View style={estilos.tela}>
       <FlatList
-        data={produtos}
+        data={visiveis}
         keyExtractor={(p) => p.id}
         contentContainerStyle={estilos.lista}
+        keyboardShouldPersistTaps="handled"
+        ListHeaderComponent={cabecalho}
+        ListEmptyComponent={
+          <View style={estilos.semResultado}>
+            <Text style={estilos.texto}>Nenhum produto encontrado.</Text>
+            <Botao
+              titulo="Limpar busca e filtro"
+              variante="secundario"
+              onPress={() => {
+                setBusca('');
+                setFiltro('todos');
+              }}
+            />
+          </View>
+        }
         renderItem={({ item }) => (
           <ProdutoCard
             produto={item}
@@ -61,7 +109,7 @@ export function ListaProdutosScreen({ navigation }: Props) {
         )}
       />
       <View style={estilos.rodape}>
-        <Botao titulo="+ Novo produto" onPress={novoProduto} />
+        <Botao titulo="Novo produto" icone="add" onPress={novoProduto} />
       </View>
     </View>
   );
@@ -76,17 +124,18 @@ function EstadoVazio({
 }) {
   return (
     <View style={[estilos.centro, estilos.vazio]}>
+      <Icone nome="pricetags-outline" tamanho="grande" cor="primaria" />
       <Text style={estilos.titulo}>Nenhum produto cadastrado</Text>
       <Text style={estilos.texto}>
-        Cadastre seus produtos para ver a margem de lucro de cada um.
+        Cadastre um produto com o custo, o preço de venda e a margem que você quer. A cada compra, o
+        app diz a que preço vender.
       </Text>
       <View style={estilos.botoes}>
-        <Botao titulo="+ Novo produto" onPress={onNovoProduto} />
+        <Botao titulo="Novo produto" icone="add" onPress={onNovoProduto} />
         <Botao titulo="Carregar exemplos" variante="secundario" onPress={onCarregarExemplos} />
       </View>
       <Text style={estilos.nota}>
-        Os exemplos têm valores ilustrativos, só para demonstração. Não são preços reais do
-        mercado.
+        Os exemplos têm valores ilustrativos, só para demonstração. Não são preços reais do mercado.
       </Text>
     </View>
   );
@@ -94,11 +143,23 @@ function EstadoVazio({
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  lista: { padding: espaco.l, gap: 12 },
+  lista: { padding: espaco.l, gap: espaco.m, paddingBottom: espaco.xl },
+  cabecalho: { gap: espaco.m, marginBottom: espaco.xs },
+  resumo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: espaco.s,
+    borderRadius: raio.cartao,
+    borderWidth: linha.fina,
+    padding: espaco.m,
+  },
+  resumoAlerta: { backgroundColor: cores.vermelhoFundo, borderColor: cores.vermelho },
+  resumoOk: { backgroundColor: cores.verdeFundo, borderColor: cores.verde },
+  resumoTexto: { flex: 1, fontSize: fonte.corpo, fontWeight: peso.medio, color: cores.texto },
   rodape: {
     padding: espaco.l,
     backgroundColor: cores.superficie,
-    borderTopWidth: 1,
+    borderTopWidth: linha.fina,
     borderTopColor: cores.borda,
   },
   centro: {
@@ -108,8 +169,9 @@ const estilos = StyleSheet.create({
     backgroundColor: cores.fundo,
   },
   vazio: { padding: espaco.xl, gap: espaco.l },
-  titulo: { fontSize: fonte.titulo, fontWeight: '800', color: cores.texto, textAlign: 'center' },
+  titulo: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto, textAlign: 'center' },
   texto: { fontSize: fonte.corpo, color: cores.texto, textAlign: 'center' },
-  botoes: { alignSelf: 'stretch', gap: 12 },
+  botoes: { alignSelf: 'stretch', gap: espaco.m },
   nota: { fontSize: fonte.legenda, color: cores.textoSuave, textAlign: 'center' },
+  semResultado: { gap: espaco.l, paddingVertical: espaco.xl },
 });

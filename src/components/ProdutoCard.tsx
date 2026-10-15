@@ -1,60 +1,81 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { calcularMargem, statusMargem } from '../domain/calculos';
+import { situacaoProduto } from '../domain/calculos';
 import { formatarPercentual, formatarReais } from '../domain/formatacao';
 import { Produto } from '../storage/repositorio';
-import { cores, fonte } from '../theme/tema';
+import { cores, espaco, fonte, linha, peso, raio, sombra } from '../theme/tema';
+import { Icone } from './Icone';
+import { LinhaValor } from './LinhaValor';
 import { SemaforoBadge } from './SemaforoBadge';
 
-// RF-03: nome, preço, margem atual e semáforo.
+// RF-03 e RF-12: nome, preço e margem em destaque, semáforo e, se abaixo da meta, o preço sugerido.
 export function ProdutoCard({ produto, onPress }: { produto: Produto; onPress: () => void }) {
-  const margem = calcularMargem(produto.precoVenda, produto.custoAtual);
-  const status = statusMargem(produto.precoVenda, produto.custoAtual, produto.margemDesejada);
+  const s = situacaoProduto(produto.precoVenda, produto.custoAtual, produto.margemDesejada);
+  const abaixo = s.status === 'vermelho';
+  const descricao = [
+    produto.nome,
+    `preço ${formatarReais(produto.precoVenda)}`,
+    `margem ${formatarPercentual(s.margem)}`,
+    abaixo ? `abaixo da meta de ${produto.margemDesejada}%` : `na meta de ${produto.margemDesejada}%`,
+    abaixo ? `sugerido ${formatarReais(s.precoSugerido)}` : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={descricao}
       accessibilityHint="Abre o produto"
       onPress={onPress}
       style={({ pressed }) => [
-        estilos.card,
-        { borderLeftColor: status === 'verde' ? cores.verde : cores.vermelho },
-        pressed ? { opacity: 0.8 } : null,
+        estilos.cartao,
+        { borderLeftColor: abaixo ? cores.vermelho : cores.verde },
+        pressed ? estilos.pressionado : null,
       ]}
     >
-      <Text style={estilos.nome}>{produto.nome}</Text>
-      <View style={estilos.linha}>
-        <Text style={estilos.info}>Preço: {formatarReais(produto.precoVenda)}</Text>
-        <Text style={estilos.info}>
-          Margem: <Text style={estilos.destaque}>{formatarPercentual(margem)}</Text>
-        </Text>
+      <View style={estilos.topo}>
+        <Text style={estilos.nome}>{produto.nome}</Text>
+        <Icone nome="chevron-forward" cor="textoSuave" />
       </View>
       <View style={estilos.linha}>
-        <SemaforoBadge status={status} />
-        <Text style={estilos.meta}>Meta: {produto.margemDesejada}%</Text>
+        <LinhaValor rotulo="Preço" valor={formatarReais(produto.precoVenda)} tamanho="medio" />
+        <LinhaValor
+          rotulo={`Margem (meta ${produto.margemDesejada}%)`}
+          valor={formatarPercentual(s.margem)}
+          cor={abaixo ? 'vermelho' : 'verde'}
+          alinhar="fim"
+        />
+      </View>
+      <View style={estilos.linha}>
+        <SemaforoBadge status={s.status} />
+        {abaixo ? (
+          <Text style={estilos.sugerido}>Sugerido: {formatarReais(s.precoSugerido)}</Text>
+        ) : null}
       </View>
     </Pressable>
   );
 }
 
 const estilos = StyleSheet.create({
-  card: {
+  cartao: {
     backgroundColor: cores.superficie,
-    borderRadius: 12,
-    borderWidth: 1,
+    borderRadius: raio.cartao,
+    borderWidth: linha.fina,
     borderColor: cores.borda,
-    borderLeftWidth: 8,
-    padding: 16,
-    gap: 8,
+    borderLeftWidth: linha.destaque,
+    padding: espaco.l,
+    gap: espaco.m,
+    ...sombra.cartao,
   },
-  nome: { fontSize: fonte.subtitulo, fontWeight: '700', color: cores.texto },
+  pressionado: { opacity: 0.8 },
+  topo: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: espaco.s },
+  nome: { flex: 1, fontSize: fonte.subtitulo, fontWeight: peso.forte, color: cores.texto },
   linha: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: espaco.s,
   },
-  info: { fontSize: fonte.corpo, color: cores.texto },
-  destaque: { fontWeight: '800' },
-  meta: { fontSize: fonte.legenda, color: cores.textoSuave },
+  sugerido: { fontSize: fonte.corpo, fontWeight: peso.forte, color: cores.vermelho },
 });
