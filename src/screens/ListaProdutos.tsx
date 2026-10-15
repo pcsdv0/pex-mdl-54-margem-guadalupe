@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useAviso } from '../components/Aviso';
@@ -57,10 +57,18 @@ export function ListaProdutosScreen({ navigation }: Props) {
     }, [recarregar]),
   );
 
+  // CA-22: ignora o segundo toque enquanto a carga anterior não termina.
+  const carregando = useRef(false);
   async function onCarregarExemplos() {
-    await carregarExemplos(repositorio);
-    await recarregar();
-    avisar(`${EXEMPLOS.length} produtos de exemplo carregados`);
+    if (carregando.current) return;
+    carregando.current = true;
+    try {
+      await carregarExemplos(repositorio);
+      await recarregar();
+      avisar(`${EXEMPLOS.length} produtos de exemplo carregados`);
+    } finally {
+      carregando.current = false;
+    }
   }
 
   const novoProduto = () => navigation.navigate('ProdutoForm', {});

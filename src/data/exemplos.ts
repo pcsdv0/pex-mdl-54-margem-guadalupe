@@ -13,9 +13,23 @@ export const EXEMPLOS: Omit<Produto, 'id'>[] = [
   { nome: 'Refrigerante 2 L', custoAtual: 650, precoVenda: 800, margemDesejada: 25 },
 ];
 
-/** Cadastra os exemplos, cada um com o primeiro registro de custo. */
-export async function carregarExemplos(repo: Repositorio, agora: Date = new Date()): Promise<void> {
-  for (const exemplo of EXEMPLOS) {
-    await cadastrarProduto(repo, exemplo, agora);
+// CA-22: uma carga por vez; um segundo toque recebe a carga que já está em andamento.
+let cargaEmAndamento: Promise<void> | null = null;
+
+/**
+ * Cadastra os exemplos, cada um com o primeiro registro de custo. Não duplica: se já houver
+ * produtos gravados, não faz nada; se já houver uma carga em andamento, devolve a mesma.
+ */
+export function carregarExemplos(repo: Repositorio, agora: Date = new Date()): Promise<void> {
+  if (!cargaEmAndamento) {
+    cargaEmAndamento = (async () => {
+      if ((await repo.listarProdutos()).length > 0) return;
+      for (const exemplo of EXEMPLOS) {
+        await cadastrarProduto(repo, exemplo, agora);
+      }
+    })().finally(() => {
+      cargaEmAndamento = null;
+    });
   }
+  return cargaEmAndamento;
 }

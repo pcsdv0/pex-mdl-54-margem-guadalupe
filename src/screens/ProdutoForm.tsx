@@ -68,7 +68,20 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
     }, [edicao, produtoId, navigation]),
   );
 
+  // CA-22: ignora o segundo toque enquanto a gravação anterior não termina.
+  const salvando = useRef(false);
+
   async function salvar() {
+    if (salvando.current) return;
+    salvando.current = true;
+    try {
+      await gravarFormulario();
+    } finally {
+      salvando.current = false;
+    }
+  }
+
+  async function gravarFormulario() {
     const dados = {
       nome,
       custo: parseReais(custo),

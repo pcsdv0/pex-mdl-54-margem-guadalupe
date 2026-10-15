@@ -124,6 +124,19 @@ describe('produtos de exemplo (RF-08, requirements §9)', () => {
     expect(formatarPercentual(calcularMargem(800, 650))).toBe('18,8%');
   });
 
+  test('CA-22: dois toques ao mesmo tempo em "Carregar exemplos" gravam 8 produtos, não 16', async () => {
+    const repo = criarRepositorio();
+    await Promise.all([carregarExemplos(repo), carregarExemplos(repo)]);
+    expect(await repo.listarProdutos()).toHaveLength(8);
+  });
+
+  test('CA-22: carregar de novo com produtos já gravados não duplica', async () => {
+    const repo = criarRepositorio();
+    await carregarExemplos(repo);
+    await carregarExemplos(repo);
+    expect(await repo.listarProdutos()).toHaveLength(8);
+  });
+
   test('carregar exemplos grava os 8 produtos, cada um com o primeiro registro de custo', async () => {
     const repo = criarRepositorio();
     await carregarExemplos(repo);

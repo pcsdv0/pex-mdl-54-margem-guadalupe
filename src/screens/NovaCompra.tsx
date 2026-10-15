@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Botao } from '../components/Botao';
@@ -35,12 +35,16 @@ export function NovaCompraScreen({ navigation, route }: Props) {
     setErro(null);
   }
 
+  // CA-22: o ref barra o segundo toque antes mesmo de a tela redesenhar.
+  const gravandoRef = useRef(false);
+
   async function confirmar() {
-    if (!produto || gravando) return;
+    if (!produto || gravandoRef.current) return;
     const valor = parseReais(custo);
     const novoErro = erroFormatoMoeda(custo) ?? validarCusto(valor);
     setErro(novoErro);
     if (novoErro) return;
+    gravandoRef.current = true;
     setGravando(true);
     const { custoAnterior } = await registrarCompra(repositorio, produto, valor!);
     // replace: voltar do resultado não deve reabrir esta tela e gravar a compra de novo.

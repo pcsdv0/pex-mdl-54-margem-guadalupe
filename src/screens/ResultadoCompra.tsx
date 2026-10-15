@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AlertaBanner } from '../components/AlertaBanner';
@@ -22,6 +22,8 @@ export function ResultadoCompraScreen({ navigation, route }: Props) {
   const { produtoId, custoAnterior } = route.params;
   const [produto, setProduto] = useState<Produto | null>(null);
   const avisar = useAviso();
+  // CA-22: aplicar ou manter só uma vez.
+  const concluido = useRef(false);
 
   useEffect(() => {
     repositorio.listarProdutos().then((lista) => {
@@ -38,12 +40,16 @@ export function ResultadoCompraScreen({ navigation, route }: Props) {
   const abaixo = situacao.status === 'vermelho';
 
   async function aplicar() {
+    if (concluido.current) return;
+    concluido.current = true;
     await repositorio.salvarProduto({ ...produto!, precoVenda: situacao.precoSugerido });
     avisar(`Preço atualizado para ${formatarReais(situacao.precoSugerido)}`);
     navigation.popToTop();
   }
 
   function manter() {
+    if (concluido.current) return;
+    concluido.current = true;
     avisar(`Compra registrada. Preço mantido em ${formatarReais(produto!.precoVenda)}`);
     navigation.popToTop();
   }
