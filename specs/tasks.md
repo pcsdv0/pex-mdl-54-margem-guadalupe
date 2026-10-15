@@ -1,6 +1,6 @@
 # tasks.md
 
-> Estado: **v1.2 — aprovada pelo líder (portão 3).** Mudanças da v1.1 e da v1.2 no registro de mudanças do `requirements.md`. Só vale depois do `design.md` aprovado. Tarefas pequenas, na ordem de dependência. Marque `[x]` ao concluir; um commit por tarefa, com o ID no início da mensagem (ex.: `T04: calcular preço sugerido`).
+> Estado: **v1.3 — aprovada pelo líder (portão 3).** Mudanças da v1.1, v1.2 e v1.3 no registro de mudanças do `requirements.md`. Só vale depois do `design.md` aprovado. Tarefas pequenas, na ordem de dependência. Marque `[x]` ao concluir; um commit por tarefa, com o ID no início da mensagem (ex.: `T04: calcular preço sugerido`).
 
 | ID | Tarefa | Liga a | Depende de | Feito |
 | --- | --- | --- | --- | --- |
@@ -40,6 +40,19 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | T28 | B | Varredura final: teste que proíbe cor e tamanho soltos em telas e componentes; rótulos de acessibilidade | RNF-05, RNF-10, CA-21 | T21–T27 | [x] |
 | T29 | — | Checklist manual com CA-12 a CA-21 e README atualizado | todos os CA novos | T28 | [x] |
 
+### v1.3 — correções da auditoria
+
+| ID | Tarefa | Liga a | Depende de | Feito |
+| --- | --- | --- | --- | --- |
+| T30 | Toque duplo não duplica: `carregarExemplos` sem carga repetida + testes; bloqueio de segundo toque em cadastro, carga de exemplos, nova compra e aplicar preço | RF-01, RF-08, CA-22 | T29 | [ ] |
+| T31 | Tela Produto não sobrescreve o que foi digitado e não salvo ao voltar ao foco | RF-02, CA-23 | T29 | [ ] |
+| T32 | `apagarTodosOsDados` + testes; botão "Apagar todos os dados" na Ajuda com confirmação; boas-vindas voltam | RF-17, CA-24 | T29 | [ ] |
+| T33 | `variacaoSuspeita` e `avisoConferencia` + testes; aviso "Confira o valor" na prévia da Nova compra | RF-18, RN-09, CA-25 | T29 | [ ] |
+| T34 | Alinhar design ao código (§2 rótulos, §5 frases do resumo, §6 nomes do repositório, §10 tamanhos de fonte), `tests/README.md` e nota do ADR-005 | design, RNF-05 | T33 | [ ] |
+| T35 | T15 cobrindo CA-01 a CA-25; T16 reaberta até a T15 fechar | tasks | T34 | [ ] |
+| T36 | Checklist manual com CA-22 a CA-25; README com a equipe; `docs/entrevista.md`; desfazer última compra em `docs/depois.md` | todos os CA novos | T35 | [ ] |
+| T37 | `docs/processo-sdd.md` atualizado para a v1.3 com os hashes reais do git log | RNF-04 | T36 | [ ] |
+
 ## Matriz de rastreabilidade
 | Requisito | Tarefas | Teste |
 | --- | --- | --- |
@@ -69,3 +82,7 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | RNF-07, RNF-08 | T20, T22–T25 | checklist |
 | RNF-09 | T20, T23, T24 | checklist (só no aparelho) |
 | RNF-10 | T20, T28 | varredura.test (rótulo em todo Pressable), checklist |
+| RF-01, RF-08 (CA-22) | T30 | storage.test (carga de exemplos sem duplicar), checklist CA-22 |
+| RF-02 (CA-23) | T31 | checklist CA-23 |
+| RF-17 | T32 | storage.test (apagarTodosOsDados), checklist CA-24 |
+| RF-18, RN-09 | T33 | domain.test (variacaoSuspeita, avisoConferencia, CA-25), checklist CA-25 |

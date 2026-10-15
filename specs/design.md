@@ -1,6 +1,6 @@
 # design.md
 
-> Estado: **v1.2 — aprovada pelo líder (portão 2).** Mudanças da v1.1 e da v1.2 no registro de mudanças do `requirements.md`. Só vale depois do `requirements.md` aprovado. Cada decisão aponta para os requisitos que atende.
+> Estado: **v1.3 — aprovada pelo líder (portão 2).** Mudanças da v1.1, v1.2 e v1.3 no registro de mudanças do `requirements.md`. Só vale depois do `requirements.md` aprovado. Cada decisão aponta para os requisitos que atende.
 
 ## 1. Visão geral
 App mobile em React Native + Expo (TypeScript), 100% local. Três camadas, para que a lógica seja testável sem interface:
@@ -17,10 +17,10 @@ Cada tela tem **um** botão principal (RNF-07) e um botão "?" no cabeçalho, qu
 | Lista de produtos (inicial) | Cartão de boas-vindas na primeira abertura (dispensável). Resumo de uma frase ("1 de 8 produtos abaixo da meta"), busca por nome, filtro Todos / Abaixo da meta / Na meta. Cartões ordenados: abaixo da meta primeiro, depois A–Z. Cada cartão: nome, preço e margem em destaque, semáforo; o vermelho mostra "Sugerido: R$ X". Vazia: explicação e botões "Novo produto" e "Carregar exemplos". Busca sem resultado: mensagem | "+ Novo produto" | RF-03, RF-08, RF-12, RF-15 |
 | Produto (edição) | Cartão de situação (preço, margem, semáforo e, se vermelho, preço sugerido). "Nova compra" como botão principal; "Ver histórico" secundário. Seção "Dados do produto" com nome, custo (só leitura), preço e margem desejada, cada um com texto de apoio; "Salvar alterações" secundário; "Excluir produto" como botão de texto, com confirmação numa janela do app | "Nova compra" | RF-01, RF-02, RF-04, RF-06, RF-13, RF-14 |
 | Produto (cadastro) | Mesmo formulário com foco automático no nome e tecla "próximo" entre os campos | "Salvar" | RF-01, RF-13, RF-14 |
-| Nova compra | Campo "novo custo" com foco automático. Prévia em tempo real (margem com o preço atual, semáforo, preço sugerido) usando as funções do domínio. Ao confirmar, grava a compra e abre o resultado | "Confirmar compra" | RF-04, RF-11 |
+| Nova compra | Campo "novo custo" com foco automático. Prévia em tempo real (margem com o preço atual, semáforo, preço sugerido) usando as funções do domínio, e aviso "Confira o valor" quando a variação passa de ±50% (RN-09; não bloqueia). Ao confirmar, grava a compra e abre o resultado | "Confirmar compra" | RF-04, RF-11 |
 | Resultado da compra | Cartão grande com a resposta ("Venda a R$ 5,87 para manter 25% de margem"). Abaixo, situação atual (preço, margem, semáforo), variação do custo e alerta. Área "Como chegamos nisso" que abre e fecha. "Aplicar preço sugerido" (principal) e "Manter preço atual" (secundário), com aviso de confirmação | "Aplicar preço sugerido" | RF-04, RF-05, RF-09, RF-10, RF-14 |
 | Histórico de custos | Lista de data, custo e variação; cada linha com seta e palavra ("subiu", "caiu", "igual") ou "—" na primeira compra | — | RF-06, RF-16 |
-| Ajuda | Explicação em linguagem simples de margem, margem desejada, preço sugerido e semáforo, com o exemplo do arroz | — | RF-13 |
+| Ajuda | Explicação em linguagem simples de margem, margem desejada, preço sugerido e semáforo, com o exemplo do arroz. No fim, "Apagar todos os dados" (botão de texto, com confirmação; depois volta à lista vazia com as boas-vindas) | — | RF-13 |
 
 Fluxo principal (RNF-03): Lista → toque no produto (abre a tela Produto) → "Nova compra" → informar custo → "Confirmar compra" → Resultado (3 toques até o resultado; digitar não conta).
 
@@ -82,12 +82,18 @@ Novas na v1.2 (a interface só chama estas funções; não faz contas):
   - `fraseResposta(precoSugerido, margemDesejada)` → "Venda a R$ 5,87 para manter 25% de margem".
   - `explicarPrecoSugerido(custo, margemDesejada)` → passos em texto, incluindo "R$ 4,40 ÷ (1 − 0,25) = R$ 5,87" e a observação do arredondamento quando houver.
   - `explicarMargem(preco, custo)` → passos em texto, incluindo "(R$ 5,50 − R$ 4,40) ÷ R$ 5,50 = 20,0%".
+- `variacaoSuspeita(variacao | null): boolean` em `calculos.ts` (v1.3) — RN-09: `true` acima de +50% ou abaixo de −50%.
+- `avisoConferencia(custoAnterior, novoCusto): string | null` em `explicacao.ts` (v1.3) — RF-18: "Confira o valor: o custo subiu 62,5% em relação ao custo atual (R$ 4,00)." ou `null`.
 - `lista.ts` — RF-12:
   - `organizarLista(produtos, { busca, filtro })`: filtra (busca sem diferenciar maiúsculas e acentos; filtro `todos` / `abaixo` / `na-meta`) e ordena (abaixo da meta primeiro, depois nome A–Z em pt-BR).
   - `resumoLista(produtos)` → "1 de 8 produtos abaixo da meta", "Todos os 8 produtos estão na meta" ou "1 de 1 produto abaixo da meta".
 
 ## 6. Armazenamento (`src/storage`)
 `AsyncStorage` com uma chave por coleção (`produtos`, `historico`), serializada em JSON. Interface `repositorio` com `listar`, `salvar`, `excluir`, para trocar a implementação sem tocar nas telas. `excluir` de um produto remove também o histórico dele. Atende RF-07, RF-02.
+
+`apagarTodosOsDados()` (v1.3, RF-17) remove as chaves `produtos`, `historico` e `boasVindasDispensada`. `carregarExemplos` (RF-08) não duplica: se já houver uma carga em andamento, devolve a mesma; se já houver produtos, não carrega de novo.
+
+Telas que gravam (cadastro, carga de exemplos, nova compra, aplicar preço) ignoram um segundo toque enquanto a gravação anterior não termina (CA-22). A tela Produto, ao voltar ao foco, atualiza a situação e o custo, mas não sobrescreve campos que o comerciante alterou e não salvou (CA-23).
 
 `preferencias.ts` (v1.2): chave `boasVindasDispensada` no AsyncStorage, com `boasVindasDispensada(): Promise<boolean>` e `dispensarBoasVindas()`. Atende RF-15.
 
