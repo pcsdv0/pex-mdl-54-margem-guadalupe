@@ -46,7 +46,17 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
   const refPreco = useRef<TextInput>(null);
   const refMargem = useRef<TextInput>(null);
 
+  // CA-23: marca o que foi digitado e ainda não salvo, para não ser apagado ao voltar à tela.
+  const alterado = useRef(false);
+  function digitar(setter: (texto: string) => void) {
+    return (texto: string) => {
+      alterado.current = true;
+      setter(texto);
+    };
+  }
+
   // Recarrega ao voltar para a tela: o custo e o preço podem ter mudado numa nova compra.
+  // A situação e o custo (só leitura) sempre atualizam; os campos editáveis só se nada foi alterado.
   useFocusEffect(
     useCallback(() => {
       if (!edicao) {
@@ -59,11 +69,13 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
           return;
         }
         setProduto(p);
-        setNome(p.nome);
         setCusto(centavosParaCampo(p.custoAtual));
-        setPreco(centavosParaCampo(p.precoVenda));
-        setMargem(String(p.margemDesejada));
-        setErros({});
+        if (!alterado.current) {
+          setNome(p.nome);
+          setPreco(centavosParaCampo(p.precoVenda));
+          setMargem(String(p.margemDesejada));
+          setErros({});
+        }
       });
     }, [edicao, produtoId, navigation]),
   );
@@ -106,6 +118,7 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
       const atualizado = { ...produto, ...valores };
       await repositorio.salvarProduto(atualizado);
       setProduto(atualizado);
+      alterado.current = false;
       avisar('Alterações salvas');
     } else {
       await cadastrarProduto(repositorio, { ...valores, custoAtual: dados.custo! });
@@ -173,7 +186,7 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
           <Campo
             rotulo="Nome do produto"
             valor={nome}
-            onChange={setNome}
+            onChange={digitar(setNome)}
             erro={erros.nome}
             dica="Como vai aparecer na lista. Ex.: Arroz 1 kg"
             autoFocus={!edicao}
@@ -203,7 +216,7 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
             ref={refPreco}
             rotulo="Preço de venda"
             valor={preco}
-            onChange={setPreco}
+            onChange={digitar(setPreco)}
             erro={erros.preco}
             dica="Quanto o cliente paga por unidade."
             tecla="next"
@@ -213,7 +226,7 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
             ref={refMargem}
             rotulo="Margem desejada"
             valor={margem}
-            onChange={setMargem}
+            onChange={digitar(setMargem)}
             erro={erros.margemDesejada}
             dica="Quanto % do preço de venda você quer que sobre. Ex.: 25"
             tecla="done"
