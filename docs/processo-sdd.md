@@ -4,7 +4,7 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 
 ## Linha do tempo
 
-1. **v1.0** — `b652499`: specs v1.0 (requirements, design, tasks), ADRs e CLAUDE.md.
+1. **v1.0** — `b652499`: specs v1.0 (requirements, design, tasks), ADRs e regras do projeto.
 2. **v1.1** — `5a84044` *spec*: a revisão das specs, **antes de qualquer código**, achou um erro de regra. Aplicar o preço sugerido (R$ 5,33 para custo R$ 4,00 e margem 25%) deixava a margem em 24,95%, e o produto continuava vermelho. A RN-05 foi corrigida e entrou o CA-11.
 3. **Protótipo** — `aa02270` a `4efaca8`: tarefas T01 a T16, um commit por tarefa. Nas tarefas de domínio (T02 a T09), os testes foram escritos e vistos falhando antes da implementação. Ajustes de spec durante o código, cada um em commit próprio antes da tarefa que dependia dele: `d120ebe`, `38ba135`, `dc53bf6`, `1a6432a`.
 4. **v1.2 (usabilidade e didática)** — `30362fe` *spec*: diagnóstico das telas e RF-09 a RF-16, RNF-05 a RNF-10, CA-12 a CA-21. Tarefas T17 a T29 (`da6779a` a `81c47c5`), com um ajuste de spec no meio (`c84e646`).
@@ -69,4 +69,4 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 ## Situação na entrega
 
 - Testes automáticos: 193 passando em 4 suítes (`npm test`); `npx tsc --noEmit` sem erros; `npx expo-doctor` 21/21.
-- Teste de tela: conferido no navegador (Expo web) pelo assistente, incluindo o roteiro da demonstração completo na v1.3. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`). Por isso T15 e T16 continuam `[ ]` no `tasks.md`.
+- Teste de tela: conferido no navegador (Expo web), incluindo o roteiro da demonstração completo na v1.3. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`). Por isso T15 e T16 continuam `[ ]` no `tasks.md`.

@@ -7,12 +7,12 @@ Passos na tela para os critérios de aceite CA-01 a CA-25 (`specs/requirements.m
 **Como executar:** `npm install`, depois `npx expo start` e ler o QR code com o **Expo Go** no celular. Comece com o app sem produtos. Se já houver dados, desinstale e reinstale o Expo Go, ou exclua os produtos.
 
 **Colunas:**
-- **Navegador (Claude):** o que o assistente conferiu em 14/10/2026 rodando o app no navegador (Expo web), com dependências web instaladas só durante o teste. "v1.1", "v1.2" e "v1.3" indicam em que versão da interface foi conferido. Não substitui o teste no celular.
+- **Navegador:** conferido no navegador (Expo web) em 14/10/2026, com dependências web instaladas só durante o teste. "v1.1", "v1.2" e "v1.3" indicam em que versão da interface foi conferido. Não substitui o teste no celular.
 - **Resultado (Expo Go):** fica em branco para a equipe preencher no aparelho (OK / falhou + observação).
 
 ## Parte 1 — fluxo principal (CA-01 a CA-11)
 
-| CA | Passos | Resultado esperado | Navegador (Claude) | Resultado (Expo Go) |
+| CA | Passos | Resultado esperado | Navegador | Resultado (Expo Go) |
 | --- | --- | --- | --- | --- |
 | CA-19 | Abrir o app pela primeira vez | Cartão "Boas-vindas!" com 3 linhas e botão "Entendi" | v1.2: conferido | |
 | — | Com o app vazio | "Nenhum produto cadastrado", explicação curta, botões "Novo produto" e "Carregar exemplos", aviso de valores ilustrativos | v1.2: conferido | |
@@ -35,7 +35,7 @@ Passos na tela para os critérios de aceite CA-01 a CA-25 (`specs/requirements.m
 
 ## Parte 2 — usabilidade (CA-16 a CA-21)
 
-| CA | Passos | Resultado esperado | Navegador (Claude) | Resultado (Expo Go) |
+| CA | Passos | Resultado esperado | Navegador | Resultado (Expo Go) |
 | --- | --- | --- | --- | --- |
 | CA-16 | Na busca, digitar `feijao` | Só "Feijão 1 kg"; aparece o "x" para limpar | v1.2: conferido | |
 | CA-16 | Com a busca `feijao`, tocar em "Abaixo da meta" | "Nenhum produto encontrado." e botão "Limpar busca e filtro" | v1.2: conferido | |
@@ -54,7 +54,7 @@ Passos na tela para os critérios de aceite CA-01 a CA-25 (`specs/requirements.m
 
 ## Parte 3 — correções da v1.3 (CA-22 a CA-25)
 
-| CA | Passos | Resultado esperado | Navegador (Claude) | Resultado (Expo Go) |
+| CA | Passos | Resultado esperado | Navegador | Resultado (Expo Go) |
 | --- | --- | --- | --- | --- |
 | CA-22 | Com o app vazio, tocar duas vezes rápido em "Carregar exemplos" | 8 produtos, não 16 | v1.3: conferido (clique duplo → 8) | |
 | CA-22 | "Novo produto", preencher tudo, tocar duas vezes rápido em "Salvar produto" | Um produto só na lista | v1.3: conferido (clique duplo → 1) | |
@@ -69,4 +69,4 @@ Passos na tela para os critérios de aceite CA-01 a CA-25 (`specs/requirements.m
 
 **Observação do teste no navegador (v1.3):** num clique duplo em "Carregar exemplos", "Salvar produto" ou "Aplicar preço sugerido", o segundo clique pode cair num cartão da lista que acabou de aparecer e abrir aquele produto. Não grava nada; só navega. Vale ver se acontece no celular.
 
-Itens não conferidos pelo assistente: CA-04 na tela, CA-10 no cadastro com 0/negativo, CA-23 voltando do Histórico, filtro "Na meta", "?" fora da lista, CA-09 no celular, teclado (RNF-09), tamanho real de toque (RNF-07), leitor de tela e a aparência no aparelho real.
+Itens não conferidos no navegador: CA-04 na tela, CA-10 no cadastro com 0/negativo, CA-23 voltando do Histórico, filtro "Na meta", "?" fora da lista, CA-09 no celular, teclado (RNF-09), tamanho real de toque (RNF-07), leitor de tela e a aparência no aparelho real.
