@@ -37,3 +37,4 @@ describe('tema (RNF-05, RNF-06, RNF-07)', () => {
     expect(TOQUE_MINIMO).toBeGreaterThanOrEqual(48);
   });
 });
+

@@ -37,7 +37,7 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | T25 | A | Resultado: resposta em destaque, situação atual, "Como chegamos nisso" e avisos | RF-09, RF-10, RF-14, CA-12, CA-13, CA-18 | T17, T20 | [x] |
 | T26 | C | `sentidoVariacao` + testes e histórico com seta e palavra | RF-16, CA-20 | T20 | [x] |
 | T27 | C | Preferência de boas-vindas (`preferencias.ts`) + testes e `CartaoBoasVindas` na lista | RF-15, CA-19 | T22 | [x] |
-| T28 | B | Varredura final: teste que proíbe cor e tamanho soltos em telas e componentes; rótulos de acessibilidade | RNF-05, RNF-10, CA-21 | T21–T27 | [ ] |
+| T28 | B | Varredura final: teste que proíbe cor e tamanho soltos em telas e componentes; rótulos de acessibilidade | RNF-05, RNF-10, CA-21 | T21–T27 | [x] |
 | T29 | — | Checklist manual com CA-12 a CA-21 e README atualizado | todos os CA novos | T28 | [ ] |
 
 ## Matriz de rastreabilidade
