@@ -16,7 +16,7 @@ Cada tela tem **um** botão principal (RNF-07) e um botão "?" no cabeçalho, qu
 | --- | --- | --- | --- |
 | Lista de produtos (inicial) | Cartão de boas-vindas na primeira abertura (dispensável). Resumo de uma frase ("1 de 8 produtos abaixo da meta"), busca por nome, filtro Todos / Abaixo da meta / Na meta. Cartões ordenados: abaixo da meta primeiro, depois A–Z. Cada cartão: nome, preço e margem em destaque, semáforo; o vermelho mostra "Sugerido: R$ X". Vazia: explicação e botões "Novo produto" e "Carregar exemplos". Busca sem resultado: mensagem | "+ Novo produto" | RF-03, RF-08, RF-12, RF-15 |
 | Produto (edição) | Cartão de situação (preço, margem, semáforo e, se vermelho, preço sugerido). "Nova compra" como botão principal; "Ver histórico" secundário. Seção "Dados do produto" com nome, custo (só leitura), preço e margem desejada, cada um com texto de apoio; "Salvar alterações" secundário; "Excluir produto" como botão de texto, com confirmação numa janela do app | "Nova compra" | RF-01, RF-02, RF-04, RF-06, RF-13, RF-14 |
-| Produto (cadastro) | Mesmo formulário com foco automático no nome e tecla "próximo" entre os campos | "Salvar" | RF-01, RF-13, RF-14 |
+| Produto (cadastro) | Mesmo formulário com foco automático no nome e tecla "próximo" entre os campos | "Salvar produto" | RF-01, RF-13, RF-14 |
 | Nova compra | Campo "novo custo" com foco automático. Prévia em tempo real (margem com o preço atual, semáforo, preço sugerido) usando as funções do domínio, e aviso "Confira o valor" quando a variação passa de ±50% (RN-09; não bloqueia). Ao confirmar, grava a compra e abre o resultado | "Confirmar compra" | RF-04, RF-11 |
 | Resultado da compra | Cartão grande com a resposta ("Venda a R$ 5,87 para manter 25% de margem"). Abaixo, situação atual (preço, margem, semáforo), variação do custo e alerta. Área "Como chegamos nisso" que abre e fecha. "Aplicar preço sugerido" (principal) e "Manter preço atual" (secundário), com aviso de confirmação | "Aplicar preço sugerido" | RF-04, RF-05, RF-09, RF-10, RF-14 |
 | Histórico de custos | Lista de data, custo e variação; cada linha com seta e palavra ("subiu", "caiu", "igual") ou "—" na primeira compra | — | RF-06, RF-16 |
@@ -86,10 +86,14 @@ Novas na v1.2 (a interface só chama estas funções; não faz contas):
 - `avisoConferencia(custoAnterior, novoCusto): string | null` em `explicacao.ts` (v1.3) — RF-18: "Confira o valor: o custo subiu 62,5% em relação ao custo atual (R$ 4,00)." ou `null`.
 - `lista.ts` — RF-12:
   - `organizarLista(produtos, { busca, filtro })`: filtra (busca sem diferenciar maiúsculas e acentos; filtro `todos` / `abaixo` / `na-meta`) e ordena (abaixo da meta primeiro, depois nome A–Z em pt-BR).
-  - `resumoLista(produtos)` → "1 de 8 produtos abaixo da meta", "Todos os 8 produtos estão na meta" ou "1 de 1 produto abaixo da meta".
+  - `resumoLista(produtos)` → "1 de 8 produtos abaixo da meta", "1 de 1 produto abaixo da meta", "Todos os 8 produtos estão na meta", "O produto está na meta" (um só, na meta) ou "Nenhum produto cadastrado".
 
 ## 6. Armazenamento (`src/storage`)
-`AsyncStorage` com uma chave por coleção (`produtos`, `historico`), serializada em JSON. Interface `repositorio` com `listar`, `salvar`, `excluir`, para trocar a implementação sem tocar nas telas. `excluir` de um produto remove também o histórico dele. Atende RF-07, RF-02.
+`AsyncStorage` com uma chave por coleção (`produtos`, `historico`), serializada em JSON. Interface `Repositorio` (`repositorio.ts`), para trocar a implementação sem tocar nas telas:
+- `listarProdutos()`, `salvarProduto(produto)` (insere ou atualiza pelo id), `excluirProduto(id)` (remove também o histórico dele);
+- `listarHistorico(produtoId)` (mais recente primeiro), `salvarRegistro(registro)`.
+
+Funções que usam a interface: `cadastrarProduto(repo, dados)` (produto + primeiro registro de custo) e `registrarCompra(repo, produto, novoCusto)` (novo registro + `custoAtual`; devolve o custo anterior). A instância usada pelo app é `repositorio`. Atende RF-07, RF-02.
 
 `apagarTodosOsDados()` (v1.3, RF-17) remove as chaves `produtos`, `historico` e `boasVindasDispensada`. `carregarExemplos` (RF-08) não duplica: se já houver uma carga em andamento, devolve a mesma; se já houver produtos, não carrega de novo.
 
@@ -127,7 +131,7 @@ Cada RF/RN aparece em ao menos uma tarefa (`tasks.md`) e um teste. A matriz est�
 Tokens em `src/theme/tema.ts`; telas e componentes só usam tokens (RNF-05, verificado em `tests/varredura.test.ts`).
 - **Cores:** fundo, superfície, texto, texto suave, borda, primária (+ texto sobre primária), verde/vermelho (+ fundos claros), perigo. Todo par texto/fundo usado tem contraste ≥ 4,5:1 (RNF-06, verificado com `contraste.ts`).
 - **Espaço:** escala 4, 8, 12, 16, 24, 32.
-- **Fonte:** 5 tamanhos: legenda 14, corpo 17, subtítulo 20, título 26, número 34. Pesos: normal, médio, forte. Números com `fontVariant: ['tabular-nums']` (RNF-08).
+- **Fonte:** 4 tamanhos: legenda 14, corpo 17, subtítulo 20, título 26 (os números importantes usam título). Pesos: normal, médio, forte. Números com `fontVariant: ['tabular-nums']` (RNF-08).
 - **Raio:** 8 (campos), 12 (cartões), redondo (selos).
 - **Sombra:** uma sombra suave para cartões.
 - **Toque:** mínimo de 48 px (RNF-07).

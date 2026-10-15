@@ -52,13 +52,12 @@ export const espaco = {
   xxl: 32,
 };
 
-/** 5 tamanhos de fonte. */
+/** 4 tamanhos de fonte (RNF-05: 4 a 5). */
 export const fonte = {
   legenda: 14,
   corpo: 17,
   subtitulo: 20,
   titulo: 26,
-  numero: 34,
 };
 
 export const peso = {
