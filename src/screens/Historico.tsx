@@ -2,15 +2,23 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-import { calcularVariacaoCusto } from '../domain/calculos';
+import { Icone, NomeIcone } from '../components/Icone';
+import { calcularVariacaoCusto, Sentido, sentidoVariacao } from '../domain/calculos';
 import { formatarData, formatarPercentual, formatarReais } from '../domain/formatacao';
 import { Rotas } from '../navigation';
 import { Produto, RegistroCusto, repositorio } from '../storage/repositorio';
-import { cores, espaco, fonte } from '../theme/tema';
+import { cores, espaco, fonte, linha, NomeCor, numeros, peso, raio } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'Historico'>;
 
-// RF-06: data e custo de cada compra, mais recente primeiro, com a variação (RN-04).
+// RF-16: seta + palavra + cor, nunca só a cor (RNF-06).
+const VISUAL: Record<Sentido, { icone: NomeIcone; palavra: string; cor: NomeCor }> = {
+  subiu: { icone: 'arrow-up', palavra: 'subiu', cor: 'vermelho' },
+  caiu: { icone: 'arrow-down', palavra: 'caiu', cor: 'verde' },
+  igual: { icone: 'remove', palavra: 'igual', cor: 'textoSuave' },
+};
+
+// RF-06 e RF-16: data e custo de cada compra, mais recente primeiro, com o sentido da variação.
 export function HistoricoScreen({ route }: Props) {
   const { produtoId } = route.params;
   const [produto, setProduto] = useState<Produto | null>(null);
@@ -32,54 +40,77 @@ export function HistoricoScreen({ route }: Props) {
       ListHeaderComponent={
         <View style={estilos.cabecalho}>
           {produto ? <Text style={estilos.nome}>{produto.nome}</Text> : null}
-          <View style={estilos.titulos}>
-            <Text style={[estilos.colTitulo, estilos.colData]}>Data</Text>
-            <Text style={[estilos.colTitulo, estilos.colCusto]}>Custo</Text>
-            <Text style={[estilos.colTitulo, estilos.colVariacao]}>Variação</Text>
-          </View>
+          <Text style={estilos.explicacao}>
+            Custo de cada compra, da mais recente para a mais antiga, comparado com a compra anterior.
+          </Text>
         </View>
       }
       renderItem={({ item, index }) => {
         // A lista vem do mais recente para o mais antigo: a compra anterior é a próxima da lista.
         const anterior = registros[index + 1]?.custo ?? null;
-        return <LinhaHistorico registro={item} variacao={calcularVariacaoCusto(anterior, item.custo)} />;
+        return (
+          <LinhaHistorico registro={item} variacao={calcularVariacaoCusto(anterior, item.custo)} />
+        );
       }}
     />
   );
 }
 
 function LinhaHistorico({ registro, variacao }: { registro: RegistroCusto; variacao: number | null }) {
-  const cor =
-    variacao === null || variacao === 0 ? cores.texto : variacao > 0 ? cores.vermelho : cores.verde;
+  const sentido = sentidoVariacao(variacao);
+  const v = sentido ? VISUAL[sentido] : null;
+  const descricao = v
+    ? `${formatarData(registro.data)}, ${formatarReais(registro.custo)}, ${v.palavra} ${formatarPercentual(variacao, true)}`
+    : `${formatarData(registro.data)}, ${formatarReais(registro.custo)}, primeira compra`;
   return (
-    <View style={estilos.linha}>
-      <Text style={[estilos.celula, estilos.colData]}>{formatarData(registro.data)}</Text>
-      <Text style={[estilos.celula, estilos.colCusto]}>{formatarReais(registro.custo)}</Text>
-      <Text style={[estilos.celula, estilos.colVariacao, { color: cor }]}>
-        {formatarPercentual(variacao, true)}
-      </Text>
+    <View style={estilos.linha} accessible accessibilityLabel={descricao}>
+      <View style={estilos.esquerda}>
+        <Text style={estilos.data}>{formatarData(registro.data)}</Text>
+        <Text style={[estilos.custo, numeros]}>{formatarReais(registro.custo)}</Text>
+      </View>
+      {v ? (
+        <View style={estilos.variacao}>
+          <Icone nome={v.icone} cor={v.cor} />
+          <View style={estilos.variacaoTextos}>
+            <Text style={[estilos.palavra, { color: cores[v.cor] }]}>{v.palavra}</Text>
+            <Text style={[estilos.percentual, numeros, { color: cores[v.cor] }]}>
+              {formatarPercentual(variacao, true)}
+            </Text>
+          </View>
+        </View>
+      ) : (
+        <View style={estilos.variacaoTextos}>
+          <Text style={estilos.primeira}>—</Text>
+          <Text style={estilos.palavraSuave}>primeira compra</Text>
+        </View>
+      )}
     </View>
   );
 }
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.l, gap: 8 },
-  cabecalho: { gap: espaco.l, marginBottom: 4 },
-  nome: { fontSize: fonte.titulo, fontWeight: '800', color: cores.texto },
-  titulos: { flexDirection: 'row', paddingHorizontal: espaco.l },
-  colTitulo: { fontSize: fonte.legenda, color: cores.textoSuave, fontWeight: '700' },
+  conteudo: { padding: espaco.l, gap: espaco.s, paddingBottom: espaco.xxl },
+  cabecalho: { gap: espaco.xs, marginBottom: espaco.s },
+  nome: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto },
+  explicacao: { fontSize: fonte.legenda, color: cores.textoSuave },
   linha: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: cores.superficie,
-    borderRadius: 10,
-    borderWidth: 1,
+    borderRadius: raio.cartao,
+    borderWidth: linha.fina,
     borderColor: cores.borda,
     padding: espaco.l,
   },
-  celula: { fontSize: fonte.corpo, color: cores.texto },
-  colData: { flex: 1.2 },
-  colCusto: { flex: 1, textAlign: 'right' },
-  colVariacao: { flex: 1, textAlign: 'right', fontWeight: '700' },
+  esquerda: { gap: espaco.xs },
+  data: { fontSize: fonte.legenda, color: cores.textoSuave },
+  custo: { fontSize: fonte.subtitulo, fontWeight: peso.forte, color: cores.texto },
+  variacao: { flexDirection: 'row', alignItems: 'center', gap: espaco.xs },
+  variacaoTextos: { alignItems: 'flex-end' },
+  palavra: { fontSize: fonte.legenda, fontWeight: peso.forte },
+  percentual: { fontSize: fonte.corpo, fontWeight: peso.forte },
+  primeira: { fontSize: fonte.corpo, fontWeight: peso.forte, color: cores.textoSuave },
+  palavraSuave: { fontSize: fonte.legenda, color: cores.textoSuave },
 });

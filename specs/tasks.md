@@ -35,7 +35,7 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | T23 | A | Tela Produto: cartão de situação, "Nova compra" como principal, textos de apoio, teclado ("próximo", foco), confirmação de exclusão no app e avisos | RF-13, RF-14, RNF-07, RNF-09, CA-17, CA-18 | T17, T20 | [x] |
 | T24 | A | Nova compra com prévia em tempo real | RF-11, RNF-09, CA-14 | T17, T20 | [x] |
 | T25 | A | Resultado: resposta em destaque, situação atual, "Como chegamos nisso" e avisos | RF-09, RF-10, RF-14, CA-12, CA-13, CA-18 | T17, T20 | [x] |
-| T26 | C | `sentidoVariacao` + testes e histórico com seta e palavra | RF-16, CA-20 | T20 | [ ] |
+| T26 | C | `sentidoVariacao` + testes e histórico com seta e palavra | RF-16, CA-20 | T20 | [x] |
 | T27 | C | Preferência de boas-vindas (`preferencias.ts`) + testes e `CartaoBoasVindas` na lista | RF-15, CA-19 | T22 | [ ] |
 | T28 | B | Varredura final: teste que proíbe cor e tamanho soltos em telas e componentes; rótulos de acessibilidade | RNF-05, RNF-10, CA-21 | T21–T27 | [ ] |
 | T29 | — | Checklist manual com CA-12 a CA-21 e README atualizado | todos os CA novos | T28 | [ ] |

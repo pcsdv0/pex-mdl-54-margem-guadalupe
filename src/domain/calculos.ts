@@ -61,3 +61,13 @@ export function situacaoProduto(
     precoSugerido: calcularPrecoSugerido(custoCentavos, margemDesejada),
   };
 }
+
+export type Sentido = 'subiu' | 'caiu' | 'igual';
+
+/** RF-16: sentido da variação do custo; null quando não há variação (primeira compra). */
+export function sentidoVariacao(variacao: number | null): Sentido | null {
+  if (variacao === null) return null;
+  if (variacao > 0) return 'subiu';
+  if (variacao < 0) return 'caiu';
+  return 'igual';
+}

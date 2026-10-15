@@ -2,6 +2,7 @@ import {
   calcularMargem,
   calcularPrecoSugerido,
   calcularVariacaoCusto,
+  sentidoVariacao,
   situacaoProduto,
   statusMargem,
 } from '../src/domain/calculos';
@@ -413,5 +414,17 @@ describe('organizarLista e resumoLista (RF-12)', () => {
     const copia = [...EXEMPLOS];
     organizarLista(EXEMPLOS, { busca: '', filtro: 'todos' });
     expect(EXEMPLOS).toEqual(copia);
+  });
+});
+
+describe('sentidoVariacao (RF-16)', () => {
+  test('CA-20: custo subiu, caiu ou ficou igual', () => {
+    expect(sentidoVariacao(calcularVariacaoCusto(400, 440))).toBe('subiu');
+    expect(sentidoVariacao(calcularVariacaoCusto(400, 380))).toBe('caiu');
+    expect(sentidoVariacao(calcularVariacaoCusto(400, 400))).toBe('igual');
+  });
+
+  test('CA-20: primeira compra não tem sentido (null, exibe "—")', () => {
+    expect(sentidoVariacao(null)).toBeNull();
   });
 });
