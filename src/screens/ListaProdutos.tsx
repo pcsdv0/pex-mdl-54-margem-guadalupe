@@ -8,7 +8,7 @@ import { ProdutoCard } from '../components/ProdutoCard';
 import { carregarExemplos } from '../data/exemplos';
 import { Rotas } from '../navigation';
 import { Produto, repositorio } from '../storage/repositorio';
-import { cores, espaco, fonte } from '../theme/cores';
+import { cores, espaco, fonte } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'ListaProdutos'>;
 
@@ -94,9 +94,9 @@ function EstadoVazio({
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  lista: { padding: espaco.m, gap: 12 },
+  lista: { padding: espaco.l, gap: 12 },
   rodape: {
-    padding: espaco.m,
+    padding: espaco.l,
     backgroundColor: cores.superficie,
     borderTopWidth: 1,
     borderTopColor: cores.borda,
@@ -107,9 +107,9 @@ const estilos = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: cores.fundo,
   },
-  vazio: { padding: espaco.g, gap: espaco.m },
+  vazio: { padding: espaco.xl, gap: espaco.l },
   titulo: { fontSize: fonte.titulo, fontWeight: '800', color: cores.texto, textAlign: 'center' },
-  texto: { fontSize: fonte.normal, color: cores.texto, textAlign: 'center' },
+  texto: { fontSize: fonte.corpo, color: cores.texto, textAlign: 'center' },
   botoes: { alignSelf: 'stretch', gap: 12 },
-  nota: { fontSize: fonte.pequena, color: cores.textoSuave, textAlign: 'center' },
+  nota: { fontSize: fonte.legenda, color: cores.textoSuave, textAlign: 'center' },
 });

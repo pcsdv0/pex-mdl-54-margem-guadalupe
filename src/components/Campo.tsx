@@ -1,6 +1,8 @@
+import { Ref } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { cores, fonte, TOQUE_MINIMO } from '../theme/cores';
+import { cores, espaco, fonte, linha, numeros, peso, raio, TOQUE_MINIMO } from '../theme/tema';
+import { Icone } from './Icone';
 
 export interface PropsCampo {
   rotulo: string;
@@ -8,8 +10,13 @@ export interface PropsCampo {
   onChange?: (texto: string) => void;
   erro?: string | null;
   somenteLeitura?: boolean;
+  /** Texto de apoio curto, abaixo do campo (RF-13). */
   dica?: string;
   autoFocus?: boolean;
+  /** RNF-09: "next" passa ao próximo campo; "done" fecha o teclado. */
+  tecla?: 'next' | 'done';
+  aoConfirmar?: () => void;
+  ref?: Ref<TextInput>;
 }
 
 interface PropsBase extends PropsCampo {
@@ -17,9 +24,10 @@ interface PropsBase extends PropsCampo {
   sufixo?: string;
   teclado?: 'decimal-pad' | 'number-pad' | 'default';
   placeholder?: string;
+  numerico?: boolean;
 }
 
-/** Campo de texto com rótulo, prefixo/sufixo e mensagem de erro. Base de CampoMoeda e CampoPercentual. */
+/** Campo de texto com rótulo, texto de apoio e erro junto ao campo (RF-14). */
 export function Campo({
   rotulo,
   valor,
@@ -28,10 +36,14 @@ export function Campo({
   somenteLeitura = false,
   dica,
   autoFocus,
+  tecla = 'done',
+  aoConfirmar,
+  ref,
   prefixo,
   sufixo,
   teclado = 'default',
   placeholder,
+  numerico = false,
 }: PropsBase) {
   return (
     <View style={estilos.bloco}>
@@ -39,14 +51,16 @@ export function Campo({
       <View
         style={[
           estilos.caixa,
-          erro ? { borderColor: cores.erro } : null,
+          erro ? estilos.caixaErro : null,
           somenteLeitura ? estilos.caixaLeitura : null,
         ]}
       >
         {prefixo ? <Text style={estilos.extra}>{prefixo}</Text> : null}
         <TextInput
+          ref={ref}
           accessibilityLabel={rotulo}
-          style={estilos.entrada}
+          accessibilityHint={dica}
+          style={[estilos.entrada, numerico ? numeros : null]}
           value={valor}
           onChangeText={onChange}
           editable={!somenteLeitura}
@@ -54,31 +68,47 @@ export function Campo({
           placeholder={placeholder}
           placeholderTextColor={cores.textoSuave}
           autoFocus={autoFocus}
+          returnKeyType={tecla}
+          submitBehavior={tecla === 'next' ? 'submit' : 'blurAndSubmit'}
+          onSubmitEditing={aoConfirmar}
         />
         {sufixo ? <Text style={estilos.extra}>{sufixo}</Text> : null}
       </View>
-      {dica ? <Text style={estilos.dica}>{dica}</Text> : null}
-      {erro ? <Text style={estilos.erro}>{erro}</Text> : null}
+      {erro ? (
+        <View style={estilos.linhaErro} accessibilityRole="alert">
+          <Icone nome="alert-circle" tamanho="pequeno" cor="vermelho" />
+          <Text style={estilos.erro}>{erro}</Text>
+        </View>
+      ) : dica ? (
+        <Text style={estilos.dica}>{dica}</Text>
+      ) : null}
     </View>
   );
 }
 
 const estilos = StyleSheet.create({
-  bloco: { gap: 6 },
-  rotulo: { fontSize: fonte.normal, fontWeight: '700', color: cores.texto },
+  bloco: { gap: espaco.xs },
+  rotulo: { fontSize: fonte.legenda, fontWeight: peso.medio, color: cores.texto },
   caixa: {
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: TOQUE_MINIMO,
-    borderWidth: 2,
-    borderColor: cores.borda,
-    borderRadius: 10,
+    borderWidth: linha.fina,
+    borderColor: cores.bordaForte,
+    borderRadius: raio.campo,
     backgroundColor: cores.superficie,
-    paddingHorizontal: 12,
+    paddingHorizontal: espaco.m,
   },
-  caixaLeitura: { backgroundColor: cores.fundo },
-  entrada: { flex: 1, fontSize: fonte.grande, color: cores.texto, paddingVertical: 8 },
-  extra: { fontSize: fonte.grande, color: cores.textoSuave, marginHorizontal: 4 },
-  dica: { fontSize: fonte.pequena, color: cores.textoSuave },
-  erro: { fontSize: fonte.pequena, color: cores.erro, fontWeight: '700' },
+  caixaErro: { borderColor: cores.vermelho, borderWidth: linha.grossa },
+  caixaLeitura: { backgroundColor: cores.fundo, borderColor: cores.borda },
+  entrada: {
+    flex: 1,
+    fontSize: fonte.subtitulo,
+    color: cores.texto,
+    paddingVertical: espaco.s,
+  },
+  extra: { fontSize: fonte.subtitulo, color: cores.textoSuave, marginHorizontal: espaco.xs },
+  dica: { fontSize: fonte.legenda, color: cores.textoSuave },
+  linhaErro: { flexDirection: 'row', alignItems: 'center', gap: espaco.xs },
+  erro: { flex: 1, fontSize: fonte.legenda, color: cores.vermelho, fontWeight: peso.medio },
 });

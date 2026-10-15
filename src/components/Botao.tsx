@@ -1,54 +1,97 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { cores, fonte, TOQUE_MINIMO } from '../theme/cores';
+import { cores, espaco, fonte, linha, peso, raio, TOQUE_MINIMO } from '../theme/tema';
+import { Icone, NomeIcone } from './Icone';
 
-type Variante = 'primario' | 'secundario' | 'perigo';
+/**
+ * RNF-07: "principal" é cheio e chama a atenção (um por tela); "secundario" tem contorno
+ * fino e pesa menos; "texto" não tem caixa (ações de menor importância, como excluir).
+ */
+type Variante = 'principal' | 'secundario' | 'texto';
 
 interface Props {
   titulo: string;
   onPress: () => void;
   variante?: Variante;
+  perigo?: boolean;
+  icone?: NomeIcone;
   desabilitado?: boolean;
+  rotulo?: string;
 }
 
-export function Botao({ titulo, onPress, variante = 'primario', desabilitado = false }: Props) {
-  const primario = variante === 'primario';
-  const corBorda = variante === 'perigo' ? cores.perigo : cores.primaria;
+export function Botao({
+  titulo,
+  onPress,
+  variante = 'principal',
+  perigo = false,
+  icone,
+  desabilitado = false,
+  rotulo,
+}: Props) {
+  const corTexto =
+    variante === 'principal' ? 'sobrePrimaria' : perigo ? 'vermelho' : 'primaria';
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={rotulo ?? titulo}
       accessibilityState={{ disabled: desabilitado }}
       onPress={onPress}
       disabled={desabilitado}
       style={({ pressed }) => [
-        estilos.botao,
-        {
-          backgroundColor: primario ? cores.primaria : cores.superficie,
-          borderColor: corBorda,
-          opacity: desabilitado ? 0.5 : pressed ? 0.8 : 1,
-        },
+        estilos.base,
+        estilos[variante],
+        perigo && variante === 'secundario' ? estilos.bordaPerigo : null,
+        desabilitado ? estilos.desabilitado : pressed ? estilos.pressionado : null,
       ]}
     >
-      <Text style={[estilos.texto, { color: primario ? cores.primariaTexto : corBorda }]}>
-        {titulo}
-      </Text>
+      <View style={estilos.conteudo}>
+        {icone ? <Icone nome={icone} cor={corTexto} /> : null}
+        <Text
+          style={[
+            estilos.rotulo,
+            variante === 'principal' ? estilos.rotuloPrincipal : null,
+            { color: cores[corTexto] },
+          ]}
+        >
+          {titulo}
+        </Text>
+      </View>
     </Pressable>
   );
 }
 
 const estilos = StyleSheet.create({
-  botao: {
+  base: {
     minHeight: TOQUE_MINIMO,
-    borderRadius: 10,
-    borderWidth: 2,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderRadius: raio.cartao,
+    paddingHorizontal: espaco.l,
+    paddingVertical: espaco.m,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  principal: {
+    backgroundColor: cores.primaria,
+    paddingVertical: espaco.l,
+  },
+  secundario: {
+    backgroundColor: cores.superficie,
+    borderWidth: linha.fina,
+    borderColor: cores.bordaForte,
+  },
   texto: {
-    fontSize: fonte.normal + 2,
-    fontWeight: '700',
+    backgroundColor: 'transparent',
+  },
+  bordaPerigo: { borderColor: cores.vermelho },
+  pressionado: { opacity: 0.75 },
+  desabilitado: { opacity: 0.5 },
+  conteudo: { flexDirection: 'row', alignItems: 'center', gap: espaco.s },
+  rotulo: {
+    fontSize: fonte.corpo,
+    fontWeight: peso.medio,
     textAlign: 'center',
+  },
+  rotuloPrincipal: {
+    fontSize: fonte.subtitulo,
+    fontWeight: peso.forte,
   },
 });

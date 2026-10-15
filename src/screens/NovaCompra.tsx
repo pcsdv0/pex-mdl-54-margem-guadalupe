@@ -8,7 +8,7 @@ import { formatarReais, parseReais } from '../domain/formatacao';
 import { validarCusto } from '../domain/validacao';
 import { Rotas } from '../navigation';
 import { Produto, registrarCompra, repositorio } from '../storage/repositorio';
-import { cores, espaco, fonte } from '../theme/cores';
+import { cores, espaco, fonte } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'NovaCompra'>;
 
@@ -65,7 +65,7 @@ export function NovaCompraScreen({ navigation, route }: Props) {
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.m, gap: espaco.m },
+  conteudo: { padding: espaco.l, gap: espaco.l },
   nome: { fontSize: fonte.titulo, fontWeight: '800', color: cores.texto },
-  info: { fontSize: fonte.normal, color: cores.textoSuave },
+  info: { fontSize: fonte.corpo, color: cores.textoSuave },
 });

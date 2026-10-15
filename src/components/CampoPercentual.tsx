@@ -2,7 +2,7 @@ import { Campo, PropsCampo } from './Campo';
 
 /** Porcentagem inteira (margem desejada, RN-07), com teclado numérico. */
 export function CampoPercentual(props: PropsCampo) {
-  return <Campo {...props} sufixo="%" teclado="number-pad" placeholder="25" />;
+  return <Campo {...props} sufixo="%" teclado="number-pad" placeholder="25" numerico />;
 }
 
 /** Texto do campo → número (null quando vazio ou ilegível). A faixa 1–99 é checada em validarProduto. */

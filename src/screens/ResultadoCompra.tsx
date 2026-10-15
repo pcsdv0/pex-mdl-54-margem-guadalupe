@@ -14,7 +14,7 @@ import {
 import { formatarPercentual, formatarReais } from '../domain/formatacao';
 import { Rotas } from '../navigation';
 import { Produto, repositorio } from '../storage/repositorio';
-import { cores, espaco, fonte } from '../theme/cores';
+import { cores, espaco, fonte } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'ResultadoCompra'>;
 
@@ -88,29 +88,29 @@ function LinhaInfo({ rotulo, valor, forte }: { rotulo: string; valor: string; fo
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.m, gap: espaco.m, paddingBottom: espaco.g * 2 },
+  conteudo: { padding: espaco.l, gap: espaco.l, paddingBottom: espaco.xl * 2 },
   nome: { fontSize: fonte.titulo, fontWeight: '800', color: cores.texto },
   cartao: {
     backgroundColor: cores.superficie,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: cores.borda,
-    padding: espaco.m,
+    padding: espaco.l,
     gap: 10,
   },
   linha: { flexDirection: 'row', justifyContent: 'space-between', gap: 8 },
-  rotulo: { fontSize: fonte.normal, color: cores.textoSuave, flexShrink: 1 },
-  valor: { fontSize: fonte.normal, color: cores.texto, fontWeight: '600' },
-  forte: { fontSize: fonte.grande, fontWeight: '800' },
+  rotulo: { fontSize: fonte.corpo, color: cores.textoSuave, flexShrink: 1 },
+  valor: { fontSize: fonte.corpo, color: cores.texto, fontWeight: '600' },
+  forte: { fontSize: fonte.subtitulo, fontWeight: '800' },
   sugerido: {
     backgroundColor: cores.superficie,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: cores.primaria,
-    padding: espaco.m,
+    padding: espaco.l,
     alignItems: 'center',
     gap: 4,
   },
-  sugeridoRotulo: { fontSize: fonte.normal, color: cores.texto, textAlign: 'center' },
+  sugeridoRotulo: { fontSize: fonte.corpo, color: cores.texto, textAlign: 'center' },
   sugeridoValor: { fontSize: 36, fontWeight: '800', color: cores.primaria },
 });

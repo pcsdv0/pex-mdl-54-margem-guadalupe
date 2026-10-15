@@ -11,7 +11,7 @@ import { parseReais } from '../domain/formatacao';
 import { ErrosProduto, validarProduto } from '../domain/validacao';
 import { Rotas } from '../navigation';
 import { cadastrarProduto, Produto, repositorio } from '../storage/repositorio';
-import { cores, espaco } from '../theme/cores';
+import { cores, espaco } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'ProdutoForm'>;
 
@@ -153,7 +153,7 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
 
         <Botao titulo="Salvar" onPress={salvar} />
         {produto ? (
-          <Botao titulo="Excluir produto" variante="perigo" onPress={confirmarExclusao} />
+          <Botao titulo="Excluir produto" variante="texto" perigo onPress={confirmarExclusao} />
         ) : null}
       </ScrollView>
     </KeyboardAvoidingView>
@@ -162,6 +162,6 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.m, gap: espaco.m, paddingBottom: espaco.g * 2 },
-  acoes: { gap: 12, marginBottom: espaco.p },
+  conteudo: { padding: espaco.l, gap: espaco.l, paddingBottom: espaco.xl * 2 },
+  acoes: { gap: 12, marginBottom: espaco.s },
 });

@@ -6,7 +6,7 @@ import { calcularVariacaoCusto } from '../domain/calculos';
 import { formatarData, formatarPercentual, formatarReais } from '../domain/formatacao';
 import { Rotas } from '../navigation';
 import { Produto, RegistroCusto, repositorio } from '../storage/repositorio';
-import { cores, espaco, fonte } from '../theme/cores';
+import { cores, espaco, fonte } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'Historico'>;
 
@@ -64,11 +64,11 @@ function LinhaHistorico({ registro, variacao }: { registro: RegistroCusto; varia
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.m, gap: 8 },
-  cabecalho: { gap: espaco.m, marginBottom: 4 },
+  conteudo: { padding: espaco.l, gap: 8 },
+  cabecalho: { gap: espaco.l, marginBottom: 4 },
   nome: { fontSize: fonte.titulo, fontWeight: '800', color: cores.texto },
-  titulos: { flexDirection: 'row', paddingHorizontal: espaco.m },
-  colTitulo: { fontSize: fonte.pequena, color: cores.textoSuave, fontWeight: '700' },
+  titulos: { flexDirection: 'row', paddingHorizontal: espaco.l },
+  colTitulo: { fontSize: fonte.legenda, color: cores.textoSuave, fontWeight: '700' },
   linha: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -76,9 +76,9 @@ const estilos = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: cores.borda,
-    padding: espaco.m,
+    padding: espaco.l,
   },
-  celula: { fontSize: fonte.normal, color: cores.texto },
+  celula: { fontSize: fonte.corpo, color: cores.texto },
   colData: { flex: 1.2 },
   colCusto: { flex: 1, textAlign: 'right' },
   colVariacao: { flex: 1, textAlign: 'right', fontWeight: '700' },

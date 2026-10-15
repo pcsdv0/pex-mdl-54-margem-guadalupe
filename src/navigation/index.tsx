@@ -7,7 +7,7 @@ import { ListaProdutosScreen } from '../screens/ListaProdutos';
 import { NovaCompraScreen } from '../screens/NovaCompra';
 import { ProdutoFormScreen } from '../screens/ProdutoForm';
 import { ResultadoCompraScreen } from '../screens/ResultadoCompra';
-import { cores, fonte } from '../theme/cores';
+import { cores, fonte } from '../theme/tema';
 
 export type Rotas = {
   ListaProdutos: undefined;
@@ -25,8 +25,8 @@ export function Navegacao() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: { backgroundColor: cores.primaria },
-          headerTintColor: cores.primariaTexto,
-          headerTitleStyle: { fontSize: fonte.grande, fontWeight: '700' },
+          headerTintColor: cores.sobrePrimaria,
+          headerTitleStyle: { fontSize: fonte.subtitulo, fontWeight: '700' },
           contentStyle: { backgroundColor: cores.fundo },
         }}
       >
