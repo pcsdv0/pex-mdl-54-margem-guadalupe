@@ -38,14 +38,14 @@ Teste de tela: siga `tests/checklist-manual.md` no Expo Go e preencha a coluna "
 | --- | --- |
 | `specs/` | `requirements.md`, `design.md` e `tasks.md` (a fonte da verdade do projeto) |
 | `docs/` | Glossário, entrevista, `adr/` (decisões de arquitetura), `depois.md` (ideias fora do escopo) e `processo-sdd.md` (requisito → tarefa → commit → teste) |
-| `src/domain/` | Regras de cálculo puras, em centavos: `calculos.ts`, `validacao.ts`, `formatacao.ts` |
-| `src/storage/` | `repositorio.ts`: dados no aparelho com AsyncStorage |
+| `src/domain/` | Regras de cálculo puras, em centavos: `calculos.ts`, `validacao.ts`, `formatacao.ts`, `explicacao.ts` (textos das contas), `lista.ts` (ordem, busca, filtro, resumo) |
+| `src/storage/` | `repositorio.ts` (produtos e histórico) e `preferencias.ts` (boas-vindas), no AsyncStorage |
 | `src/data/` | `exemplos.ts`: produtos de exemplo (ilustrativos) |
-| `src/screens/` | Telas: Lista de produtos, Produto, Nova compra, Resultado, Histórico |
-| `src/components/` | `ProdutoCard`, `SemaforoBadge`, `AlertaBanner`, `Campo`, `CampoMoeda`, `CampoPercentual`, `Botao` |
+| `src/screens/` | Telas: Lista de produtos, Produto, Nova compra, Resultado, Histórico, Ajuda |
+| `src/components/` | Peças da interface: botões, campos, cartões (situação, resposta, boas-vindas), semáforo, ícones, avisos, janela de confirmação, busca e filtro |
 | `src/navigation/` | Navegação em pilha |
-| `src/theme/` | Cores e tamanhos de fonte |
-| `tests/` | `domain.test.ts`, `storage.test.ts`, `setup.ts` e `checklist-manual.md` |
+| `src/theme/` | `tema.ts` (cores, espaços, fontes, raios, sombra, toque mínimo) e `contraste.ts` |
+| `tests/` | `domain.test.ts`, `storage.test.ts`, `tema.test.ts` (contraste), `varredura.test.ts` (sem cor/tamanho solto, rótulos), `setup.ts` e `checklist-manual.md` |
 | `App.tsx`, `index.ts` | Entrada do app |
 
 ## Equipe e papéis
