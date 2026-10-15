@@ -1,11 +1,13 @@
-# Checklist de teste manual (T15 e T29)
+# Checklist de teste manual (T15, T29 e T36)
 
-Passos na tela para os critérios de aceite CA-01 a CA-21 (`specs/requirements.md` §7), na interface da v1.2.
+Passos na tela para os critérios de aceite CA-01 a CA-25 (`specs/requirements.md` §7), na interface da v1.3.
+
+**Antes de cada ensaio:** Ajuda ("?") → "Apagar todos os dados" → "Apagar tudo". O app volta à primeira abertura (CA-24).
 
 **Como executar:** `npm install`, depois `npx expo start` e ler o QR code com o **Expo Go** no celular. Comece com o app sem produtos. Se já houver dados, desinstale e reinstale o Expo Go, ou exclua os produtos.
 
 **Colunas:**
-- **Navegador (Claude):** o que o assistente conferiu em 14/10/2026 rodando o app no navegador (Expo web), com dependências web instaladas só durante o teste. "v1.1" = conferido na interface anterior; "v1.2" = conferido na interface atual. Não substitui o teste no celular.
+- **Navegador (Claude):** o que o assistente conferiu em 14/10/2026 rodando o app no navegador (Expo web), com dependências web instaladas só durante o teste. "v1.1", "v1.2" e "v1.3" indicam em que versão da interface foi conferido. Não substitui o teste no celular.
 - **Resultado (Expo Go):** fica em branco para a equipe preencher no aparelho (OK / falhou + observação).
 
 ## Parte 1 — fluxo principal (CA-01 a CA-11)
@@ -28,7 +30,7 @@ Passos na tela para os critérios de aceite CA-01 a CA-21 (`specs/requirements.m
 | CA-06, CA-08, CA-20 | Arroz → "Ver histórico de custos" | Duas linhas, mais recente primeiro: R$ 4,40 com seta para cima, "subiu", +10,0%; R$ 4,00 com "—" e "primeira compra"; datas dd/mm/aaaa | v1.2: conferido | |
 | CA-01, CA-11 | "Produto teste" → "Nova compra" → `4` → "Confirmar compra" | "Venda a R$ 5,33 para manter 25% de margem" | v1.1: conferido | |
 | CA-11 | "Aplicar preço sugerido" | Lista: R$ 5,33, 25,0%, "Na meta" (verde), sem "Sugerido" | v1.1: conferido | |
-| RF-05, CA-18 | Outro produto → "Nova compra" → qualquer custo → "Manter preço atual" | Volta para a lista; aviso "Compra registrada. Preço mantido em R$ …"; o custo novo aparece no histórico | Não conferido | |
+| RF-05, CA-18 | Outro produto → "Nova compra" → qualquer custo → "Manter preço atual" | Volta para a lista; aviso "Compra registrada. Preço mantido em R$ …"; o custo novo aparece no histórico | v1.3: conferido (Feijão, "Compra registrada. Preço mantido em R$ 8,50") | |
 | CA-09 | Fechar o Expo Go por completo (tirar dos apps recentes) e abrir de novo | Produtos, preços e histórico iguais; boas-vindas não volta | Só no navegador (recarregar a página); **no celular, não** | |
 
 ## Parte 2 — usabilidade (CA-16 a CA-21)
@@ -50,4 +52,21 @@ Passos na tela para os critérios de aceite CA-01 a CA-21 (`specs/requirements.m
 | RNF-09 | Cadastro: o teclado abre no nome; "próximo" passa para custo, preço e margem; o campo em foco fica visível acima do teclado | Funciona sem precisar rolar a tela à mão | **Não conferido** (só no aparelho; no iPhone o teclado numérico não tem tecla "próximo") | |
 | RNF-10 | Ligar o leitor de tela (TalkBack/VoiceOver) e passar pela lista | Cada cartão é lido como uma frase (nome, preço, margem, situação) | Rótulos conferidos no navegador; leitor de tela não testado | |
 
-Itens não conferidos pelo assistente: CA-04 na tela, CA-10 no cadastro com 0/negativo, "Manter preço atual", filtro "Na meta", "?" fora da lista, CA-09 no celular, teclado (RNF-09), tamanho real de toque (RNF-07), leitor de tela e a aparência no aparelho real.
+## Parte 3 — correções da v1.3 (CA-22 a CA-25)
+
+| CA | Passos | Resultado esperado | Navegador (Claude) | Resultado (Expo Go) |
+| --- | --- | --- | --- | --- |
+| CA-22 | Com o app vazio, tocar duas vezes rápido em "Carregar exemplos" | 8 produtos, não 16 | v1.3: conferido (clique duplo → 8) | |
+| CA-22 | "Novo produto", preencher tudo, tocar duas vezes rápido em "Salvar produto" | Um produto só na lista | v1.3: conferido (clique duplo → 1) | |
+| CA-22 | Na tela de resultado, tocar duas vezes rápido em "Aplicar preço sugerido" | Um aviso só; preço aplicado uma vez | v1.3: conferido | |
+| CA-23 | Abrir um produto, mudar o preço **sem salvar**, tocar no "?" e voltar | O preço digitado continua no campo; "Situação atual" ainda mostra o preço salvo | v1.3: conferido (Óleo, 9,40 mantido) | |
+| CA-23 | Mesma coisa, mas abrindo "Ver histórico de custos" e voltando | O preço digitado continua no campo | Não conferido (mesmo código do caso acima) | |
+| CA-24 | Ajuda → "Apagar todos os dados" → "Cancelar" | Nada é apagado | v1.3: conferido | |
+| CA-24 | Ajuda → "Apagar todos os dados" → "Apagar tudo" | Lista vazia, cartão de boas-vindas de volta, aviso "Todos os dados foram apagados" | v1.3: conferido | |
+| CA-25 | Arroz (custo R$ 4,00) → "Nova compra" → digitar `6,50`, depois `1,90` | "Confira o valor: o custo subiu 62,5%…" e depois "…caiu 52,5%…" | v1.3: conferido | |
+| CA-25 | Mesmo campo: digitar `6,00`, depois `4,40` | Sem o aviso (+50,0% e +10,0% estão dentro do limite) | v1.3: conferido | |
+| CA-25 | Feijão (custo R$ 6,20) → digitar `9,50` (+53,2%) → "Confirmar compra" | O aviso aparece, mas a compra é gravada e o resultado abre normalmente | v1.3: conferido | |
+
+**Observação do teste no navegador (v1.3):** num clique duplo em "Carregar exemplos", "Salvar produto" ou "Aplicar preço sugerido", o segundo clique pode cair num cartão da lista que acabou de aparecer e abrir aquele produto. Não grava nada; só navega. Vale ver se acontece no celular.
+
+Itens não conferidos pelo assistente: CA-04 na tela, CA-10 no cadastro com 0/negativo, CA-23 voltando do Histórico, filtro "Na meta", "?" fora da lista, CA-09 no celular, teclado (RNF-09), tamanho real de toque (RNF-07), leitor de tela e a aparência no aparelho real.

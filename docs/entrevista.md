@@ -1,2 +1,3 @@
-# Documento da entrevista (preencher)
-Data, quem entrevistou, o que foi perguntado e as respostas do proprietário.
+# Entrevista
+
+A descrição da entrevista está em documento separado.

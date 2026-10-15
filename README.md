@@ -23,6 +23,8 @@ Abra o **Expo Go** no celular e leia o QR code que aparece no terminal (no iPhon
 
 Na primeira vez, toque em **"Carregar exemplos"** para ver 8 produtos com valores ilustrativos (não são preços reais do mercado).
 
+Para voltar ao estado inicial (antes de um ensaio ou da apresentação): toque no **"?"** → **"Apagar todos os dados"** → **"Apagar tudo"**.
+
 ## Como testar
 
 ```bash
@@ -48,16 +50,14 @@ Teste de tela: siga `tests/checklist-manual.md` no Expo Go e preencha a coluna "
 | `tests/` | `domain.test.ts`, `storage.test.ts`, `tema.test.ts` (contraste), `varredura.test.ts` (sem cor/tamanho solto, rótulos), `setup.ts` e `checklist-manual.md` |
 | `App.tsx`, `index.ts` | Entrada do app |
 
-## Equipe e papéis
+## Equipe
 
-| Papel | Responsável |
-| --- | --- |
-| 1. Líder e integração | Paulo César Santos de Vasconcelos |
-| 2. Analista de requisitos | |
-| 3. Arquiteto | |
-| 4. Dev de lógica | |
-| 5. Dev de interface | |
-| 6. QA, documentação e apresentação | |
+- Bruno Vinicius Lira de Almeida
+- Carlos Wagner Farias Da Fonseca
+- Douglas Lino Da Paz
+- Lucy Lopes Carvalho
+- Paulo César Santos de Vasconcelos (líder)
+- Thomas Eustáquio Pereira da Silva
 
 ## Como trabalhamos
 
