@@ -18,8 +18,8 @@
 | T12 | Tela Produto (cadastro, edição com custo só leitura, exclusão com histórico; botões "Nova compra" e "Ver histórico") | RF-01, RF-02 | T06, T08, T10 | [x] |
 | T13 | Telas Nova compra (valida e grava ao confirmar) e Resultado (aplicar ou manter preço) | RF-04, RF-05, CA-11 | T03, T04, T05, T06, T08, T10, T12 | [x] |
 | T14 | Tela Histórico de custos | RF-06, CA-08 | T04, T07, T08, T12 | [x] |
-| T15 | Checklist de teste manual (`tests/checklist-manual.md`) cobrindo CA-01 a CA-11, executado no Expo Go | todos os CA | T11–T14 | [ ] |
-| T16 | Revisão final: rodar testes e `tsc`, conferir o fora do escopo, atualizar README com como rodar | RNF-04 | T15 | [x] |
+| T15 | Checklist de teste manual (`tests/checklist-manual.md`) cobrindo CA-01 a CA-25, executado no Expo Go (coluna "Resultado (Expo Go)" preenchida pela equipe) | todos os CA | T11–T14, T36 | [ ] |
+| T16 | Revisão final: rodar testes e `tsc`, conferir o fora do escopo, atualizar README com como rodar. Reaberta na v1.3: só fecha depois da T15 | RNF-04 | T15 | [ ] |
 
 ### v1.2 — usabilidade e didática
 Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência), **C** (se sobrar tempo). Funções novas de domínio nascem com teste antes.
@@ -49,7 +49,7 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | T32 | `apagarTodosOsDados` + testes; botão "Apagar todos os dados" na Ajuda com confirmação; boas-vindas voltam | RF-17, CA-24 | T29 | [x] |
 | T33 | `variacaoSuspeita` e `avisoConferencia` + testes; aviso "Confira o valor" na prévia da Nova compra | RF-18, RN-09, CA-25 | T29 | [x] |
 | T34 | Alinhar design ao código (§2 rótulos, §5 frases do resumo, §6 nomes do repositório, §10 tamanhos de fonte), `tests/README.md` e nota do ADR-005 | design, RNF-05 | T33 | [x] |
-| T35 | T15 cobrindo CA-01 a CA-25; T16 reaberta até a T15 fechar | tasks | T34 | [ ] |
+| T35 | T15 cobrindo CA-01 a CA-25; T16 reaberta até a T15 fechar | tasks | T34 | [x] |
 | T36 | Checklist manual com CA-22 a CA-25; README com a equipe; `docs/entrevista.md`; desfazer última compra em `docs/depois.md` | todos os CA novos | T35 | [ ] |
 | T37 | `docs/processo-sdd.md` atualizado para a v1.3 com os hashes reais do git log | RNF-04 | T36 | [ ] |
 
