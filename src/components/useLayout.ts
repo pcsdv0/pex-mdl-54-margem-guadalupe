@@ -5,14 +5,22 @@ import { empilhar, larguraDoConteudo } from '../theme/layout';
 import { espaco, LARGURA_MAXIMA } from '../theme/tema';
 
 /**
- * RNF-11: o que depende do aparelho. `empilhar` diz se dois valores ficam um embaixo do outro;
- * `estiloConteudo` centraliza o conteúdo (largura máxima) e soma a barra do sistema embaixo.
+ * RNF-11: true quando dois valores não cabem lado a lado (tela estreita ou fonte grande).
+ * Só lê a janela; funciona sem SafeAreaProvider.
+ */
+export function useEmpilhar(): boolean {
+  const { width, fontScale } = useWindowDimensions();
+  return empilhar(larguraDoConteudo(width), fontScale);
+}
+
+/**
+ * RNF-11: o que depende do aparelho. `estiloConteudo` centraliza o conteúdo (largura máxima)
+ * e soma a barra do sistema embaixo.
  */
 export function useLayout() {
-  const { width, fontScale } = useWindowDimensions();
   const margens = useSafeAreaInsets();
   return {
-    empilhar: empilhar(larguraDoConteudo(width), fontScale),
+    empilhar: useEmpilhar(),
     margens,
     estiloConteudo: (intervalo: number = espaco.l) => ({
       width: '100%' as const,

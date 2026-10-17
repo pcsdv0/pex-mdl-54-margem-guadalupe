@@ -29,11 +29,12 @@ const estilos = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
+    maxWidth: '100%',
     borderWidth: linha.fina,
     borderRadius: raio.redondo,
     paddingHorizontal: espaco.m,
     paddingVertical: espaco.xs,
     gap: espaco.xs,
   },
-  texto: { fontSize: fonte.legenda, fontWeight: peso.forte },
+  texto: { flexShrink: 1, fontSize: fonte.legenda, fontWeight: peso.forte },
 });

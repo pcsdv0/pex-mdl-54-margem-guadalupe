@@ -1,5 +1,5 @@
-// RNF-05 e RNF-10 (CA-21): telas e componentes só usam tokens do tema e
-// todo elemento tocável tem rótulo de acessibilidade.
+// RNF-05, RNF-10 e RNF-11 (CA-21, CA-29): telas e componentes só usam tokens do tema,
+// todo elemento tocável tem rótulo de acessibilidade e nenhum texto é limitado a uma linha.
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -30,6 +30,10 @@ describe('varredura das telas e componentes (RNF-05, RNF-10)', () => {
 
   test.each(arquivos)('CA-21: %s não tem tamanho, espaço ou peso de fonte solto', (arquivo) => {
     expect(ler(arquivo)).not.toMatch(TAMANHO_SOLTO);
+  });
+
+  test.each(arquivos)('RNF-11: %s não limita o texto a uma linha nem usa reticências', (arquivo) => {
+    expect(ler(arquivo)).not.toMatch(/numberOfLines|ellipsizeMode|adjustsFontSizeToFit/);
   });
 
   test.each(arquivos)('RNF-10: todo Pressable de %s tem rótulo de acessibilidade', (arquivo) => {

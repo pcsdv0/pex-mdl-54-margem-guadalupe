@@ -5,7 +5,7 @@ import { formatarPercentual, formatarReais } from '../domain/formatacao';
 import { Produto } from '../storage/repositorio';
 import { cores, espaco, fonte, linha, peso, raio, sombra } from '../theme/tema';
 import { Icone } from './Icone';
-import { LinhaValor } from './LinhaValor';
+import { LinhaValor, ParDeValores } from './LinhaValor';
 import { SemaforoBadge } from './SemaforoBadge';
 
 // RF-03 e RF-12: nome, preço e margem em destaque, semáforo e, se abaixo da meta, o preço sugerido.
@@ -37,15 +37,17 @@ export function ProdutoCard({ produto, onPress }: { produto: Produto; onPress: (
         <Text style={estilos.nome}>{produto.nome}</Text>
         <Icone nome="chevron-forward" cor="textoSuave" />
       </View>
-      <View style={estilos.linha}>
-        <LinhaValor rotulo="Preço" valor={formatarReais(produto.precoVenda)} tamanho="medio" />
-        <LinhaValor
-          rotulo={`Margem (meta ${produto.margemDesejada}%)`}
-          valor={formatarPercentual(s.margem)}
-          cor={abaixo ? 'vermelho' : 'verde'}
-          alinhar="fim"
-        />
-      </View>
+      <ParDeValores
+        esquerda={<LinhaValor rotulo="Preço" valor={formatarReais(produto.precoVenda)} tamanho="medio" />}
+        direita={
+          <LinhaValor
+            rotulo={`Margem (meta ${produto.margemDesejada}%)`}
+            valor={formatarPercentual(s.margem)}
+            cor={abaixo ? 'vermelho' : 'verde'}
+            alinhar="fim"
+          />
+        }
+      />
       <View style={estilos.linha}>
         <SemaforoBadge status={s.status} />
         {abaixo ? (
@@ -68,14 +70,13 @@ const estilos = StyleSheet.create({
     ...sombra.cartao,
   },
   pressionado: { opacity: 0.8 },
-  topo: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: espaco.s },
+  topo: { flexDirection: 'row', alignItems: 'center', gap: espaco.s },
   nome: { flex: 1, fontSize: fonte.subtitulo, fontWeight: peso.forte, color: cores.texto },
   linha: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     flexWrap: 'wrap',
     gap: espaco.s,
   },
-  sugerido: { fontSize: fonte.corpo, fontWeight: peso.forte, color: cores.vermelho },
+  sugerido: { flexShrink: 1, fontSize: fonte.corpo, fontWeight: peso.forte, color: cores.vermelho },
 });

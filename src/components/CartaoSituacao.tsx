@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Situacao } from '../domain/calculos';
 import { formatarPercentual, formatarReais } from '../domain/formatacao';
 import { cores, espaco, fonte, linha, peso, raio, sombra } from '../theme/tema';
-import { LinhaValor } from './LinhaValor';
+import { LinhaValor, ParDeValores } from './LinhaValor';
 import { SemaforoBadge } from './SemaforoBadge';
 
 interface Props {
@@ -27,15 +27,17 @@ export function CartaoSituacao({
   return (
     <View style={estilos.cartao}>
       {titulo ? <Text style={estilos.titulo}>{titulo}</Text> : null}
-      <View style={estilos.linha}>
-        <LinhaValor rotulo="Preço de venda" valor={formatarReais(precoVenda)} />
-        <LinhaValor
-          rotulo={`Margem (meta ${margemDesejada}%)`}
-          valor={formatarPercentual(situacao.margem)}
-          cor={situacao.status === 'verde' ? 'verde' : 'vermelho'}
-          alinhar="fim"
-        />
-      </View>
+      <ParDeValores
+        esquerda={<LinhaValor rotulo="Preço de venda" valor={formatarReais(precoVenda)} />}
+        direita={
+          <LinhaValor
+            rotulo={`Margem (meta ${margemDesejada}%)`}
+            valor={formatarPercentual(situacao.margem)}
+            cor={situacao.status === 'verde' ? 'verde' : 'vermelho'}
+            alinhar="fim"
+          />
+        }
+      />
       <View style={estilos.linha}>
         <SemaforoBadge status={situacao.status} />
         {mostrarSugerido && situacao.status === 'vermelho' ? (
@@ -59,10 +61,9 @@ const estilos = StyleSheet.create({
   titulo: { fontSize: fonte.legenda, fontWeight: peso.medio, color: cores.textoSuave },
   linha: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: espaco.s,
   },
-  sugerido: { fontSize: fonte.corpo, fontWeight: peso.forte, color: cores.vermelho },
+  sugerido: { flexShrink: 1, fontSize: fonte.corpo, fontWeight: peso.forte, color: cores.vermelho },
 });

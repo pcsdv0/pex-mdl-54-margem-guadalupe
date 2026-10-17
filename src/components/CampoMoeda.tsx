@@ -1,9 +1,18 @@
-import { parseReais } from '../domain/formatacao';
+import { normalizarMoeda, parseReais } from '../domain/formatacao';
 import { Campo, PropsCampo } from './Campo';
 
 /** Valor em R$, com teclado numérico. Aceita "5,33" ou "5.33" (RN-08); a leitura é feita com parseReais. */
 export function CampoMoeda(props: PropsCampo) {
-  return <Campo {...props} prefixo="R$" teclado="decimal-pad" placeholder="0,00" numerico />;
+  const { valor, onChange } = props;
+  // RN-08: ao sair do campo, "4" vira "4,00". Só mexe no texto se ele mudar.
+  function aoSair() {
+    const normalizado = normalizarMoeda(valor);
+    if (normalizado !== valor) onChange?.(normalizado);
+    props.aoSair?.();
+  }
+  return (
+    <Campo {...props} aoSair={aoSair} prefixo="R$" teclado="decimal-pad" placeholder="0,00" numerico />
+  );
 }
 
 export const MSG_VALOR_INVALIDO = 'Valor inválido. Use só números e vírgula, por exemplo 5,33.';

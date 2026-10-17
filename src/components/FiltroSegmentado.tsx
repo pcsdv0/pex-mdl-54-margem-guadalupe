@@ -51,6 +51,7 @@ const estilos = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: espaco.xs,
+    paddingVertical: espaco.s,
   },
   ativo: { backgroundColor: cores.primaria },
   texto: { fontSize: fonte.legenda, fontWeight: peso.medio, color: cores.primaria, textAlign: 'center' },

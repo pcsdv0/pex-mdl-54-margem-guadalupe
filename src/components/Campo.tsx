@@ -16,6 +16,8 @@ export interface PropsCampo {
   /** RNF-09: "next" passa ao próximo campo; "done" fecha o teclado. */
   tecla?: 'next' | 'done';
   aoConfirmar?: () => void;
+  /** Ao sair do campo (perder o foco). */
+  aoSair?: () => void;
   ref?: Ref<TextInput>;
 }
 
@@ -38,6 +40,7 @@ export function Campo({
   autoFocus,
   tecla = 'done',
   aoConfirmar,
+  aoSair,
   ref,
   prefixo,
   sufixo,
@@ -71,6 +74,7 @@ export function Campo({
           returnKeyType={tecla}
           submitBehavior={tecla === 'next' ? 'submit' : 'blurAndSubmit'}
           onSubmitEditing={aoConfirmar}
+          onBlur={aoSair}
         />
         {sufixo ? <Text style={estilos.extra}>{sufixo}</Text> : null}
       </View>
@@ -103,11 +107,13 @@ const estilos = StyleSheet.create({
   caixaLeitura: { backgroundColor: cores.fundo, borderColor: cores.borda },
   entrada: {
     flex: 1,
+    minWidth: 0,
     fontSize: fonte.subtitulo,
     color: cores.texto,
     paddingVertical: espaco.s,
   },
-  extra: { fontSize: fonte.subtitulo, color: cores.textoSuave, marginHorizontal: espaco.xs },
+  // Prefixo e sufixo nunca encolhem: "R$" não pode sair cortado (RNF-11, CA-28).
+  extra: { flexShrink: 0, fontSize: fonte.subtitulo, color: cores.textoSuave, marginHorizontal: espaco.xs },
   dica: { fontSize: fonte.legenda, color: cores.textoSuave },
   linhaErro: { flexDirection: 'row', alignItems: 'center', gap: espaco.xs },
   erro: { flex: 1, fontSize: fonte.legenda, color: cores.vermelho, fontWeight: peso.medio },

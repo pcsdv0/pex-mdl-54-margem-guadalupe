@@ -61,7 +61,7 @@ Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só s�
 | --- | --- | --- | --- | --- |
 | T38 | `normalizarMoeda`, milhar em `formatarPercentual` e `textoResultado` + testes | RN-08, RF-09, CA-27, CA-28 | T37 | [x] |
 | T39 | `theme/layout.ts` (`empilhar`, largura máxima) + `tests/layout.test.ts`; `useLayout` e `Tela` | RNF-11, CA-29 | T38 | [x] |
-| T40 | Componentes comuns sem corte: `LinhaValor`, `CartaoSituacao`, `ProdutoCard`, `Campo`/`CampoMoeda` (prefixo e duas casas), `Botao`, `CartaoResposta`, linha do histórico; varredura proíbe limite de linhas | RNF-11, RN-08, CA-28, CA-29 | T39 | [ ] |
+| T40 | Componentes comuns sem corte: `LinhaValor`, `CartaoSituacao`, `ProdutoCard`, `Campo`/`CampoMoeda` (prefixo e duas casas), `Botao`, `CartaoResposta`, linha do histórico; varredura proíbe limite de linhas | RNF-11, RN-08, CA-28, CA-29 | T39 | [x] |
 | T41 | Todas as telas com `Tela`/`useLayout`: rolagem, teclado, barras do sistema, largura máxima; cabeçalho, janela de confirmação e aviso | RNF-11, RNF-09, CA-29 | T40 | [ ] |
 | T42 | Resultado na meta (frase, observação e botões) e histórico com "igual" | RF-09, RF-06, RN-10, CA-26, CA-27 | T41 | [ ] |
 | T43 | Teste de repetição: apagar tudo e carregar exemplos várias vezes | RF-08, RF-17, CA-30 | T42 | [ ] |

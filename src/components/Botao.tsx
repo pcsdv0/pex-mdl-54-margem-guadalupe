@@ -84,8 +84,9 @@ const estilos = StyleSheet.create({
   bordaPerigo: { borderColor: cores.vermelho },
   pressionado: { opacity: 0.75 },
   desabilitado: { opacity: 0.5 },
-  conteudo: { flexDirection: 'row', alignItems: 'center', gap: espaco.s },
+  conteudo: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: espaco.s, maxWidth: '100%' },
   rotulo: {
+    flexShrink: 1,
     fontSize: fonte.corpo,
     fontWeight: peso.medio,
     textAlign: 'center',

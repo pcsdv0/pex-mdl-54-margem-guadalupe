@@ -3,6 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { cores, espaco, fonte, linha, peso, raio, sombra } from '../theme/tema';
 import { Icone } from './Icone';
 
+/** A frase grande cresce no máximo isto com a fonte do sistema (RNF-11). */
+const CRESCIMENTO_MAXIMO_FRASE = 1.4;
+
 /** RF-09: a resposta à pergunta do comerciante, em letras grandes. */
 export function CartaoResposta({ frase, observacao }: { frase: string; observacao?: string }) {
   return (
@@ -11,7 +14,9 @@ export function CartaoResposta({ frase, observacao }: { frase: string; observaca
         <Icone nome="pricetag" cor="primaria" />
         <Text style={estilos.rotulo}>A resposta</Text>
       </View>
-      <Text style={estilos.frase}>{frase}</Text>
+      <Text style={estilos.frase} maxFontSizeMultiplier={CRESCIMENTO_MAXIMO_FRASE}>
+        {frase}
+      </Text>
       {observacao ? <Text style={estilos.observacao}>{observacao}</Text> : null}
     </View>
   );
