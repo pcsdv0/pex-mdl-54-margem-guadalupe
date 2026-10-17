@@ -98,5 +98,8 @@ export const icone = {
 /** Área mínima de toque (RNF-07). */
 export const TOQUE_MINIMO = 48;
 
+/** Largura máxima do conteúdo em telas largas, em dp (RNF-11). */
+export const LARGURA_MAXIMA = 600;
+
 /** Algarismos de largura fixa, para números alinhados (RNF-08). */
 export const numeros = { fontVariant: ['tabular-nums'] as 'tabular-nums'[] };
