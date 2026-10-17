@@ -4,6 +4,7 @@ import {
   calcularMargem,
   calcularPrecoSugerido,
   calcularVariacaoCusto,
+  Situacao,
   variacaoSuspeita,
 } from './calculos';
 import { formatarPercentual, formatarReais } from './formatacao';
@@ -16,6 +17,27 @@ function margemDecimal(margemDesejada: number): string {
 /** RF-09: "Venda a R$ 5,87 para manter 25% de margem". */
 export function fraseResposta(precoSugeridoCentavos: number, margemDesejada: number): string {
   return `Venda a ${formatarReais(precoSugeridoCentavos)} para manter ${margemDesejada}% de margem`;
+}
+
+/**
+ * RF-09 (v1.4): o que o cartão de resposta diz. Abaixo da meta, a frase de sempre; na meta,
+ * que o preço atual já garante a margem, para não sugerir uma baixa de preço sem querer.
+ */
+export function textoResultado(
+  situacao: Situacao,
+  precoAtualCentavos: number,
+  margemDesejada: number,
+): { frase: string; observacao?: string } {
+  if (situacao.status === 'vermelho') {
+    return { frase: fraseResposta(situacao.precoSugerido, margemDesejada) };
+  }
+  return {
+    frase: `Seu preço de ${formatarReais(precoAtualCentavos)} já garante ${margemDesejada}% de margem`,
+    observacao:
+      precoAtualCentavos === situacao.precoSugerido
+        ? 'Esse é o preço sugerido.'
+        : `O mínimo para manter ${margemDesejada}% é ${formatarReais(situacao.precoSugerido)}.`,
+  };
 }
 
 /** RF-10: passos da conta do preço sugerido (RN-02, RN-06). */

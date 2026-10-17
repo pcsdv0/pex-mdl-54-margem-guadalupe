@@ -12,7 +12,7 @@ export function formatarReais(centavos: number): string {
   return `${sinal}R$ ${reais},${cents}`;
 }
 
-/** 20 → "20,0%"; com sinal: 10 → "+10,0%". null → "—" (sem variação, CA-06). */
+/** 20 → "20,0%"; com sinal: 10 → "+10,0%"; 10900 → "10.900,0%". null → "—" (sem variação, CA-06). */
 export function formatarPercentual(valor: number | null, comSinal = false): string {
   if (valor === null) {
     return '—';
@@ -26,7 +26,10 @@ export function formatarPercentual(valor: number | null, comSinal = false): stri
       sinal = '+';
     }
   }
-  const texto = `${Math.floor(decimos / 10)},${decimos % 10}`;
+  const inteiro = Math.floor(decimos / 10)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const texto = `${inteiro},${decimos % 10}`;
   return `${sinal}${texto}%`;
 }
 
@@ -50,4 +53,17 @@ export function parseReais(texto: string): number | null {
   const reais = m[1] === '' ? 0 : parseInt(m[1], 10);
   const cents = m[2] === undefined ? 0 : parseInt(m[2].padEnd(2, '0'), 10);
   return reais * 100 + cents;
+}
+
+/**
+ * RN-08: ao sair do campo de dinheiro, um valor válido ganha as duas casas ("4" → "4,00").
+ * Texto vazio ou inválido volta igual, para a mensagem de erro continuar valendo.
+ * Sem separador de milhar, porque o campo não o aceita ("1234" → "1234,00").
+ */
+export function normalizarMoeda(texto: string): string {
+  const centavos = parseReais(texto);
+  if (centavos === null) {
+    return texto;
+  }
+  return `${Math.floor(centavos / 100)},${String(centavos % 100).padStart(2, '0')}`;
 }

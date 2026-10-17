@@ -11,6 +11,7 @@ import {
   formatarData,
   formatarPercentual,
   formatarReais,
+  normalizarMoeda,
   parseReais,
 } from '../src/domain/formatacao';
 import {
@@ -18,6 +19,7 @@ import {
   explicarMargem,
   explicarPrecoSugerido,
   fraseResposta,
+  textoResultado,
 } from '../src/domain/explicacao';
 import { organizarLista, resumoLista } from '../src/domain/lista';
 import { validarCusto, validarProduto } from '../src/domain/validacao';
@@ -469,5 +471,71 @@ describe('avisoConferencia (RF-18)', () => {
   test('CA-25: dentro dos limites não há aviso', () => {
     expect(avisoConferencia(400, 440)).toBeNull();
     expect(avisoConferencia(400, 600)).toBeNull();
+  });
+});
+
+describe('normalizarMoeda (RN-08, CA-28)', () => {
+  test('completa as duas casas', () => {
+    expect(normalizarMoeda('4')).toBe('4,00');
+    expect(normalizarMoeda('4,4')).toBe('4,40');
+    expect(normalizarMoeda('5.5')).toBe('5,50');
+    expect(normalizarMoeda('0,5')).toBe('0,50');
+    expect(normalizarMoeda(',50')).toBe('0,50');
+  });
+
+  test('mantém o que já está certo e ignora espaços nas pontas', () => {
+    expect(normalizarMoeda('5,33')).toBe('5,33');
+    expect(normalizarMoeda('  4  ')).toBe('4,00');
+  });
+
+  test('texto vazio ou inválido volta igual, para a mensagem de erro aparecer', () => {
+    expect(normalizarMoeda('')).toBe('');
+    expect(normalizarMoeda('abc')).toBe('abc');
+    expect(normalizarMoeda('1.234')).toBe('1.234');
+    expect(normalizarMoeda('4,444')).toBe('4,444');
+    expect(normalizarMoeda('-4')).toBe('-4');
+  });
+
+  test('valores grandes não ganham separador de milhar (o campo não aceita milhar)', () => {
+    expect(normalizarMoeda('1234')).toBe('1234,00');
+  });
+});
+
+describe('formatarPercentual com milhar (RN-08)', () => {
+  test('separa o milhar com ponto', () => {
+    expect(formatarPercentual(10900)).toBe('10.900,0%');
+    expect(formatarPercentual(1234.56, true)).toBe('+1.234,6%');
+    expect(formatarPercentual(-2500)).toBe('-2.500,0%');
+  });
+
+  test('abaixo de mil não muda', () => {
+    expect(formatarPercentual(999.94)).toBe('999,9%');
+    expect(formatarPercentual(20)).toBe('20,0%');
+  });
+});
+
+describe('textoResultado (RF-09, CA-12, CA-27)', () => {
+  test('CA-12: abaixo da meta mantém "Venda a R$ 5,87 para manter 25% de margem", sem observação', () => {
+    const s = situacaoProduto(550, 440, 25);
+    expect(textoResultado(s, 550, 25)).toEqual({
+      frase: 'Venda a R$ 5,87 para manter 25% de margem',
+    });
+  });
+
+  test('CA-27: na meta, diz que o preço atual já garante a margem e mostra o mínimo', () => {
+    const s = situacaoProduto(550, 400, 25);
+    expect(textoResultado(s, 550, 25)).toEqual({
+      frase: 'Seu preço de R$ 5,50 já garante 25% de margem',
+      observacao: 'O mínimo para manter 25% é R$ 5,33.',
+    });
+  });
+
+  test('preço igual ao sugerido: diz que é o preço sugerido', () => {
+    const s = situacaoProduto(533, 400, 25);
+    expect(s.status).toBe('verde');
+    expect(textoResultado(s, 533, 25)).toEqual({
+      frase: 'Seu preço de R$ 5,33 já garante 25% de margem',
+      observacao: 'Esse é o preço sugerido.',
+    });
   });
 });
