@@ -4,7 +4,7 @@ import { cores, espaco, fonte, linha, peso, raio, sombra } from '../theme/tema';
 import { Icone } from './Icone';
 
 /** A frase grande cresce no máximo isto com a fonte do sistema (RNF-11). */
-const CRESCIMENTO_MAXIMO_FRASE = 1.4;
+const CRESCIMENTO_MAXIMO_FRASE = 1.3;
 
 /** RF-09: a resposta à pergunta do comerciante, em letras grandes. */
 export function CartaoResposta({ frase, observacao }: { frase: string; observacao?: string }) {
@@ -34,6 +34,6 @@ const estilos = StyleSheet.create({
   },
   topo: { flexDirection: 'row', alignItems: 'center', gap: espaco.s },
   rotulo: { fontSize: fonte.legenda, fontWeight: peso.forte, color: cores.primaria },
-  frase: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto },
+  frase: { fontSize: fonte.destaque, fontWeight: peso.forte, color: cores.texto },
   observacao: { fontSize: fonte.corpo, color: cores.texto },
 });

@@ -7,7 +7,7 @@ import { Icone } from './Icone';
 export function AlertaBanner({ mensagem }: { mensagem: string }) {
   return (
     <View accessibilityRole="alert" style={estilos.banner}>
-      <Icone nome="warning" cor="vermelho" />
+      <Icone nome="alert-circle" cor="vermelho" />
       <View style={estilos.textos}>
         <Text style={estilos.titulo}>Atenção</Text>
         <Text style={estilos.mensagem}>{mensagem}</Text>

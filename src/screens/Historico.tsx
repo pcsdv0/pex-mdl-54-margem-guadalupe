@@ -12,10 +12,10 @@ import { cores, espaco, fonte, linha, NomeCor, numeros, peso, raio } from '../th
 
 type Props = NativeStackScreenProps<Rotas, 'Historico'>;
 
-// RF-16: seta + palavra + cor, nunca só a cor (RNF-06).
+// RF-16: seta + palavra, em azul: subir ou cair o custo não é, sozinho, bom nem ruim (CA-33).
 const VISUAL: Record<Sentido, { icone: NomeIcone; palavra: string; cor: NomeCor }> = {
-  subiu: { icone: 'arrow-up', palavra: 'subiu', cor: 'vermelho' },
-  caiu: { icone: 'arrow-down', palavra: 'caiu', cor: 'verde' },
+  subiu: { icone: 'arrow-up', palavra: 'subiu', cor: 'primaria' },
+  caiu: { icone: 'arrow-down', palavra: 'caiu', cor: 'primaria' },
   igual: { icone: 'remove', palavra: 'igual', cor: 'textoSuave' },
 };
 

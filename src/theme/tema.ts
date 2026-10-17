@@ -52,12 +52,13 @@ export const espaco = {
   xxl: 32,
 };
 
-/** 4 tamanhos de fonte (RNF-05: 4 a 5). */
+/** 5 tamanhos de fonte (RNF-05). "destaque" é só da frase da resposta, o maior elemento da tela de resultado. */
 export const fonte = {
   legenda: 14,
   corpo: 17,
   subtitulo: 20,
   titulo: 26,
+  destaque: 32,
 };
 
 export const peso = {

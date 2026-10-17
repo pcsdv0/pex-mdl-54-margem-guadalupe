@@ -67,4 +67,19 @@ describe('varredura das telas e componentes (RNF-05, RNF-10)', () => {
   test.each(textosDoApp)('CA-32: %s usa só "margem desejada" (e "meta")', (arquivo) => {
     expect(ler(arquivo)).not.toMatch(TERMO_PROIBIDO);
   });
+
+  // CA-33: a cor significa uma coisa só, e a resposta é o maior texto.
+  test('CA-33: o histórico não usa verde nem vermelho', () => {
+    expect(ler('src/screens/Historico.tsx')).not.toMatch(/'verde'|'vermelho'|cores\.(verde|vermelho)/);
+  });
+
+  test('CA-33: a frase da resposta usa o tamanho destaque', () => {
+    expect(ler('src/components/CartaoResposta.tsx')).toMatch(/fonte\.destaque/);
+  });
+
+  test('CA-33: um só ícone de alerta (alert-circle); sem "warning"', () => {
+    for (const arquivo of arquivos) {
+      expect(ler(arquivo)).not.toMatch(/['"]warning['"]/);
+    }
+  });
 });

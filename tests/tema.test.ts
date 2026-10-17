@@ -27,6 +27,12 @@ describe('tema (RNF-05, RNF-06, RNF-07)', () => {
     }
   });
 
+  test('CA-33: o tamanho destaque é o maior do tema, acima do título', () => {
+    const maior = Math.max(...Object.values(fonte));
+    expect(fonte.destaque).toBe(maior);
+    expect(fonte.destaque).toBeGreaterThan(fonte.titulo);
+  });
+
   test('4 a 5 tamanhos de fonte', () => {
     const tamanhos = new Set(Object.values(fonte));
     expect(tamanhos.size).toBeGreaterThanOrEqual(4);
