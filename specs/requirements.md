@@ -121,9 +121,9 @@ Valores **ilustrativos**, para demonstração. Usar preços reais do mercado fic
 
 (Na carga inicial, o refrigerante nasce em vermelho: margem 18,8% contra 25% desejada, e os demais em verde. Na demonstração, a nova compra do arroz a R$ 4,40 leva a margem de 27,3% a 20,0%, vermelha, e o preço sugerido é R$ 5,87.)
 
-## 10. Decisões sobre pontos que estavam em aberto
+## 10. Decisões de escopo (v1.4)
 - **Margem por produto ou por categoria:** por produto (RN-12, ADR-007). Margem por categoria virou ideia para depois (`docs/depois.md`).
-- **Preços e margens reais do mercado:** o protótipo usa os 8 exemplos ilustrativos do §9. Trocar pelos reais é trabalho para depois da apresentação (`docs/depois.md`).
+- **Preços e margens reais do mercado:** o protótipo usa os 8 exemplos ilustrativos do §9. Preços reais ficam para depois da apresentação (`docs/depois.md`).
 
 ## 11. Registro de mudanças
 | Versão | Data | O que mudou | Por quê |
@@ -152,6 +152,6 @@ Valores **ilustrativos**, para demonstração. Usar preços reais do mercado fic
 | v1.4 | 16/10/2026 | **RF-08/RF-17, CA-30:** "Apagar todos os dados" e "Carregar exemplos" são repetíveis para ensaios. | Preparar o ensaio da apresentação. O comportamento já existia (v1.3); passa a ter critério de aceite e teste. |
 | v1.4 | 16/10/2026 | **RNF-12 (nova), RNF-07:** configuração do APK de teste; toque mínimo em dp. | Preparar a instalação no celular sem o Expo Go. O build não é gerado nesta versão. |
 | v1.4 | 16/10/2026 | **RN-11 (nova), RF-10, RF-13, CA-31:** a margem é bruta, sobre o preço de venda, a partir do custo pago; impostos sobre a venda e despesas fixas não entram. A frase aparece na Ajuda e em "Como chegamos nisso". | Um comerciante pode achar que a margem do app já desconta imposto e despesa. A definição precisava estar escrita e visível. |
-| v1.4 | 16/10/2026 | **RN-12 (nova), §10:** margem desejada é por produto (ADR-007). As duas perguntas em aberto viraram decisão ou item de `docs/depois.md`; o §9 não pede mais para trocar os exemplos "se possível". | Não deixar pendência com cara de coisa esquecida na entrega. |
+| v1.4 | 16/10/2026 | **RN-12 (nova), §10:** margem desejada é por produto (ADR-007). As duas dúvidas do antigo §10 viraram decisão ou item de `docs/depois.md`; o §9 não pede mais para trocar os exemplos antes da apresentação. | Não deixar na entrega nada que pareça esquecido. |
 | v1.4 | 16/10/2026 | **Vocabulário (§4), CA-32:** "margem desejada" é o termo do produto e "meta" é o apelido curto dele. Telas, Ajuda, README e testes seguem isso, inclusive a pergunta do app (§2), que agora termina em "manter a margem desejada?". | Os textos misturavam "a margem que você quer", "a sua margem" e "meta". |
 | v1.4 | 16/10/2026 | **RNF-05, RF-09, RF-16, CA-33:** paleta azul + verde/vermelho só de situação; frase da resposta no maior tamanho de letra (5º tamanho); histórico sem verde/vermelho; um só ícone de alerta. | Acabamento: a resposta deve ser o maior elemento do resultado, e a cor deve significar uma coisa só. |

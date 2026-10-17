@@ -75,7 +75,7 @@ Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só s�
 | T46 | `NOTA_ESCOPO_CALCULO` + teste; nota na Ajuda e em "Como chegamos nisso" | RN-11, RF-10, RF-13, CA-31 | T45 | [x] |
 | T47 | Vocabulário único: textos da interface, glossário e README; varredura de termos proibidos | CA-32 | T46 | [x] |
 | T48 | Paleta e tipografia: tamanho `destaque` na resposta, histórico em azul, ícone de alerta único + testes | RNF-05, RF-09, RF-16, CA-33 | T47 | [x] |
-| T49 | ADR-007; fim das pendências (§9, §10, `docs/depois.md`) com teste de varredura dos documentos; remover o arquivo de prompt de `docs/` | RN-12, RNF-04 | T48 | [ ] |
+| T49 | ADR-007; fim dos pontos soltos (§9, §10, `docs/depois.md`) com teste de varredura dos documentos | RN-12, RNF-04 | T48 | [x] |
 | T50 | Checklist com CA-31 a CA-33 e conferência dos estados; README e `docs/processo-sdd.md` com os números reais | todos os CA novos | T49 | [ ] |
 
 ## Matriz de rastreabilidade
@@ -120,4 +120,4 @@ Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só s�
 | RN-11, RF-10, RF-13 | T46 | domain.test (NOTA_ESCOPO_CALCULO, CA-31), checklist CA-31 |
 | CA-32 (vocabulário) | T47 | varredura.test (termos proibidos em `src`) |
 | RNF-05, RF-09, RF-16 (CA-33) | T48 | tema.test (tamanho destaque), varredura.test (histórico sem verde/vermelho, um só ícone de alerta) |
-| RN-12 | T49 | ADR-007; docs.test (sem pendências nos documentos) |
+| RN-12 | T49 | ADR-007; docs.test (sem ponto solto nos documentos) |
