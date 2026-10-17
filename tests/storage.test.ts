@@ -5,8 +5,10 @@ import {
   calcularMargem,
   calcularVariacaoCusto,
   sentidoVariacao,
+  situacaoProduto,
   statusMargem,
 } from '../src/domain/calculos';
+import { fraseResposta } from '../src/domain/explicacao';
 import { formatarPercentual } from '../src/domain/formatacao';
 import { boasVindasDispensada, dispensarBoasVindas } from '../src/storage/preferencias';
 import {
@@ -197,6 +199,45 @@ describe('apagar todos os dados (RF-17)', () => {
     await AsyncStorage.setItem('outra-coisa', 'x');
     await apagarTodosOsDados();
     expect(await AsyncStorage.getItem('outra-coisa')).toBe('x');
+  });
+
+  test('CA-30: apagar e carregar exemplos, várias vezes, sempre deixa o mesmo estado de ensaio', async () => {
+    const repo = criarRepositorio();
+    for (let ensaio = 0; ensaio < 4; ensaio++) {
+      await carregarExemplos(repo);
+      // Um ensaio qualquer mexe nos dados antes de zerar.
+      const antes = await repo.listarProdutos();
+      const arrozAntes = antes.find((x) => x.nome === 'Arroz 1 kg')!;
+      await registrarCompra(repo, arrozAntes, 440);
+      await repo.salvarProduto({ ...arrozAntes, custoAtual: 440, precoVenda: 587 });
+      await dispensarBoasVindas();
+
+      await apagarTodosOsDados();
+      expect(await repo.listarProdutos()).toEqual([]);
+      expect(await boasVindasDispensada()).toBe(false);
+
+      // Dois toques seguidos em "Carregar exemplos" depois de zerar.
+      await Promise.all([carregarExemplos(repo), carregarExemplos(repo)]);
+      const produtos = await repo.listarProdutos();
+      expect(produtos).toHaveLength(8);
+      expect(produtos.map(({ id, ...resto }) => resto)).toEqual(EXEMPLOS);
+
+      const abaixo = produtos.filter(
+        (x) => situacaoProduto(x.precoVenda, x.custoAtual, x.margemDesejada).status === 'vermelho',
+      );
+      expect(abaixo.map((x) => x.nome)).toEqual(['Refrigerante 2 L']);
+      const refri = abaixo[0];
+      expect(situacaoProduto(refri.precoVenda, refri.custoAtual, refri.margemDesejada).precoSugerido).toBe(867);
+
+      const arroz = produtos.find((x) => x.nome === 'Arroz 1 kg')!;
+      expect([arroz.custoAtual, arroz.precoVenda]).toEqual([400, 550]);
+      expect((await repo.listarHistorico(arroz.id)).map((h) => h.custo)).toEqual([400]);
+      // A demonstração volta a dar R$ 5,87 (CA-12).
+      const demo = situacaoProduto(arroz.precoVenda, 440, arroz.margemDesejada);
+      expect(fraseResposta(demo.precoSugerido, arroz.margemDesejada)).toBe(
+        'Venda a R$ 5,87 para manter 25% de margem',
+      );
+    }
   });
 
   test('depois de apagar, carregar exemplos funciona de novo', async () => {
