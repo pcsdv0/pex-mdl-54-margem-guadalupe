@@ -76,7 +76,7 @@ Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só s�
 | T47 | Vocabulário único: textos da interface, glossário e README; varredura de termos proibidos | CA-32 | T46 | [x] |
 | T48 | Paleta e tipografia: tamanho `destaque` na resposta, histórico em azul, ícone de alerta único + testes | RNF-05, RF-09, RF-16, CA-33 | T47 | [x] |
 | T49 | ADR-007; fim dos pontos soltos (§9, §10, `docs/depois.md`) com teste de varredura dos documentos | RN-12, RNF-04 | T48 | [x] |
-| T50 | Checklist com CA-31 a CA-33 e conferência dos estados; README e `docs/processo-sdd.md` com os números reais | todos os CA novos | T49 | [ ] |
+| T50 | Checklist com CA-31 a CA-33 e conferência dos estados; README e `docs/processo-sdd.md` com os números reais | todos os CA novos | T49 | [x] |
 
 ## Matriz de rastreabilidade
 | Requisito | Tarefas | Teste |

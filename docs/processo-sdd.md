@@ -16,6 +16,8 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 
 6. **v1.4 (apresentação de 23/10/2026)** — `22d1b93` *spec*: o teste no celular real (Android, Expo Go) mostrou texto cortado ("Margem (meta" sem "25%)", "Preço de" e a data "16/10/202"), "R 4" no campo de custo e uma frase de resultado que sugeria baixar o preço. A spec veio antes: RNF-11 e RNF-12, RN-10 e CA-26 a CA-30, mais as mudanças em RN-08 e RF-09. Tarefas T38 a T45 (`7f6ac97` em diante), com os testes de domínio e de layout escritos antes do código.
 
+7. **v1.4, acabamento** — `2953697` *spec* e `67e9caa` *spec*: a margem passa a ser definida como bruta (RN-11), a margem desejada fica por produto (RN-12, ADR-007), o vocabulário é único ("margem desejada" e "meta") e a cor significa uma coisa só. As dúvidas do antigo §10 viraram decisão ou item de `docs/depois.md`. Tarefas T46 a T50 (`806cc42` em diante); os testes de varredura foram escritos antes da mudança dos textos e dos estilos e vistos falhando.
+
 ## Requisitos funcionais
 
 | Requisito | Tarefa | Commit | Teste |
@@ -38,6 +40,7 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 | RF-16 Histórico com seta e palavra | T26 | `a7abad7` | `domain.test` › sentidoVariacao (CA-20); checklist CA-20 |
 | RF-17 Apagar todos os dados | T32 | `d0a51f9` | `storage.test` › apagarTodosOsDados (CA-24); checklist CA-24 |
 | RF-18 Conferência do custo | T33 | `c092e6a` | `domain.test` › avisoConferencia (CA-25); checklist CA-25 |
+| Vocabulário (CA-32) | T47 | `3b6a851` | `varredura.test` (termos proibidos em `src`) |
 | RF-09 (v1.4) Resposta na meta | T38, T42 | `7f6ac97`, `d82c705` | `domain.test` › textoResultado (CA-27); checklist CA-27 |
 | RF-06 (v1.4) Compra igual no histórico | T42 | `d82c705` | `storage.test` › "compra com custo igual ao anterior" (CA-26); checklist CA-26 |
 | RF-08, RF-17 (v1.4) Ensaio repetível | T43 | `eb1c557` | `storage.test` › CA-30 (4 repetições de apagar e carregar); checklist CA-30 |
@@ -57,6 +60,8 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 | RN-09 Conferência do custo (±50%) | T33 | `c092e6a` | `domain.test` › variacaoSuspeita (CA-25, inclusive exatamente ±50%) |
 | RN-08 (v1.4) Duas casas ao sair do campo, milhar nos percentuais | T38, T40 | `7f6ac97`, `bad1eff` | `domain.test` › normalizarMoeda, formatarPercentual; `render.test` › CampoMoeda (CA-28) |
 | RN-10 Compra com custo igual | T42 | `d82c705` | `storage.test` (CA-26) |
+| RN-11 Escopo do cálculo (margem bruta) | T46 | `806cc42` | `domain.test` › NOTA_ESCOPO_CALCULO; `render.test` › "Como chegamos nisso"; `varredura.test` (Ajuda) (CA-31) |
+| RN-12 Margem desejada por produto | T49 | `e942d67` | ADR-007; `docs.test` |
 
 ## Requisitos não funcionais
 
@@ -66,7 +71,7 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 | RNF-02 pt-BR e R$ | T07 | `c98b7e9` | `domain.test` › formatação e leitura |
 | RNF-03 3 toques até o resultado | T13, T24 | `a849974`, `1c246a5` | checklist RNF-03 |
 | RNF-04 Fórmulas com testes | todas de domínio | — | `npm test` |
-| RNF-05 Tema único | T19, T28, T34 | `d344e0e`, `060d48e`, `8ac1d96` | `varredura.test` (sem cor ou tamanho solto, CA-21) |
+| RNF-05 Tema único | T19, T28, T34, T48 | `d344e0e`, `060d48e`, `8ac1d96`, `a6ca51d` | `varredura.test` (sem cor ou tamanho solto, CA-21; histórico sem verde/vermelho, um só ícone de alerta, CA-33); `tema.test` (tamanho destaque) |
 | RNF-06 Contraste e semáforo com ícone e palavra | T19, T20 | `d344e0e`, `07a8f25` | `tema.test` (contraste ≥ 4,5:1, CA-21); checklist |
 | RNF-07 Toque ≥ 48 px, um botão principal | T20, T22–T25 | `07a8f25` … `335702f` | `tema.test` (toque mínimo); checklist (só no aparelho) |
 | RNF-08 Números em destaque | T20 | `07a8f25` | checklist |
@@ -77,7 +82,7 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 
 ## Situação na entrega
 
-- Requisitos: 18 RF, 12 RNF, 10 RN, 30 critérios de aceite; 7 arquivos em `docs/adr` (o modelo e 6 decisões); 45 tarefas (T01 a T45).
-- Testes automáticos: 288 passando em 7 suítes (`npm test`); `npx tsc --noEmit` sem erros; `npx expo-doctor` 21/21.
-- Teste de tela: o roteiro da demonstração foi conferido no navegador (Expo web) na v1.4, em 320, 360 e 411 dp. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`, incluindo a Parte 5 de tamanhos de tela e fontes). Por isso T15 e T16 continuam `[ ]` no `tasks.md`.
+- Requisitos: 18 RF, 12 RNF, 12 RN, 33 critérios de aceite; 8 arquivos em `docs/adr` (o modelo e 7 decisões); 50 tarefas (T01 a T50).
+- Testes automáticos: 354 passando em 8 suítes (`npm test`); `npx tsc --noEmit` sem erros; `npx expo-doctor` 21/21.
+- Teste de tela: o roteiro da demonstração e os estados foram conferidos no navegador (Expo web) na v1.4, em 320, 360 e 411 dp. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`, incluindo a Parte 5 de tamanhos de tela e fontes). Por isso T15 e T16 continuam `[ ]` no `tasks.md`.
 - A correção dos cortes de texto vem de uma hipótese tirada do código e dos sintomas (design §11); só o aparelho confirma.

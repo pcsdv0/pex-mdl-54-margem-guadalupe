@@ -1,4 +1,4 @@
-# Checklist de teste manual (T15, T29, T36 e T45)
+# Checklist de teste manual (T15, T29, T36, T45 e T50)
 
 Passos na tela para os critérios de aceite CA-01 a CA-25 (`specs/requirements.md` §7), na interface da v1.4.
 
@@ -78,6 +78,18 @@ Passos na tela para os critérios de aceite CA-01 a CA-25 (`specs/requirements.m
 | CA-27 | Com os exemplos carregados, Arroz (R$ 4,00 / R$ 5,50) → "Nova compra" → `4` → "Confirmar compra" | "Seu preço de R$ 5,50 já garante 25% de margem" e "O mínimo para manter 25% é R$ 5,33."; botão principal "Manter preço atual (R$ 5,50)"; abaixo, "Usar o preço sugerido (R$ 5,33)" | v1.4: conferido com preço igual ao sugerido ("Esse é o preço sugerido."); o texto do caso R$ 5,50 está no teste automático | ☐ |
 | CA-30 | Ajuda → "Apagar todos os dados" → "Apagar tudo" → "Carregar exemplos". Repetir 3 vezes | Sempre 8 produtos; refrigerante primeiro, 18,8%, "Sugerido: R$ 8,67"; arroz R$ 5,50 | Teste automático (4 repetições) | ☐ |
 | Demo | Lista → Arroz → Nova compra `4,40` → Resultado "Venda a R$ 5,87 para manter 25% de margem" → "Como chegamos nisso" (R$ 4,40 ÷ (1 − 0,25) = R$ 5,87) → "Aplicar preço sugerido" → Lista com arroz verde e aviso "Preço atualizado para R$ 5,87" → Histórico com +10,0% | Cada passo funciona sem travar | v1.4: conferido do começo ao fim | ☐ |
+
+## Parte 4b — acabamento (CA-31 a CA-33 e estados)
+
+| CA | Passos | Resultado esperado | Navegador | Resultado (Expo Go) |
+| --- | --- | --- | --- | --- |
+| CA-31 | "?" no topo, seção "Margem" | Abaixo do exemplo: "Margem bruta sobre o preço de venda, calculada a partir do custo pago. Impostos sobre a venda e despesas fixas não entram nesta versão." | Teste automático (a Ajuda usa a mesma constante) | ☐ |
+| CA-31 | Resultado de uma compra → "Como chegamos nisso" aberto | A mesma frase no fim da área | v1.4: conferido (área aberta no resultado) | ☐ |
+| CA-32 | Ler boas-vindas, lista vazia, Ajuda e cadastro | Só "margem desejada" (e "meta" nos selos); nada de "a sua margem" ou "a margem que você quer" | Teste automático (varredura de `src`) | ☐ |
+| CA-33 | Tela de resultado | A frase "Venda a R$ … para manter …% de margem" é o maior texto da tela | v1.4: conferido (360 dp) | ☐ |
+| CA-33 | Histórico com compras que subiram e caíram | Setas e palavras em azul; sem verde nem vermelho | v1.4: conferido | ☐ |
+| Estados | App vazio (lista vazia); cadastro com campos vazios (erro junto ao campo); histórico de produto novo ("primeira compra"); "Aplicar preço sugerido" (aviso "Preço atualizado para R$ …") | Cada estado tem texto claro, ícone e um botão principal | v1.4: conferidos (lista vazia, erro, primeira compra, aviso após aplicar) | ☐ |
+| Ícones | Percorrer as telas | Alerta e erro sempre com o mesmo ícone (círculo com "!"); confirmação sempre com o círculo com "✓" | Teste automático (sem "warning") | ☐ |
 
 ## Parte 5 — telas e fontes (CA-29, RNF-11)
 
