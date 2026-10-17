@@ -10,7 +10,7 @@ import { CartaoSituacao } from '../components/CartaoSituacao';
 import { ComoChegamos } from '../components/ComoChegamos';
 import { Tela } from '../components/Tela';
 import { calcularVariacaoCusto, situacaoProduto } from '../domain/calculos';
-import { explicarMargem, explicarPrecoSugerido, fraseResposta } from '../domain/explicacao';
+import { explicarMargem, explicarPrecoSugerido, textoResultado } from '../domain/explicacao';
 import { formatarPercentual, formatarReais } from '../domain/formatacao';
 import { Rotas } from '../navigation';
 import { Produto, repositorio } from '../storage/repositorio';
@@ -39,6 +39,7 @@ export function ResultadoCompraScreen({ navigation, route }: Props) {
   const situacao = situacaoProduto(produto.precoVenda, produto.custoAtual, produto.margemDesejada);
   const variacao = calcularVariacaoCusto(custoAnterior, produto.custoAtual);
   const abaixo = situacao.status === 'vermelho';
+  const resposta = textoResultado(situacao, produto.precoVenda, produto.margemDesejada);
 
   async function aplicar() {
     if (concluido.current) return;
@@ -67,14 +68,7 @@ export function ResultadoCompraScreen({ navigation, route }: Props) {
         </Text>
       </View>
 
-      <CartaoResposta
-        frase={fraseResposta(situacao.precoSugerido, produto.margemDesejada)}
-        observacao={
-          abaixo
-            ? undefined
-            : `Seu preço atual de ${formatarReais(produto.precoVenda)} já garante essa margem.`
-        }
-      />
+      <CartaoResposta frase={resposta.frase} observacao={resposta.observacao} />
 
       <CartaoSituacao
         titulo="Se mantiver o preço atual"
@@ -102,17 +96,37 @@ export function ResultadoCompraScreen({ navigation, route }: Props) {
         ]}
       />
 
+      {/* RF-09: abaixo da meta o principal é aplicar o sugerido; na meta, manter o preço atual. */}
       <View style={estilos.botoes}>
-        <Botao
-          titulo={`Aplicar preço sugerido (${formatarReais(situacao.precoSugerido)})`}
-          icone="checkmark"
-          onPress={aplicar}
-        />
-        <Botao
-          titulo={`Manter preço atual (${formatarReais(produto.precoVenda)})`}
-          variante="secundario"
-          onPress={manter}
-        />
+        {abaixo ? (
+          <>
+            <Botao
+              titulo={`Aplicar preço sugerido (${formatarReais(situacao.precoSugerido)})`}
+              icone="checkmark"
+              onPress={aplicar}
+            />
+            <Botao
+              titulo={`Manter preço atual (${formatarReais(produto.precoVenda)})`}
+              variante="secundario"
+              onPress={manter}
+            />
+          </>
+        ) : (
+          <>
+            <Botao
+              titulo={`Manter preço atual (${formatarReais(produto.precoVenda)})`}
+              icone="checkmark"
+              onPress={manter}
+            />
+            {situacao.precoSugerido !== produto.precoVenda ? (
+              <Botao
+                titulo={`Usar o preço sugerido (${formatarReais(situacao.precoSugerido)})`}
+                variante="secundario"
+                onPress={aplicar}
+              />
+            ) : null}
+          </>
+        )}
       </View>
     </Tela>
   );

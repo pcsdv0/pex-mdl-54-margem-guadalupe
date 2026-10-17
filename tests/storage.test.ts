@@ -1,7 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { EXEMPLOS, carregarExemplos } from '../src/data/exemplos';
-import { calcularMargem, statusMargem } from '../src/domain/calculos';
+import {
+  calcularMargem,
+  calcularVariacaoCusto,
+  sentidoVariacao,
+  statusMargem,
+} from '../src/domain/calculos';
 import { formatarPercentual } from '../src/domain/formatacao';
 import { boasVindasDispensada, dispensarBoasVindas } from '../src/storage/preferencias';
 import {
@@ -100,6 +105,21 @@ describe('repositório com AsyncStorage (RF-07)', () => {
     await cadastrarProduto(criarRepositorio(), ARROZ);
     expect(JSON.parse((await AsyncStorage.getItem('produtos')) ?? 'null')).toHaveLength(1);
     expect(JSON.parse((await AsyncStorage.getItem('historico')) ?? 'null')).toHaveLength(1);
+  });
+});
+
+describe('compra com custo igual ao anterior (RN-10, CA-26)', () => {
+  test('é gravada e aparece no histórico como "igual", com 0,0%', async () => {
+    const repo = criarRepositorio();
+    const p = await cadastrarProduto(repo, ARROZ, new Date('2026-10-01T10:00:00Z'));
+    const r = await registrarCompra(repo, p, 400, new Date('2026-10-15T10:00:00Z'));
+    expect(r.custoAnterior).toBe(400);
+
+    const historico = await repo.listarHistorico(p.id);
+    expect(historico.map((h) => h.custo)).toEqual([400, 400]);
+    const variacao = calcularVariacaoCusto(historico[1].custo, historico[0].custo);
+    expect(sentidoVariacao(variacao)).toBe('igual');
+    expect(formatarPercentual(variacao, true)).toBe('0,0%');
   });
 });
 
