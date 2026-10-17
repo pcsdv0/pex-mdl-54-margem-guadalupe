@@ -28,7 +28,7 @@ Para voltar ao estado inicial (antes de um ensaio ou da apresentação): toque n
 ## Como testar
 
 ```bash
-npm test           # testes automáticos das fórmulas, validações e armazenamento
+npm test           # 288 testes: fórmulas, validações, armazenamento, layout por tela e fonte, configuração do APK
 npx tsc --noEmit   # checagem de tipos do TypeScript
 ```
 
@@ -58,8 +58,8 @@ Ao fim, o EAS mostra um link e um QR code para baixar o `.apk`. No celular Andro
 | `src/screens/` | Telas: Lista de produtos, Produto, Nova compra, Resultado, Histórico, Ajuda |
 | `src/components/` | Peças da interface: botões, campos, cartões (situação, resposta, boas-vindas), semáforo, ícones, avisos, janela de confirmação, busca e filtro |
 | `src/navigation/` | Navegação em pilha |
-| `src/theme/` | `tema.ts` (cores, espaços, fontes, raios, sombra, toque mínimo) e `contraste.ts` |
-| `tests/` | `domain.test.ts`, `storage.test.ts`, `tema.test.ts` (contraste), `varredura.test.ts` (sem cor/tamanho solto, rótulos), `setup.ts` e `checklist-manual.md` |
+| `src/theme/` | `tema.ts` (cores, espaços, fontes, raios, sombra, toque mínimo, largura máxima), `contraste.ts` e `layout.ts` (quando valores ficam um embaixo do outro) |
+| `tests/` | `domain.test.ts`, `storage.test.ts`, `tema.test.ts` (contraste), `layout.test.ts` e `render.test.tsx` (telas e fontes), `config.test.ts` (APK), `varredura.test.ts` (sem cor/tamanho solto, rótulos, sem limite de linhas), `setup.ts` e `checklist-manual.md` |
 | `App.tsx`, `index.ts` | Entrada do app |
 
 ## Equipe

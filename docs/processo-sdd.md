@@ -1,6 +1,6 @@
 # Processo SDD: do requisito ao commit
 
-Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um requisito do `specs/requirements.md` (v1.3) à tarefa do `specs/tasks.md` que o implementou, ao commit e ao teste que o cobre. Todos os hashes citados existem no histórico (`git log --oneline`).
+Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um requisito do `specs/requirements.md` (v1.4) à tarefa do `specs/tasks.md` que o implementou, ao commit e ao teste que o cobre. Todos os hashes citados existem no histórico (`git log --oneline`).
 
 ## Linha do tempo
 
@@ -13,6 +13,8 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
    - a tela Produto apagava o que tinha sido digitado e não salvo ao voltar da Ajuda.
 
    Também entraram "Apagar todos os dados" (RF-17) e o aviso "Confira o valor" (RN-09, RF-18). Tarefas T30 a T37 (`a16e4fd` em diante). O design foi alinhado ao código, e a T16 foi reaberta porque depende da T15, que ainda não foi executada no celular.
+
+6. **v1.4 (apresentação de 23/10/2026)** — `22d1b93` *spec*: o teste no celular real (Android, Expo Go) mostrou texto cortado ("Margem (meta" sem "25%)", "Preço de" e a data "16/10/202"), "R 4" no campo de custo e uma frase de resultado que sugeria baixar o preço. A spec veio antes: RNF-11 e RNF-12, RN-10 e CA-26 a CA-30, mais as mudanças em RN-08 e RF-09. Tarefas T38 a T45 (`7f6ac97` em diante), com os testes de domínio e de layout escritos antes do código.
 
 ## Requisitos funcionais
 
@@ -36,6 +38,9 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 | RF-16 Histórico com seta e palavra | T26 | `a7abad7` | `domain.test` › sentidoVariacao (CA-20); checklist CA-20 |
 | RF-17 Apagar todos os dados | T32 | `d0a51f9` | `storage.test` › apagarTodosOsDados (CA-24); checklist CA-24 |
 | RF-18 Conferência do custo | T33 | `c092e6a` | `domain.test` › avisoConferencia (CA-25); checklist CA-25 |
+| RF-09 (v1.4) Resposta na meta | T38, T42 | `7f6ac97`, `d82c705` | `domain.test` › textoResultado (CA-27); checklist CA-27 |
+| RF-06 (v1.4) Compra igual no histórico | T42 | `d82c705` | `storage.test` › "compra com custo igual ao anterior" (CA-26); checklist CA-26 |
+| RF-08, RF-17 (v1.4) Ensaio repetível | T43 | `eb1c557` | `storage.test` › CA-30 (4 repetições de apagar e carregar); checklist CA-30 |
 
 ## Regras de negócio
 
@@ -50,6 +55,8 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 | RN-07 Validação | T06 | `e1dbb06` | `domain.test` › validarProduto e validarCusto (CA-10) |
 | RN-08 Leitura de valores e datas | T07 | `c98b7e9` | `domain.test` › parseReais e formatarData |
 | RN-09 Conferência do custo (±50%) | T33 | `c092e6a` | `domain.test` › variacaoSuspeita (CA-25, inclusive exatamente ±50%) |
+| RN-08 (v1.4) Duas casas ao sair do campo, milhar nos percentuais | T38, T40 | `7f6ac97`, `bad1eff` | `domain.test` › normalizarMoeda, formatarPercentual; `render.test` › CampoMoeda (CA-28) |
+| RN-10 Compra com custo igual | T42 | `d82c705` | `storage.test` (CA-26) |
 
 ## Requisitos não funcionais
 
@@ -65,8 +72,12 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 | RNF-08 Números em destaque | T20 | `07a8f25` | checklist |
 | RNF-09 Teclado | T20, T23, T24 | `07a8f25`, `6199a5b`, `1c246a5` | checklist (só no aparelho; **ainda não verificado**) |
 | RNF-10 Acessibilidade | T20, T28 | `07a8f25`, `060d48e` | `varredura.test` (rótulo em todo elemento tocável); checklist |
+| RNF-11 Telas e fontes | T39, T40, T41 | `b6a6c30`, `bad1eff`, `1947505` | `layout.test`, `render.test` (20 combinações de tela e fonte), `varredura.test` (sem limite de linhas); checklist CA-29 (**só no aparelho, ainda não executado**) |
+| RNF-12 Instalação (APK) | T44 | `b14fb49` | `config.test` (`app.json`, `eas.json`); o build não foi gerado |
 
 ## Situação na entrega
 
-- Testes automáticos: 193 passando em 4 suítes (`npm test`); `npx tsc --noEmit` sem erros; `npx expo-doctor` 21/21.
-- Teste de tela: conferido no navegador (Expo web), incluindo o roteiro da demonstração completo na v1.3. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`). Por isso T15 e T16 continuam `[ ]` no `tasks.md`.
+- Requisitos: 18 RF, 12 RNF, 10 RN, 30 critérios de aceite; 7 arquivos em `docs/adr` (o modelo e 6 decisões); 45 tarefas (T01 a T45).
+- Testes automáticos: 288 passando em 7 suítes (`npm test`); `npx tsc --noEmit` sem erros; `npx expo-doctor` 21/21.
+- Teste de tela: o roteiro da demonstração foi conferido no navegador (Expo web) na v1.4, em 320, 360 e 411 dp. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`, incluindo a Parte 5 de tamanhos de tela e fontes). Por isso T15 e T16 continuam `[ ]` no `tasks.md`.
+- A correção dos cortes de texto vem de uma hipótese tirada do código e dos sintomas (design §11); só o aparelho confirma.
