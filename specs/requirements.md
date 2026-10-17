@@ -8,7 +8,7 @@ O Mercado de Guadalupe é uma mercearia de bairro: o cliente entra e compra. O c
 ## 2. Objetivo da ferramenta
 A cada compra de mercadoria, mostrar a margem de lucro do produto e sugerir o preço de venda que preserva a margem desejada.
 
-Pergunta que o app responde: **"dado o custo que paguei hoje, a que preço devo vender para manter a minha margem?"**
+Pergunta que o app responde: **"dado o custo que paguei hoje, a que preço devo vender para manter a margem desejada?"**
 
 ## 3. Usuário
 Um comerciante, usando o celular no balcão ou no recebimento de mercadoria. Sem treinamento, sem internet obrigatória.
@@ -153,5 +153,5 @@ Valores **ilustrativos**, para demonstração. Usar preços reais do mercado fic
 | v1.4 | 16/10/2026 | **RNF-12 (nova), RNF-07:** configuração do APK de teste; toque mínimo em dp. | Preparar a instalação no celular sem o Expo Go. O build não é gerado nesta versão. |
 | v1.4 | 16/10/2026 | **RN-11 (nova), RF-10, RF-13, CA-31:** a margem é bruta, sobre o preço de venda, a partir do custo pago; impostos sobre a venda e despesas fixas não entram. A frase aparece na Ajuda e em "Como chegamos nisso". | Um comerciante pode achar que a margem do app já desconta imposto e despesa. A definição precisava estar escrita e visível. |
 | v1.4 | 16/10/2026 | **RN-12 (nova), §10:** margem desejada é por produto (ADR-007). As duas perguntas em aberto viraram decisão ou item de `docs/depois.md`; o §9 não pede mais para trocar os exemplos "se possível". | Não deixar pendência com cara de coisa esquecida na entrega. |
-| v1.4 | 16/10/2026 | **Vocabulário (§4), CA-32:** "margem desejada" é o termo do produto e "meta" é o apelido curto dele. Telas, Ajuda, README e testes seguem isso. | Os textos misturavam "a margem que você quer", "a sua margem" e "meta". |
+| v1.4 | 16/10/2026 | **Vocabulário (§4), CA-32:** "margem desejada" é o termo do produto e "meta" é o apelido curto dele. Telas, Ajuda, README e testes seguem isso, inclusive a pergunta do app (§2), que agora termina em "manter a margem desejada?". | Os textos misturavam "a margem que você quer", "a sua margem" e "meta". |
 | v1.4 | 16/10/2026 | **RNF-05, RF-09, RF-16, CA-33:** paleta azul + verde/vermelho só de situação; frase da resposta no maior tamanho de letra (5º tamanho); histórico sem verde/vermelho; um só ícone de alerta. | Acabamento: a resposta deve ser o maior elemento do resultado, e a cor deve significar uma coisa só. |
