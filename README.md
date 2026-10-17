@@ -5,6 +5,8 @@ Protótipo mobile (React Native + Expo) feito com a metodologia **Spec-Driven De
 
 **A pergunta que o app responde:** dado o custo que paguei hoje, a que preço devo vender para manter a margem desejada?
 
+Para entender o projeto antes de mexer, comece pelo [`specs/SPEC.md`](specs/SPEC.md): objetivo, escopo, princípios do processo e índice dos documentos.
+
 ## Como instalar
 
 Requisitos: [Node.js](https://nodejs.org) 20 ou mais novo (testado com 22) e o app **Expo Go** no celular (Play Store ou App Store).
@@ -28,7 +30,7 @@ Para voltar ao estado inicial (antes de um ensaio ou da apresentação): toque n
 ## Como testar
 
 ```bash
-npm test           # 354 testes: fórmulas, validações, armazenamento, layout por tela e fonte, vocabulário, documentos, APK
+npm test           # 364 testes: fórmulas, validações, armazenamento, layout por tela e fonte, vocabulário, documentos, APK
 npx tsc --noEmit   # checagem de tipos do TypeScript
 ```
 
@@ -50,7 +52,7 @@ Ao fim, o EAS mostra um link e um QR code para baixar o `.apk`. No celular Andro
 
 | Pasta | Conteúdo |
 | --- | --- |
-| `specs/` | `requirements.md`, `design.md` e `tasks.md` (a fonte da verdade do projeto) |
+| `specs/` | `SPEC.md` (documento-mestre), `requirements.md`, `design.md` e `tasks.md` (a fonte da verdade do projeto) |
 | `docs/` | Glossário, entrevista, `adr/` (decisões de arquitetura), `depois.md` (ideias fora do escopo) e `processo-sdd.md` (requisito → tarefa → commit → teste) |
 | `src/domain/` | Regras de cálculo puras, em centavos: `calculos.ts`, `validacao.ts`, `formatacao.ts`, `explicacao.ts` (textos das contas), `lista.ts` (ordem, busca, filtro, resumo) |
 | `src/storage/` | `repositorio.ts` (produtos e histórico) e `preferencias.ts` (boas-vindas), no AsyncStorage |

@@ -1,6 +1,6 @@
 # Processo SDD: do requisito ao commit
 
-Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um requisito do `specs/requirements.md` (v1.4) à tarefa do `specs/tasks.md` que o implementou, ao commit e ao teste que o cobre. Todos os hashes citados existem no histórico (`git log --oneline`).
+Porta de entrada do processo: [`specs/SPEC.md`](../specs/SPEC.md) (objetivo, escopo, princípios, índice e estado atual). Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um requisito do `specs/requirements.md` (v1.4) à tarefa do `specs/tasks.md` que o implementou, ao commit e ao teste que o cobre. Todos os hashes citados existem no histórico (`git log --oneline`).
 
 ## Linha do tempo
 
@@ -16,7 +16,7 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 
 6. **v1.4 (apresentação de 23/10/2026)** — `22d1b93` *spec*: o teste no celular real (Android, Expo Go) mostrou texto cortado ("Margem (meta" sem "25%)", "Preço de" e a data "16/10/202"), "R 4" no campo de custo e uma frase de resultado que sugeria baixar o preço. A spec veio antes: RNF-11 e RNF-12, RN-10 e CA-26 a CA-30, mais as mudanças em RN-08 e RF-09. Tarefas T38 a T45 (`7f6ac97` em diante), com os testes de domínio e de layout escritos antes do código.
 
-7. **v1.4, acabamento** — `2953697` *spec* e `67e9caa` *spec*: a margem passa a ser definida como bruta (RN-11), a margem desejada fica por produto (RN-12, ADR-007), o vocabulário é único ("margem desejada" e "meta") e a cor significa uma coisa só. As dúvidas do antigo §10 viraram decisão ou item de `docs/depois.md`. Tarefas T46 a T50 (`806cc42` em diante); os testes de varredura foram escritos antes da mudança dos textos e dos estilos e vistos falhando.
+7. **v1.4, acabamento** — `2953697` *spec* e `67e9caa` *spec*: a margem passa a ser definida como bruta (RN-11), a margem desejada fica por produto (RN-12, ADR-007), o vocabulário é único ("margem desejada" e "meta") e a cor significa uma coisa só. As dúvidas do antigo §10 viraram decisão ou item de `docs/depois.md`. Tarefas T46 a T50 (`806cc42` em diante) e T51, o `specs/SPEC.md` (documento-mestre; `tests/spec-mestre.test.ts` confere que os números dele batem com os outros documentos); os testes de varredura foram escritos antes da mudança dos textos e dos estilos e vistos falhando.
 
 ## Requisitos funcionais
 
@@ -82,7 +82,7 @@ Rastreabilidade tirada do `git log` real do repositório. Cada linha liga um req
 
 ## Situação na entrega
 
-- Requisitos: 18 RF, 12 RNF, 12 RN, 33 critérios de aceite; 8 arquivos em `docs/adr` (o modelo e 7 decisões); 50 tarefas (T01 a T50).
-- Testes automáticos: 354 passando em 8 suítes (`npm test`); `npx tsc --noEmit` sem erros; `npx expo-doctor` 21/21.
+- Requisitos: 18 RF, 12 RNF, 12 RN, 33 critérios de aceite; 8 arquivos em `docs/adr` (o modelo e 7 decisões); 51 tarefas (T01 a T51).
+- Testes automáticos: 364 passando em 9 suítes (`npm test`); `npx tsc --noEmit` sem erros; `npx expo-doctor` 21/21.
 - Teste de tela: o roteiro da demonstração e os estados foram conferidos no navegador (Expo web) na v1.4, em 320, 360 e 411 dp. Falta a execução no **Expo Go**, a cargo da equipe (`tests/checklist-manual.md`, incluindo a Parte 5 de tamanhos de tela e fontes). Por isso T15 e T16 continuam `[ ]` no `tasks.md`.
 - A correção dos cortes de texto vem de uma hipótese tirada do código e dos sintomas (design §11); só o aparelho confirma.

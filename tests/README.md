@@ -8,6 +8,7 @@
 - `layout.test.ts` — regra de disposição por tamanho de tela e de fonte: 320, 360, 411, 430 e 768 dp, fonte de 100% a 200% (RNF-11, CA-29).
 - `render.test.tsx` — monta `CartaoSituacao`, `ProdutoCard` e `CampoMoeda` nas 20 combinações de tela e fonte e confere texto inteiro, disposição e o campo de dinheiro (RN-08, RNF-11, CA-28, CA-29).
 - `docs.test.ts` — nenhum documento deixa ponto solto (as marcas procuradas estão no próprio teste) e o ADR-007 existe (RN-12).
+- `spec-mestre.test.ts` — o `specs/SPEC.md` cita a versão, as contagens (RF, RNF, RN, CA, ADR, tarefas) e links iguais aos dos outros documentos.
 - `config.test.ts` — `app.json` e `eas.json`: nome, pacote, versão, ícones, tela de abertura e perfil APK (RNF-12).
 - `checklist-manual.md` — passos de tela de CA-01 a CA-33, para executar no Expo Go.
 
