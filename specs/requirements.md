@@ -1,6 +1,6 @@
 # requirements.md
 
-> Estado: **v1.3 — aprovada pelo líder (portão 1).** Mudanças desde a v1.0 no registro de mudanças, no fim. Fonte da verdade do problema. Qualquer mudança aqui vem antes de mudar design, tarefas ou código.
+> Estado: **v1.4 — mudanças pedidas pelo líder em 16/10/2026, para a apresentação de 23/10/2026.** A v1.3 foi aprovada no portão 1. Mudanças desde a v1.0 no registro de mudanças, no fim. Fonte da verdade do problema. Qualquer mudança aqui vem antes de mudar design, tarefas ou código.
 
 ## 1. Problema (na visão do comerciante)
 O Mercado de Guadalupe é uma mercearia de bairro: o cliente entra e compra. O custo de compra dos produtos muda com promoções e reajustes dos fornecedores, mas o preço de venda costuma ser mantido por hábito. Sem registro, o comerciante não sabe se ainda lucra o que pretende em cada produto.
@@ -23,8 +23,9 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - **RN-05 Semáforo**: verde quando o preço de venda ≥ preço sugerido; vermelho (com alerta, RN-03) quando abaixo. Assim, depois de aplicar o preço sugerido o produto fica sempre verde, mesmo que o arredondamento deixe a margem décimos abaixo da desejada (ADR-003).
 - **RN-06 Arredondamento**: o preço sugerido é arredondado ao centavo mais próximo (5,3333… → R$ 5,33). Ver ADR-003.
 - **RN-07 Validação**: nome obrigatório; custo > 0; preço de venda > 0; margem desejada inteira entre 1 e 99. A regra do custo vale também para o novo custo na tela Nova compra.
-- **RN-08 Leitura de valores**: o campo de dinheiro aceita vírgula ou ponto como separador decimal ("5,33" ou "5.33"), com até 2 casas, sem separador de milhar ("1.234" é recusado). Datas são exibidas como dd/mm/aaaa.
+- **RN-08 Leitura de valores**: o campo de dinheiro aceita vírgula ou ponto como separador decimal ("5,33" ou "5.33"), com até 2 casas, sem separador de milhar ("1.234" é recusado). Datas são exibidas como dd/mm/aaaa. Ao sair do campo de dinheiro, um valor válido passa a aparecer com duas casas ("4" → "4,00"; v1.4). Porcentagens grandes usam ponto de milhar na exibição ("10.900,0%").
 - **RN-09 Conferência do custo** (v1.3): quando a variação do novo custo em relação ao custo atual passa de +50% ou fica abaixo de −50%, o app mostra "Confira o valor". É só um aviso: a compra pode ser gravada mesmo assim. Exatamente +50% ou −50% não avisa.
+- **RN-10 Compra com custo igual ao anterior** (v1.4): a compra é gravada normalmente, como qualquer outra, e entra no histórico. A linha mostra "igual" com variação 0,0%. Gravar é a escolha porque o histórico registra o que foi comprado, mesmo sem mudança de preço do fornecedor; não há como corrigir uma compra depois de gravada (docs/depois.md).
 
 ## 5. Requisitos funcionais
 | ID | Requisito | Regras |
@@ -34,10 +35,10 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 | RF-03 | Listar produtos com margem atual e semáforo | RN-01, RN-05 |
 | RF-04 | Registrar nova compra (novo custo) e mostrar: nova margem com o preço atual, variação do custo, alerta e preço sugerido. A compra é gravada ao confirmar o novo custo | RN-01 a RN-04, RN-06, RN-07 |
 | RF-05 | Aplicar o preço sugerido (atualiza o preço de venda) ou manter o preço atual (só volta para a lista; a compra já foi gravada) | RN-01, RN-05 |
-| RF-06 | Consultar o histórico de custos do produto (data e custo, mais recente primeiro) | RN-04 |
+| RF-06 | Consultar o histórico de custos do produto (data e custo, mais recente primeiro). Compra com custo igual ao anterior também aparece (v1.4) | RN-04, RN-10 |
 | RF-07 | Guardar os dados no aparelho, preservando-os ao fechar o app | — |
 | RF-08 | Carregar produtos de exemplo para demonstração. Tocar duas vezes em "Carregar exemplos" carrega os 8 produtos uma vez só | — |
-| RF-09 | **Resposta em destaque:** na tela de resultado, um cartão grande responde à pergunta do app ("Venda a R$ 5,87 para manter 25% de margem"). Abaixo dele, a situação atual: preço, margem e semáforo com ícone e texto | RN-01, RN-02, RN-05, RN-06 |
+| RF-09 | **Resposta em destaque:** na tela de resultado, um cartão grande responde à pergunta do app ("Venda a R$ 5,87 para manter 25% de margem"). Abaixo dele, a situação atual: preço, margem e semáforo com ícone e texto. **Quando o preço atual já garante a margem (verde, v1.4):** a resposta passa a ser "Seu preço de R$ 5,50 já garante 25% de margem", com a observação "O mínimo para manter 25% é R$ 5,33" (ou "Esse é o preço sugerido" se forem iguais); "Manter preço atual" vira o botão principal e "Usar o preço sugerido" fica secundário | RN-01, RN-02, RN-05, RN-06 |
 | RF-10 | **"Como chegamos nisso":** área que abre e fecha, com a conta feita com os números do produto e em linguagem simples (ex.: "R$ 4,40 ÷ (1 − 0,25) = R$ 5,87" e "(R$ 5,50 − R$ 4,40) ÷ R$ 5,50 = 20,0%") | RN-01, RN-02, RN-06 |
 | RF-11 | **Prévia ao digitar:** na tela Nova compra, enquanto o novo custo é digitado, mostrar em tempo real a margem com o preço atual, o semáforo e o preço sugerido. Sem valor válido, mostrar só uma orientação | RN-01, RN-02, RN-05, RN-08 |
 | RF-12 | **Lista mais útil:** produtos abaixo da meta primeiro (depois em ordem alfabética); resumo de uma frase no topo ("1 de 8 produtos abaixo da meta"), sem gráficos nem painéis; busca por nome (sem diferenciar maiúsculas e acentos); filtro Todos / Abaixo da meta / Na meta. O cartão vermelho mostra o preço sugerido ("Sugerido: R$ 8,67") | RN-02, RN-05 |
@@ -55,10 +56,12 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - RNF-04 Fórmulas cobertas por testes automatizados.
 - RNF-05 **Tema único:** cores, espaçamentos (escala de 4/8), 5 tamanhos de fonte, raios e sombras definidos em `src/theme`. Nenhuma cor ou tamanho solto nas telas e componentes (verificado por teste automatizado).
 - RNF-06 **Contraste:** texto com contraste mínimo de 4,5:1 sobre o fundo (verificado por teste automatizado). Semáforo sempre com cor + ícone + palavra ("Na meta", "Abaixo da meta").
-- RNF-07 **Toque e destaque:** áreas de toque de pelo menos 48 px; um botão principal por tela, claramente destacado; botões secundários visualmente mais fracos.
+- RNF-07 **Toque e destaque:** áreas de toque de pelo menos 48 dp; um botão principal por tela, claramente destacado; botões secundários visualmente mais fracos.
 - RNF-08 **Números em destaque:** preço e margem grandes e alinhados (algarismos de largura fixa); rótulos pequenos e discretos.
 - RNF-09 **Teclado:** o teclado não cobre o campo em foco; tecla "próximo" passa ao campo seguinte; foco automático no primeiro campo.
 - RNF-10 **Acessibilidade:** botões e ícones com rótulo de acessibilidade (`accessibilityLabel`) em português.
+- RNF-11 **Telas e fontes** (v1.4): nenhum texto cortado em 320×568, 360×640, 411×891, 430×932 e tablet 768×1024, com a fonte do sistema em 100%, 130%, 150% e 200% e com "tamanho da tela" grande no Android. Texto nunca é limitado a uma linha nem termina em reticências; rótulo e valor nunca disputam a mesma linha (se não couberem lado a lado, ficam um embaixo do outro). Toda tela rola quando o conteúdo não cabe; botão nunca fica atrás do teclado, da barra de navegação ou do recorte da câmera. Em telas largas o conteúdo fica centralizado com largura máxima de 600 dp. Orientação travada em retrato.
+- RNF-12 **Instalação** (v1.4): o projeto está configurado para gerar um APK de teste (perfil `preview` do EAS), com nome "Controle de Margem", pacote `br.edu.uninassau.controlemargem`, versão 1.0.0, versionCode 1, ícone e tela de abertura na cor do tema. O build em si não faz parte desta versão.
 
 ## 7. Critérios de aceite
 - **CA-01 (RF-04, RN-02, RN-06)** Dado custo R$ 4,00 e margem desejada 25%, quando registro a compra, então o preço sugerido é R$ 5,33.
@@ -85,10 +88,15 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - **CA-23 (RF-02)** Na edição de um produto, o que foi digitado e ainda não salvo continua nos campos depois de abrir a Ajuda ("?") ou o Histórico e voltar.
 - **CA-24 (RF-17)** Em Ajuda → "Apagar todos os dados" → confirmar, a lista fica vazia e o cartão de boas-vindas volta; "Cancelar" não apaga nada.
 - **CA-25 (RF-18, RN-09)** Na Nova compra do arroz (custo R$ 4,00), digitar 6,50 (+62,5%) ou 1,90 (−52,5%) mostra "Confira o valor"; digitar 4,40 (+10,0%) ou 6,00 (+50,0%) não mostra; com o aviso, "Confirmar compra" grava normalmente.
+- **CA-26 (RN-10, RF-06)** Duas compras do arroz a R$ 4,00 (a primeira, do cadastro, e uma nova a R$ 4,00) geram duas linhas no histórico; a de cima mostra "igual" e 0,0%.
+- **CA-27 (RF-09)** Dado o arroz a R$ 5,50 com margem 25% e nova compra a R$ 4,00, o resultado mostra "Seu preço de R$ 5,50 já garante 25% de margem" e "O mínimo para manter 25% é R$ 5,33"; o botão principal é "Manter preço atual (R$ 5,50)".
+- **CA-28 (RN-08)** Em Nova compra, digitar `4` e sair do campo mostra `4,00`; digitar `abc` mantém o texto e a mensagem de valor inválido. O prefixo "R$" aparece inteiro.
+- **CA-29 (RNF-11)** Em cada tamanho de tela e de fonte da RNF-11, "Margem (meta 25%)", "Preço de venda", a data do histórico (16/10/2026) e o campo de custo aparecem inteiros, sem corte. Os testes automáticos conferem as regras de disposição e que nenhuma tela limita o texto a uma linha; o aparelho confere o resto.
+- **CA-30 (RF-08, RF-17)** Repetir "Apagar todos os dados" → "Carregar exemplos" várias vezes sempre deixa 8 produtos: refrigerante abaixo da meta (18,8%, sugerido R$ 8,67), arroz a R$ 4,00 de custo e R$ 5,50 de preço, e a demonstração do arroz volta a dar R$ 5,87.
 - **CA-21 (RNF-05, RNF-06)** O teste automatizado confirma contraste ≥ 4,5:1 nos pares de texto do tema e nenhuma cor ou tamanho de fonte solto em `src/screens` e `src/components`.
 
 ## 8. Fora do escopo (MVP)
-Estoque, vendas no caixa, relatórios, painéis e gráficos, tema escuro, animações pesadas, login, app do cliente, backend e servidor, entrega e pedidos, leitor de código de barras, impostos e despesas fixas.
+Estoque, vendas no caixa, relatórios, painéis e gráficos, tema escuro, modo paisagem, animações pesadas, login, app do cliente, backend e servidor, entrega e pedidos, leitor de código de barras, impostos e despesas fixas.
 
 ## 9. Produtos de exemplo (RF-08)
 Valores **ilustrativos**, para demonstração; trocar pelos reais do mercado antes da apresentação, se possível.
@@ -130,3 +138,9 @@ Valores **ilustrativos**, para demonstração; trocar pelos reais do mercado ant
 | v1.3 | 14/10/2026 | **RF-17, CA-24:** "Apagar todos os dados" no fim da Ajuda, com confirmação. | Não havia como voltar o app ao estado inicial entre ensaios e antes da apresentação. |
 | v1.3 | 14/10/2026 | **RN-09, RF-18, CA-25:** aviso "Confira o valor" quando a variação do custo passa de ±50%. Só avisa. | O custo não pode ser corrigido depois de gravado; o aviso pega o erro de digitação mais provável ("440" no lugar de "4,40") antes de confirmar. |
 | v1.3 | 14/10/2026 | **design e tasks:** alinhados ao código (nomes do repositório, rótulos, frases do resumo, tamanhos de fonte); T15 cobre CA-01 a CA-25 e T16 reaberta até a T15 fechar. | A auditoria encontrou divergências entre design e código e uma tarefa marcada como feita antes da sua dependência. |
+| v1.4 | 16/10/2026 | **RNF-11 (nova), CA-29:** nenhum texto cortado em telas de 320 a 768 dp e fonte de 100% a 200%; rótulo e valor em linhas separadas quando não couberem; rolagem, teclado e barras do sistema; largura máxima de 600 dp; retrato. | Teste no celular real (Android, Expo Go) mostrou "Margem (meta" sem "25%)", "Preço de" cortado e a data "16/10/202" nos cartões, na prévia, no resultado e no histórico. O erro estava nos componentes comuns (`LinhaValor`, `CartaoSituacao`, `ProdutoCard`, linha do histórico), que dividiam a linha sem repartir a largura. |
+| v1.4 | 16/10/2026 | **RN-08, CA-28:** o campo de dinheiro mostra duas casas ao sair ("4" → "4,00") e o prefixo "R$" não é cortado; percentuais grandes usam ponto de milhar. | O celular mostrou "R 4" no campo de custo. O aviso "Confira o valor" para 440 no lugar de 4,40 dizia "10900,0%", difícil de ler. |
+| v1.4 | 16/10/2026 | **RF-09, CA-27:** quando o preço atual já garante a margem, a resposta diz isso ("Seu preço de R$ 5,50 já garante 25% de margem") e "Manter preço atual" é o botão principal. | A frase "Venda a R$ 5,33", com o preço em R$ 5,50 e o botão principal "Aplicar preço sugerido", sugeria baixar o preço sem querer. |
+| v1.4 | 16/10/2026 | **RN-10 (nova), RF-06, CA-26:** compra com custo igual ao anterior continua sendo gravada e aparece como "igual" no histórico. | Decisão que faltava na spec: o app já gravava duas vezes R$ 4,00; passa a ser regra escrita. |
+| v1.4 | 16/10/2026 | **RF-08/RF-17, CA-30:** "Apagar todos os dados" e "Carregar exemplos" são repetíveis para ensaios. | Preparar o ensaio da apresentação. O comportamento já existia (v1.3); passa a ter critério de aceite e teste. |
+| v1.4 | 16/10/2026 | **RNF-12 (nova), RNF-07:** configuração do APK de teste; toque mínimo em dp. | Preparar a instalação no celular sem o Expo Go. O build não é gerado nesta versão. |

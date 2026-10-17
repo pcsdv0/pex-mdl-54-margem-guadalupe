@@ -1,6 +1,6 @@
 # tasks.md
 
-> Estado: **v1.3 — aprovada pelo líder (portão 3).** Mudanças da v1.1, v1.2 e v1.3 no registro de mudanças do `requirements.md`. Só vale depois do `design.md` aprovado. Tarefas pequenas, na ordem de dependência. Marque `[x]` ao concluir; um commit por tarefa, com o ID no início da mensagem (ex.: `T04: calcular preço sugerido`).
+> Estado: **v1.4 — mudanças pedidas pelo líder em 16/10/2026.** A v1.3 foi aprovada no portão 3. Mudanças da v1.1 a v1.4 no registro de mudanças do `requirements.md`. Só vale depois do `design.md` aprovado. Tarefas pequenas, na ordem de dependência. Marque `[x]` ao concluir; um commit por tarefa, com o ID no início da mensagem (ex.: `T04: calcular preço sugerido`).
 
 | ID | Tarefa | Liga a | Depende de | Feito |
 | --- | --- | --- | --- | --- |
@@ -53,6 +53,21 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | T36 | Checklist manual com CA-22 a CA-25; README com a equipe; `docs/entrevista.md`; desfazer última compra em `docs/depois.md` | todos os CA novos | T35 | [x] |
 | T37 | `docs/processo-sdd.md` atualizado para a v1.3 com os hashes reais do git log | RNF-04 | T36 | [x] |
 
+### v1.4 — apresentação de 23/10/2026
+
+Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só são marcadas depois de a equipe executar o checklist no celular.
+
+| ID | Tarefa | Liga a | Depende de | Feito |
+| --- | --- | --- | --- | --- |
+| T38 | `normalizarMoeda`, milhar em `formatarPercentual` e `textoResultado` + testes | RN-08, RF-09, CA-27, CA-28 | T37 | [ ] |
+| T39 | `theme/layout.ts` (`empilhar`, largura máxima) + `tests/layout.test.ts`; `useLayout` e `Tela` | RNF-11, CA-29 | T38 | [ ] |
+| T40 | Componentes comuns sem corte: `LinhaValor`, `CartaoSituacao`, `ProdutoCard`, `Campo`/`CampoMoeda` (prefixo e duas casas), `Botao`, `CartaoResposta`, linha do histórico; varredura proíbe limite de linhas | RNF-11, RN-08, CA-28, CA-29 | T39 | [ ] |
+| T41 | Todas as telas com `Tela`/`useLayout`: rolagem, teclado, barras do sistema, largura máxima; cabeçalho, janela de confirmação e aviso | RNF-11, RNF-09, CA-29 | T40 | [ ] |
+| T42 | Resultado na meta (frase, observação e botões) e histórico com "igual" | RF-09, RF-06, RN-10, CA-26, CA-27 | T41 | [ ] |
+| T43 | Teste de repetição: apagar tudo e carregar exemplos várias vezes | RF-08, RF-17, CA-30 | T42 | [ ] |
+| T44 | `app.json` (nome, pacote, versionCode, ícone, splash), `eas.json` (perfil `preview` APK) e README do APK | RNF-12 | T43 | [ ] |
+| T45 | Checklist com CA-26 a CA-30, README, `docs/processo-sdd.md` e `docs/depois.md` com os números reais | todos os CA novos | T44 | [ ] |
+
 ## Matriz de rastreabilidade
 | Requisito | Tarefas | Teste |
 | --- | --- | --- |
@@ -86,3 +101,9 @@ Blocos por prioridade: **A** (funcional e didático), **B** (UI e consistência)
 | RF-02 (CA-23) | T31 | checklist CA-23 |
 | RF-17 | T32 | storage.test (apagarTodosOsDados), checklist CA-24 |
 | RF-18, RN-09 | T33 | domain.test (variacaoSuspeita, avisoConferencia, CA-25), checklist CA-25 |
+| RN-08 (duas casas, milhar) | T38, T40 | domain.test (normalizarMoeda, formatarPercentual), checklist CA-28 |
+| RF-09 (na meta) | T38, T42 | domain.test (textoResultado, CA-27), checklist CA-27 |
+| RN-10, RF-06 (igual) | T42 | domain.test (sentidoVariacao), checklist CA-26 |
+| RNF-11 | T39, T40, T41 | layout.test (empilhar), varredura.test (sem limite de linhas), checklist CA-29 (só no aparelho) |
+| RF-08, RF-17 (CA-30) | T43 | storage.test (apagar e carregar várias vezes), checklist CA-30 |
+| RNF-12 | T44 | leitura de `app.json` e `eas.json`; build manual (fora desta versão) |
