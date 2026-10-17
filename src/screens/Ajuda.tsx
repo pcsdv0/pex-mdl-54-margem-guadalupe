@@ -50,7 +50,7 @@ export function AjudaScreen({ navigation }: Props) {
       }
     >
         <Text style={estilos.intro}>
-          O app responde: <Text style={estilos.forte}>“dado o custo que paguei hoje, a que preço devo vender para manter a minha margem?”</Text>
+          O app responde: <Text style={estilos.forte}>“dado o custo que paguei hoje, a que preço devo vender para manter a margem desejada?”</Text>
         </Text>
 
         <Secao icone="pie-chart-outline" titulo="Margem">
@@ -66,8 +66,10 @@ export function AjudaScreen({ navigation }: Props) {
 
         <Secao icone="flag-outline" titulo="Margem desejada">
           <Text style={estilos.texto}>
-            É a margem que você quer manter naquele produto. Com {ARROZ.margemDesejada}%, de cada R$ 1,00
-            vendido você quer que sobrem {formatarReais(ARROZ.margemDesejada /* 25% de 100 centavos */)}.
+            É a porcentagem do preço de venda que você quer que sobre em cada produto; cada produto tem a
+            sua. Com {ARROZ.margemDesejada}%, de cada R$ 1,00 vendido sobram{' '}
+            {formatarReais(ARROZ.margemDesejada /* 25% de 100 centavos */)}. Nos selos, ela aparece
+            como "meta".
           </Text>
         </Secao>
 

@@ -225,7 +225,7 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
             valor={margem}
             onChange={digitar(setMargem)}
             erro={erros.margemDesejada}
-            dica="Quanto % do preço de venda você quer que sobre. Ex.: 25"
+            dica="Quanto você quer que sobre do preço de venda, em %. Ex.: 25"
             tecla="done"
             aoConfirmar={salvar}
           />

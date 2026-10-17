@@ -3,7 +3,7 @@
 Projeto de extensão da UNINASSAU (Olinda), disciplina Atividades e Práticas Interdisciplinares de Extensão, curso de Sistemas de Informação.
 Protótipo mobile (React Native + Expo) feito com a metodologia **Spec-Driven Development (SDD)**, para apresentação na Semana Ubíqua.
 
-**A pergunta que o app responde:** dado o custo que paguei hoje, a que preço devo vender para manter a minha margem?
+**A pergunta que o app responde:** dado o custo que paguei hoje, a que preço devo vender para manter a margem desejada?
 
 ## Como instalar
 

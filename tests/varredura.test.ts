@@ -1,6 +1,6 @@
 // RNF-05, RNF-10 e RNF-11 (CA-21, CA-29): telas e componentes só usam tokens do tema,
 // todo elemento tocável tem rótulo de acessibilidade e nenhum texto é limitado a uma linha.
-import { readdirSync, readFileSync } from 'fs';
+import { readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
 
 const PASTAS = ['src/screens', 'src/components', 'src/navigation'];
@@ -48,5 +48,23 @@ describe('varredura das telas e componentes (RNF-05, RNF-10)', () => {
 
   test('RN-11, CA-31: a Ajuda mostra a nota do escopo do cálculo', () => {
     expect(ler('src/screens/Ajuda.tsx')).toMatch(/NOTA_ESCOPO_CALCULO/);
+  });
+
+  // CA-32: um nome só para a margem desejada ("meta" é o apelido curto).
+  const TERMO_PROIBIDO =
+    /margem[- ]alvo|margem objetivo|margem esperada|margem pretendida|margem que (você|voce) quer|(sua|minha|nossa) margem(?! desejada)/i;
+
+  function todosOsArquivos(pasta: string): string[] {
+    return readdirSync(join(__dirname, '..', pasta)).flatMap((nome) => {
+      const caminho = join(pasta, nome);
+      return statSync(join(__dirname, '..', caminho)).isDirectory()
+        ? todosOsArquivos(caminho)
+        : [caminho];
+    });
+  }
+  const textosDoApp = todosOsArquivos('src').filter((f) => /\.tsx?$/.test(f));
+
+  test.each(textosDoApp)('CA-32: %s usa só "margem desejada" (e "meta")', (arquivo) => {
+    expect(ler(arquivo)).not.toMatch(TERMO_PROIBIDO);
   });
 });

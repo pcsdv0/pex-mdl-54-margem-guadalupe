@@ -163,7 +163,7 @@ function EstadoVazio({
       <Icone nome="pricetags-outline" tamanho="grande" cor="primaria" />
       <Text style={estilos.titulo}>Nenhum produto cadastrado</Text>
       <Text style={estilos.texto}>
-        Cadastre um produto com o custo, o preço de venda e a margem que você quer. A cada compra, o
+        Cadastre um produto com o custo, o preço de venda e a margem desejada. A cada compra, o
         app diz a que preço vender.
       </Text>
       <View style={estilos.botoes}>

@@ -1,9 +1,11 @@
 # Glossário
 - **Margem:** parte do preço de venda que sobra depois de pagar o custo, em porcentagem.
-- **Margem desejada:** a margem que o comerciante quer manter em cada produto.
+- **Margem desejada:** a margem que o comerciante quer manter em cada produto; cada produto tem a sua (ADR-007).
+- **Meta:** apelido curto da margem desejada, usado nos selos e rótulos pequenos ("Na meta", "Abaixo da meta", "Margem (meta 25%)"). Não é outra coisa.
 - **Preço sugerido:** preço de venda que preserva a margem desejada com o custo atual.
 - **Custo:** o que o comerciante paga ao fornecedor por unidade.
-- **Semáforo:** indicador verde (margem na meta ou acima) ou vermelho (abaixo da meta).
+- **Semáforo:** indicador verde (preço de venda na meta ou acima do sugerido) ou vermelho (abaixo da meta), sempre com ícone e palavra.
+- **Margem bruta:** o que sobra do preço de venda depois de pagar o custo da mercadoria. Não desconta impostos sobre a venda nem despesas fixas (RN-11).
 - **Variação do custo:** quanto o custo mudou em relação à compra anterior, em porcentagem.
 - **Spec:** documento de especificação (requirements, design, tasks) que orienta o código.
 - **Portão (gate):** aprovação exigida antes de passar à etapa seguinte do SDD.

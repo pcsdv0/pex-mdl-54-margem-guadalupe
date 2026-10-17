@@ -14,9 +14,9 @@ export function CartaoBoasVindas({ onDispensar }: { onDispensar: () => void }) {
           Boas-vindas!
         </Text>
       </View>
-      <Text style={estilos.linha}>1. Cadastre o produto com custo, preço e a margem que você quer.</Text>
+      <Text style={estilos.linha}>1. Cadastre o produto com custo, preço e a margem desejada.</Text>
       <Text style={estilos.linha}>2. A cada compra, informe o novo custo em "Nova compra".</Text>
-      <Text style={estilos.linha}>3. O app diz a que preço vender para manter a sua margem.</Text>
+      <Text style={estilos.linha}>3. O app diz a que preço vender para manter a margem desejada.</Text>
       <Botao titulo="Entendi" variante="secundario" onPress={onDispensar} />
     </View>
   );
