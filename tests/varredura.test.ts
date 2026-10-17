@@ -45,4 +45,8 @@ describe('varredura das telas e componentes (RNF-05, RNF-10)', () => {
       }
     });
   });
+
+  test('RN-11, CA-31: a Ajuda mostra a nota do escopo do cálculo', () => {
+    expect(ler('src/screens/Ajuda.tsx')).toMatch(/NOTA_ESCOPO_CALCULO/);
+  });
 });

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { NOTA_ESCOPO_CALCULO } from '../domain/explicacao';
 import { cores, espaco, fonte, linha, numeros, peso, raio, TOQUE_MINIMO } from '../theme/tema';
 import { Icone } from './Icone';
 
@@ -37,6 +38,7 @@ export function ComoChegamos({ blocos }: { blocos: Bloco[] }) {
               ))}
             </View>
           ))}
+          <Text style={estilos.nota}>{NOTA_ESCOPO_CALCULO}</Text>
         </View>
       ) : null}
     </View>
@@ -67,4 +69,5 @@ const estilos = StyleSheet.create({
   },
   subtitulo: { fontSize: fonte.legenda, fontWeight: peso.forte, color: cores.texto },
   passo: { fontSize: fonte.corpo, color: cores.texto },
+  nota: { fontSize: fonte.legenda, color: cores.textoSuave },
 });

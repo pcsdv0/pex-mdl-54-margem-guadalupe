@@ -8,8 +8,10 @@ import { create, ReactTestInstance } from 'react-test-renderer';
 
 import { CampoMoeda } from '../src/components/CampoMoeda';
 import { CartaoSituacao } from '../src/components/CartaoSituacao';
+import { ComoChegamos } from '../src/components/ComoChegamos';
 import { ProdutoCard } from '../src/components/ProdutoCard';
 import { situacaoProduto } from '../src/domain/calculos';
+import { NOTA_ESCOPO_CALCULO } from '../src/domain/explicacao';
 import { empilhar, larguraDoConteudo } from '../src/theme/layout';
 
 // Os ícones carregam fontes (expo-asset), que não existem no Jest; o teste usa um ícone vazio.
@@ -145,5 +147,16 @@ describe('CampoMoeda (RN-08, CA-28)', () => {
       act(() => entrada.props.onBlur());
       expect(onChange).not.toHaveBeenCalled();
     }
+  });
+});
+
+describe('"Como chegamos nisso" (RN-11, CA-31)', () => {
+  test('aberto, termina com a nota do escopo do cálculo; fechado, não mostra', () => {
+    definirTela(360, 640, 1);
+    const arvore = montar(<ComoChegamos blocos={[{ titulo: 'Conta', passos: ['1 + 1 = 2'] }]} />);
+    expect(textos(arvore.root)).not.toContain(NOTA_ESCOPO_CALCULO);
+    const cabecalho = arvore.root.findByProps({ accessibilityRole: 'button' });
+    act(() => cabecalho.props.onPress());
+    expect(textos(arvore.root)).toContain(NOTA_ESCOPO_CALCULO);
   });
 });

@@ -19,6 +19,7 @@ import {
   explicarMargem,
   explicarPrecoSugerido,
   fraseResposta,
+  NOTA_ESCOPO_CALCULO,
   textoResultado,
 } from '../src/domain/explicacao';
 import { organizarLista, resumoLista } from '../src/domain/lista';
@@ -537,5 +538,13 @@ describe('textoResultado (RF-09, CA-12, CA-27)', () => {
       frase: 'Seu preço de R$ 5,33 já garante 25% de margem',
       observacao: 'Esse é o preço sugerido.',
     });
+  });
+});
+
+describe('NOTA_ESCOPO_CALCULO (RN-11, CA-31)', () => {
+  test('diz que a margem é bruta e que impostos e despesas fixas ficam de fora', () => {
+    expect(NOTA_ESCOPO_CALCULO).toBe(
+      'Margem bruta sobre o preço de venda, calculada a partir do custo pago. Impostos sobre a venda e despesas fixas não entram nesta versão.',
+    );
   });
 });

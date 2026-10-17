@@ -9,7 +9,7 @@ import { Icone, NomeIcone } from '../components/Icone';
 import { SemaforoBadge } from '../components/SemaforoBadge';
 import { Tela } from '../components/Tela';
 import { EXEMPLOS } from '../data/exemplos';
-import { explicarMargem, explicarPrecoSugerido } from '../domain/explicacao';
+import { explicarMargem, explicarPrecoSugerido, NOTA_ESCOPO_CALCULO } from '../domain/explicacao';
 import { formatarReais } from '../domain/formatacao';
 import { Rotas } from '../navigation';
 import { apagarTodosOsDados } from '../storage/repositorio';
@@ -61,6 +61,7 @@ export function AjudaScreen({ navigation }: Props) {
             titulo={`${ARROZ.nome}: custo ${formatarReais(ARROZ.custoAtual)}, venda ${formatarReais(ARROZ.precoVenda)}`}
             passos={explicarMargem(ARROZ.precoVenda, ARROZ.custoAtual)}
           />
+          <Text style={estilos.nota}>{NOTA_ESCOPO_CALCULO}</Text>
         </Secao>
 
         <Secao icone="flag-outline" titulo="Margem desejada">
@@ -93,7 +94,7 @@ export function AjudaScreen({ navigation }: Props) {
           </View>
         </Secao>
 
-        <Text style={estilos.nota}>
+        <Text style={estilos.notaFinal}>
           Os valores do exemplo são ilustrativos, não são preços reais do mercado.
         </Text>
 
@@ -160,7 +161,8 @@ const estilos = StyleSheet.create({
   exemploTitulo: { fontSize: fonte.legenda, fontWeight: peso.forte, color: cores.texto },
   passo: { fontSize: fonte.corpo, color: cores.texto },
   semaforo: { gap: espaco.s },
-  nota: { fontSize: fonte.legenda, color: cores.textoSuave, textAlign: 'center' },
+  nota: { fontSize: fonte.legenda, color: cores.textoSuave },
+  notaFinal: { fontSize: fonte.legenda, color: cores.textoSuave, textAlign: 'center' },
   apagar: {
     marginTop: espaco.xl,
     paddingTop: espaco.l,

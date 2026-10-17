@@ -9,6 +9,10 @@ import {
 } from './calculos';
 import { formatarPercentual, formatarReais } from './formatacao';
 
+/** RN-11: o que a margem do app inclui e o que não inclui. Mostrada na Ajuda e em "Como chegamos nisso". */
+export const NOTA_ESCOPO_CALCULO =
+  'Margem bruta sobre o preço de venda, calculada a partir do custo pago. Impostos sobre a venda e despesas fixas não entram nesta versão.';
+
 /** 25 → "0,25"; 7 → "0,07". Margem desejada é inteira de 1 a 99 (RN-07). */
 function margemDecimal(margemDesejada: number): string {
   return `0,${String(margemDesejada).padStart(2, '0')}`;
