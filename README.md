@@ -34,6 +34,18 @@ npx tsc --noEmit   # checagem de tipos do TypeScript
 
 Teste de tela: siga `tests/checklist-manual.md` no Expo Go e preencha a coluna "Resultado".
 
+## Como gerar o APK (instalar sem o Expo Go)
+
+O projeto já está configurado (`app.json` e `eas.json`): nome "Controle de Margem", pacote `br.edu.uninassau.controlemargem`, versão 1.0.0, `versionCode` 1, ícone e tela de abertura na cor do tema. O build **não** é gerado pelo repositório; quem for gerar faz assim, com uma conta gratuita em [expo.dev](https://expo.dev):
+
+```bash
+npm install -g eas-cli
+eas login
+eas build --platform android --profile preview
+```
+
+Ao fim, o EAS mostra um link e um QR code para baixar o `.apk`. No celular Android, abra o arquivo e permita "instalar apps desconhecidos" quando o sistema pedir. O perfil `preview` (em `eas.json`) usa `android.buildType: "apk"`; o `slug` do `app.json` continua `margem-guadalupe` porque está ligado ao projeto no EAS. Para uma nova versão do APK, aumente `android.versionCode` no `app.json`.
+
 ## Estrutura
 
 | Pasta | Conteúdo |

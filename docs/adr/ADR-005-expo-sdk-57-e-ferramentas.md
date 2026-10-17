@@ -8,5 +8,5 @@
   - `tsconfig.json` com `"types": ["jest", "node"]`.
   - Sem suporte web no projeto. Para conferir as telas durante o desenvolvimento, `react-dom` e `react-native-web` foram instalados temporariamente e removidos sem commit.
   - Na exibição, valores com milhar aparecem como "R$ 1.234,56" (padrão brasileiro). Na digitação, a RN-08 recusa o separador de milhar, e o campo de edição mostra o valor sem ele ("1234,56").
-- **Consequências:** o app abre no Expo Go atual por QR code. Uma versão futura do Expo Go pode exigir atualizar o SDK (`npx expo install --fix`). Nenhuma dependência além das previstas no design. (Atualização v1.2: o ADR-006 acrescentou `@expo/vector-icons` e `expo-font`.)
+- **Consequências:** o app abre no Expo Go atual por QR code. Uma versão futura do Expo Go pode exigir atualizar o SDK (`npx expo install --fix`). Nenhuma dependência além das previstas no design. (Atualização v1.2: o ADR-006 acrescentou `@expo/vector-icons` e `expo-font`. Atualização v1.4: `expo-splash-screen` para a tela de abertura do APK, `@types/react-test-renderer` para os testes de montagem em `tests/render.test.tsx`, e o `expo` foi para o 57.0.30, o patch que o `expo-doctor` pede.)
 - **Atende:** RNF-01, RNF-04; design §2 e §7.

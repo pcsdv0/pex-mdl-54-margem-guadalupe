@@ -65,7 +65,7 @@ Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só s�
 | T41 | Todas as telas com `Tela`/`useLayout`: rolagem, teclado, barras do sistema, largura máxima; cabeçalho, janela de confirmação e aviso | RNF-11, RNF-09, CA-29 | T40 | [x] |
 | T42 | Resultado na meta (frase, observação e botões) e histórico com "igual" | RF-09, RF-06, RN-10, CA-26, CA-27 | T41 | [x] |
 | T43 | Teste de repetição: apagar tudo e carregar exemplos várias vezes | RF-08, RF-17, CA-30 | T42 | [x] |
-| T44 | `app.json` (nome, pacote, versionCode, ícone, splash), `eas.json` (perfil `preview` APK) e README do APK | RNF-12 | T43 | [ ] |
+| T44 | `app.json` (nome, pacote, versionCode, ícone, splash), `eas.json` (perfil `preview` APK) e README do APK | RNF-12 | T43 | [x] |
 | T45 | Checklist com CA-26 a CA-30, README, `docs/processo-sdd.md` e `docs/depois.md` com os números reais | todos os CA novos | T44 | [ ] |
 
 ## Matriz de rastreabilidade

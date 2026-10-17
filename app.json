@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Margem Guadalupe",
+    "name": "Controle de Margem",
     "slug": "margem-guadalupe",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,8 +10,10 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "br.edu.uninassau.controlemargem",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0B4F8A",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -22,7 +24,20 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
-    ]
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "backgroundColor": "#0B4F8A"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "425ae46f-2a66-40f0-bb1e-7f2b3903246d"
+      }
+    }
   }
 }
