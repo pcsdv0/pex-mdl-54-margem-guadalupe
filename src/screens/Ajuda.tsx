@@ -1,12 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ReactNode, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useAviso } from '../components/Aviso';
 import { Botao } from '../components/Botao';
 import { DialogoConfirmacao } from '../components/DialogoConfirmacao';
 import { Icone, NomeIcone } from '../components/Icone';
 import { SemaforoBadge } from '../components/SemaforoBadge';
+import { Tela } from '../components/Tela';
 import { EXEMPLOS } from '../data/exemplos';
 import { explicarMargem, explicarPrecoSugerido } from '../domain/explicacao';
 import { formatarReais } from '../domain/formatacao';
@@ -36,8 +37,18 @@ export function AjudaScreen({ navigation }: Props) {
   }
 
   return (
-    <>
-      <ScrollView style={estilos.tela} contentContainerStyle={estilos.conteudo}>
+    <Tela
+      sobreposicao={
+        <DialogoConfirmacao
+          visivel={confirmar}
+          titulo="Apagar todos os dados?"
+          mensagem="Todos os produtos e o histórico de custos serão apagados deste celular, e o app volta como na primeira abertura. Não dá para desfazer."
+          textoConfirmar="Apagar tudo"
+          onConfirmar={apagar}
+          onCancelar={() => setConfirmar(false)}
+        />
+      }
+    >
         <Text style={estilos.intro}>
           O app responde: <Text style={estilos.forte}>“dado o custo que paguei hoje, a que preço devo vender para manter a minha margem?”</Text>
         </Text>
@@ -95,17 +106,7 @@ export function AjudaScreen({ navigation }: Props) {
             onPress={() => setConfirmar(true)}
           />
         </View>
-      </ScrollView>
-
-      <DialogoConfirmacao
-        visivel={confirmar}
-        titulo="Apagar todos os dados?"
-        mensagem="Todos os produtos e o histórico de custos serão apagados deste celular, e o app volta como na primeira abertura. Não dá para desfazer."
-        textoConfirmar="Apagar tudo"
-        onConfirmar={apagar}
-        onCancelar={() => setConfirmar(false)}
-      />
-    </>
+    </Tela>
   );
 }
 
@@ -137,8 +138,6 @@ function Exemplo({ titulo, passos }: { titulo: string; passos: string[] }) {
 }
 
 const estilos = StyleSheet.create({
-  tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.l, gap: espaco.l, paddingBottom: espaco.xxl },
   intro: { fontSize: fonte.corpo, color: cores.texto },
   forte: { fontWeight: peso.forte },
   secao: {

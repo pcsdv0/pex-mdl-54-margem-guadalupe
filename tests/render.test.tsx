@@ -35,13 +35,21 @@ function definirTela(largura: number, altura: number, escala: number) {
   Dimensions.set({ window: medidas, screen: medidas });
 }
 
+const montadas: ReturnType<typeof create>[] = [];
+
 function montar(elemento: ReactElement) {
   let arvore!: ReturnType<typeof create>;
   act(() => {
     arvore = create(elemento);
   });
+  montadas.push(arvore);
   return arvore;
 }
+
+// Desmonta antes de mudar o tamanho da janela no teste seguinte (evita atualização fora do act).
+afterEach(() => {
+  act(() => montadas.splice(0).forEach((a) => a.unmount()));
+});
 
 function textos(raiz: ReactTestInstance): string[] {
   return raiz

@@ -1,6 +1,6 @@
-import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { cores, espaco, fonte, peso, raio, sombra } from '../theme/tema';
+import { cores, espaco, fonte, LARGURA_MAXIMA, peso, raio, sombra } from '../theme/tema';
 import { Botao } from './Botao';
 
 interface Props {
@@ -23,7 +23,7 @@ export function DialogoConfirmacao({
 }: Props) {
   return (
     <Modal visible={visivel} transparent animationType="fade" onRequestClose={onCancelar}>
-      <View style={estilos.veu}>
+      <ScrollView style={estilos.veu} contentContainerStyle={estilos.centro}>
         <View style={estilos.caixa} accessibilityViewIsModal>
           <Text style={estilos.titulo} accessibilityRole="header">
             {titulo}
@@ -34,19 +34,19 @@ export function DialogoConfirmacao({
             <Botao titulo="Cancelar" variante="texto" onPress={onCancelar} />
           </View>
         </View>
-      </View>
+      </ScrollView>
     </Modal>
   );
 }
 
 const estilos = StyleSheet.create({
-  veu: {
-    flex: 1,
-    backgroundColor: cores.veu,
-    justifyContent: 'center',
-    padding: espaco.xl,
-  },
+  veu: { flex: 1, backgroundColor: cores.veu },
+  // Com fonte grande a janela pode passar da tela: rola, em vez de cortar (RNF-11).
+  centro: { flexGrow: 1, justifyContent: 'center', padding: espaco.xl },
   caixa: {
+    width: '100%',
+    maxWidth: LARGURA_MAXIMA,
+    alignSelf: 'center',
     backgroundColor: cores.superficie,
     borderRadius: raio.cartao,
     padding: espaco.xl,

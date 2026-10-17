@@ -30,6 +30,8 @@ export function Navegacao() {
           headerStyle: { backgroundColor: cores.primaria },
           headerTintColor: cores.sobrePrimaria,
           headerTitleStyle: { fontSize: fonte.subtitulo, fontWeight: peso.forte },
+          // O título do cabeçalho não cresce com a fonte do sistema: não disputa lugar com os botões.
+          headerTitleAllowFontScaling: false,
           headerBackButtonDisplayMode: 'minimal',
           contentStyle: { backgroundColor: cores.fundo },
           // RF-13: "?" em todas as telas, menos na própria Ajuda.
@@ -66,7 +68,7 @@ export function Navegacao() {
         <Stack.Screen
           name="Ajuda"
           component={AjudaScreen}
-          options={{ title: 'Como funcionam as contas', headerRight: () => null }}
+          options={{ title: 'Ajuda', headerRight: () => null }}
         />
       </Stack.Navigator>
     </NavigationContainer>

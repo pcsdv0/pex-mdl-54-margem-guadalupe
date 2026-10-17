@@ -2,7 +2,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, u
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { cores, espaco, fonte, peso, raio, sombra } from '../theme/tema';
+import { cores, espaco, fonte, LARGURA_MAXIMA, peso, raio, sombra } from '../theme/tema';
 import { Icone } from './Icone';
 
 // RF-14: aviso rápido no rodapé depois de uma ação (ADR-006: sem biblioteca extra).
@@ -41,12 +41,16 @@ export function AvisoProvider({ children }: { children: ReactNode }) {
         {mensagem ? (
           <View
             pointerEvents="none"
-            style={[estilos.aviso, { bottom: margens.bottom + espaco.xl }]}
-            accessibilityRole="alert"
-            accessibilityLiveRegion="polite"
+            style={[estilos.faixa, { bottom: margens.bottom + espaco.xl }]}
           >
-            <Icone nome="checkmark-circle" cor="sobreAviso" />
-            <Text style={estilos.texto}>{mensagem}</Text>
+            <View
+              style={estilos.aviso}
+              accessibilityRole="alert"
+              accessibilityLiveRegion="polite"
+            >
+              <Icone nome="checkmark-circle" cor="sobreAviso" />
+              <Text style={estilos.texto}>{mensagem}</Text>
+            </View>
           </View>
         ) : null}
       </View>
@@ -56,10 +60,17 @@ export function AvisoProvider({ children }: { children: ReactNode }) {
 
 const estilos = StyleSheet.create({
   raiz: { flex: 1 },
-  aviso: {
+  // A faixa vai de lado a lado da tela e centraliza o aviso, que tem largura máxima (RNF-11).
+  faixa: {
     position: 'absolute',
-    left: espaco.l,
-    right: espaco.l,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    paddingHorizontal: espaco.l,
+  },
+  aviso: {
+    width: '100%',
+    maxWidth: LARGURA_MAXIMA,
     flexDirection: 'row',
     alignItems: 'center',
     gap: espaco.m,

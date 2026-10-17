@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { AlertaBanner } from '../components/AlertaBanner';
 import { useAviso } from '../components/Aviso';
@@ -8,6 +8,7 @@ import { Botao } from '../components/Botao';
 import { CartaoResposta } from '../components/CartaoResposta';
 import { CartaoSituacao } from '../components/CartaoSituacao';
 import { ComoChegamos } from '../components/ComoChegamos';
+import { Tela } from '../components/Tela';
 import { calcularVariacaoCusto, situacaoProduto } from '../domain/calculos';
 import { explicarMargem, explicarPrecoSugerido, fraseResposta } from '../domain/explicacao';
 import { formatarPercentual, formatarReais } from '../domain/formatacao';
@@ -55,7 +56,7 @@ export function ResultadoCompraScreen({ navigation, route }: Props) {
   }
 
   return (
-    <ScrollView style={estilos.tela} contentContainerStyle={estilos.conteudo}>
+    <Tela>
       <View style={estilos.cabecalho}>
         <Text style={estilos.nome}>{produto.nome}</Text>
         <Text style={estilos.compra}>
@@ -113,13 +114,12 @@ export function ResultadoCompraScreen({ navigation, route }: Props) {
           onPress={manter}
         />
       </View>
-    </ScrollView>
+    </Tela>
   );
 }
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.l, gap: espaco.l, paddingBottom: espaco.xxl },
   cabecalho: { gap: espaco.xs },
   nome: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto },
   compra: { fontSize: fonte.legenda, color: cores.textoSuave },

@@ -10,12 +10,13 @@ import { CartaoBoasVindas } from '../components/CartaoBoasVindas';
 import { FiltroSegmentado } from '../components/FiltroSegmentado';
 import { Icone } from '../components/Icone';
 import { ProdutoCard } from '../components/ProdutoCard';
+import { useLayout } from '../components/useLayout';
 import { carregarExemplos, EXEMPLOS } from '../data/exemplos';
 import { Filtro, organizarLista, resumoLista } from '../domain/lista';
 import { Rotas } from '../navigation';
 import { boasVindasDispensada, dispensarBoasVindas } from '../storage/preferencias';
 import { Produto, repositorio } from '../storage/repositorio';
-import { cores, espaco, fonte, linha, peso, raio } from '../theme/tema';
+import { cores, espaco, fonte, LARGURA_MAXIMA, linha, peso, raio } from '../theme/tema';
 
 type Props = NativeStackScreenProps<Rotas, 'ListaProdutos'>;
 
@@ -32,7 +33,7 @@ export function ListaProdutosScreen({ navigation }: Props) {
   const [filtro, setFiltro] = useState<Filtro>('todos');
   const avisar = useAviso();
   const [boasVindas, setBoasVindas] = useState(false);
-
+  const { estiloConteudo, margens } = useLayout();
 
   async function onDispensarBoasVindas() {
     setBoasVindas(false);
@@ -82,7 +83,10 @@ export function ListaProdutosScreen({ navigation }: Props) {
 
   if (produtos.length === 0) {
     return (
-      <ScrollView style={estilos.tela} contentContainerStyle={estilos.rolagemVazia}>
+      <ScrollView
+        style={estilos.tela}
+        contentContainerStyle={[estiloConteudo(espaco.l), estilos.rolagemVazia]}
+      >
         {cartaoBoasVindas}
         <EstadoVazio onCarregarExemplos={onCarregarExemplos} onNovoProduto={novoProduto} />
       </ScrollView>
@@ -115,7 +119,7 @@ export function ListaProdutosScreen({ navigation }: Props) {
       <FlatList
         data={visiveis}
         keyExtractor={(p) => p.id}
-        contentContainerStyle={estilos.lista}
+        contentContainerStyle={estiloConteudo(espaco.m)}
         keyboardShouldPersistTaps="handled"
         ListHeaderComponent={cabecalho}
         ListEmptyComponent={
@@ -139,7 +143,9 @@ export function ListaProdutosScreen({ navigation }: Props) {
         )}
       />
       <View style={estilos.rodape}>
-        <Botao titulo="Novo produto" icone="add" onPress={novoProduto} />
+        <View style={[estilos.rodapeConteudo, { paddingBottom: espaco.l + margens.bottom }]}>
+          <Botao titulo="Novo produto" icone="add" onPress={novoProduto} />
+        </View>
       </View>
     </View>
   );
@@ -173,7 +179,6 @@ function EstadoVazio({
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  lista: { padding: espaco.l, gap: espaco.m, paddingBottom: espaco.xl },
   cabecalho: { gap: espaco.m, marginBottom: espaco.xs },
   resumo: {
     flexDirection: 'row',
@@ -187,10 +192,16 @@ const estilos = StyleSheet.create({
   resumoOk: { backgroundColor: cores.verdeFundo, borderColor: cores.verde },
   resumoTexto: { flex: 1, fontSize: fonte.corpo, fontWeight: peso.medio, color: cores.texto },
   rodape: {
-    padding: espaco.l,
     backgroundColor: cores.superficie,
     borderTopWidth: linha.fina,
     borderTopColor: cores.borda,
+  },
+  rodapeConteudo: {
+    width: '100%',
+    maxWidth: LARGURA_MAXIMA,
+    alignSelf: 'center',
+    paddingHorizontal: espaco.l,
+    paddingTop: espaco.l,
   },
   centro: {
     flex: 1,
@@ -198,7 +209,7 @@ const estilos = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: cores.fundo,
   },
-  rolagemVazia: { flexGrow: 1, padding: espaco.l, gap: espaco.l, justifyContent: 'center' },
+  rolagemVazia: { flexGrow: 1, justifyContent: 'center' },
   vazio: { alignItems: 'center', padding: espaco.l, gap: espaco.l },
   titulo: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto, textAlign: 'center' },
   texto: { fontSize: fonte.corpo, color: cores.texto, textAlign: 'center' },

@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { AlertaBanner } from '../components/AlertaBanner';
 import { Botao } from '../components/Botao';
@@ -8,6 +8,7 @@ import { CampoMoeda, erroFormatoMoeda } from '../components/CampoMoeda';
 import { CartaoSituacao } from '../components/CartaoSituacao';
 import { Icone } from '../components/Icone';
 import { LinhaValor } from '../components/LinhaValor';
+import { Tela } from '../components/Tela';
 import { situacaoProduto } from '../domain/calculos';
 import { avisoConferencia } from '../domain/explicacao';
 import { formatarReais, parseReais } from '../domain/formatacao';
@@ -67,15 +68,7 @@ export function NovaCompraScreen({ navigation, route }: Props) {
   const conferir = valido ? avisoConferencia(produto.custoAtual, valor!) : null;
 
   return (
-    <KeyboardAvoidingView
-      style={estilos.tela}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView
-        contentContainerStyle={estilos.conteudo}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
-      >
+    <Tela>
         <View style={estilos.cabecalho}>
           <Text style={estilos.nome}>{produto.nome}</Text>
           <Text style={estilos.info}>
@@ -125,14 +118,12 @@ export function NovaCompraScreen({ navigation, route }: Props) {
           onPress={confirmar}
           desabilitado={gravando}
         />
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </Tela>
   );
 }
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.l, gap: espaco.l, paddingBottom: espaco.xxl },
   cabecalho: { gap: espaco.xs },
   nome: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto },
   info: { fontSize: fonte.legenda, color: cores.textoSuave },

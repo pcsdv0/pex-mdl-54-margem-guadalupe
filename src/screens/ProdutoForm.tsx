@@ -1,15 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useRef, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { useAviso } from '../components/Aviso';
 import { Botao } from '../components/Botao';
@@ -18,6 +10,7 @@ import { CampoMoeda, centavosParaCampo, erroFormatoMoeda } from '../components/C
 import { CampoPercentual, lerPercentual } from '../components/CampoPercentual';
 import { CartaoSituacao } from '../components/CartaoSituacao';
 import { DialogoConfirmacao } from '../components/DialogoConfirmacao';
+import { Tela } from '../components/Tela';
 import { situacaoProduto } from '../domain/calculos';
 import { parseReais } from '../domain/formatacao';
 import { ErrosProduto, validarProduto } from '../domain/validacao';
@@ -144,16 +137,20 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
     : null;
 
   return (
-    <KeyboardAvoidingView
-      style={estilos.tela}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <Tela
+      intervalo="xl"
+      sobreposicao={
+        <DialogoConfirmacao
+          visivel={confirmarExclusao}
+          titulo="Excluir produto?"
+          mensagem={`"${produto?.nome ?? ''}" e o histórico de custos dele serão apagados. Não dá para desfazer.`}
+          textoConfirmar="Excluir"
+          onConfirmar={excluir}
+          onCancelar={() => setConfirmarExclusao(false)}
+        />
+      }
     >
-      <ScrollView
-        contentContainerStyle={estilos.conteudo}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
-      >
-        {produto && situacao ? (
+      {produto && situacao ? (
           <View style={estilos.secao}>
             <Text style={estilos.nomeProduto}>{produto.nome}</Text>
             <CartaoSituacao
@@ -248,23 +245,12 @@ export function ProdutoFormScreen({ navigation, route }: Props) {
             onPress={() => setConfirmarExclusao(true)}
           />
         ) : null}
-      </ScrollView>
-
-      <DialogoConfirmacao
-        visivel={confirmarExclusao}
-        titulo="Excluir produto?"
-        mensagem={`"${produto?.nome ?? ''}" e o histórico de custos dele serão apagados. Não dá para desfazer.`}
-        textoConfirmar="Excluir"
-        onConfirmar={excluir}
-        onCancelar={() => setConfirmarExclusao(false)}
-      />
-    </KeyboardAvoidingView>
+    </Tela>
   );
 }
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.l, gap: espaco.xl, paddingBottom: espaco.xxl },
   secao: { gap: espaco.l },
   nomeProduto: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto },
   tituloSecao: {

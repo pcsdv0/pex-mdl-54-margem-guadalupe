@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import { Icone, NomeIcone } from '../components/Icone';
-import { useEmpilhar } from '../components/useLayout';
+import { useEmpilhar, useLayout } from '../components/useLayout';
 import { calcularVariacaoCusto, Sentido, sentidoVariacao } from '../domain/calculos';
 import { formatarData, formatarPercentual, formatarReais } from '../domain/formatacao';
 import { Rotas } from '../navigation';
@@ -24,6 +24,7 @@ export function HistoricoScreen({ route }: Props) {
   const { produtoId } = route.params;
   const [produto, setProduto] = useState<Produto | null>(null);
   const [registros, setRegistros] = useState<RegistroCusto[]>([]);
+  const { estiloConteudo } = useLayout();
 
   useEffect(() => {
     repositorio.listarProdutos().then((lista) => {
@@ -35,7 +36,7 @@ export function HistoricoScreen({ route }: Props) {
   return (
     <FlatList
       style={estilos.tela}
-      contentContainerStyle={estilos.conteudo}
+      contentContainerStyle={estiloConteudo(espaco.s)}
       data={registros}
       keyExtractor={(r) => r.id}
       ListHeaderComponent={
@@ -93,7 +94,6 @@ function LinhaHistorico({ registro, variacao }: { registro: RegistroCusto; varia
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { padding: espaco.l, gap: espaco.s, paddingBottom: espaco.xxl },
   cabecalho: { gap: espaco.xs, marginBottom: espaco.s },
   nome: { fontSize: fonte.titulo, fontWeight: peso.forte, color: cores.texto },
   explicacao: { fontSize: fonte.legenda, color: cores.textoSuave },
