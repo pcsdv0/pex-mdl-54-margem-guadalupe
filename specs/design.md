@@ -52,8 +52,8 @@ App
 - `Tela` (v1.4): invólucro comum das telas com rolagem — `KeyboardAvoidingView` + `ScrollView` (`keyboardShouldPersistTaps="handled"`), espaço extra embaixo igual à barra do sistema (`useSafeAreaInsets`) e conteúdo centralizado com largura máxima de 600 dp (RNF-11). `ProdutoFormScreen`, `NovaCompraScreen`, `ResultadoCompraScreen` e `AjudaScreen` usam `Tela`; as telas com `FlatList` usam o mesmo estilo de conteúdo pelo hook `useLayout`.
 - `useLayout()` (v1.4): lê a largura da janela e a escala da fonte (`useWindowDimensions`) e devolve `empilhar` (regra de `theme/layout.ts`) e o estilo do conteúdo. `LinhaValor`s lado a lado dividem a linha em partes iguais (`flex: 1`); quando `empilhar` é verdadeiro ficam uma embaixo da outra, em largura total (`CartaoSituacao`, `ProdutoCard`, linha do histórico).
 - `CartaoSituacao`: preço, margem e semáforo de um produto; com preço sugerido quando pedido. Usado na tela Produto, na prévia da Nova compra e no Resultado.
-- `CartaoResposta`: a frase de resposta em fonte grande (RF-09).
-- `ComoChegamos`: área que abre e fecha com os passos da conta (RF-10).
+- `CartaoResposta`: a frase de resposta no tamanho `destaque`, o maior do tema (RF-09, v1.4).
+- `ComoChegamos`: área que abre e fecha com os passos da conta e, no fim, a nota do escopo do cálculo (RF-10, RN-11).
 - `Campo` ganha texto de apoio, tecla "próximo"/"concluir" e referência para passar o foco (RNF-09). Prefixo ("R$") e sufixo ("%") nunca encolhem; `CampoMoeda`, ao sair do campo, reescreve um valor válido com duas casas (`normalizarMoeda`, RN-08). `CampoBusca` é um campo com ícone de lupa.
 - `FiltroSegmentado`: três opções lado a lado, cada uma com área ≥ 48 px.
 - `AvisoProvider` / `useAviso()`: aviso rápido no rodapé por cerca de 3 s, sem biblioteca extra (RF-14).
@@ -88,6 +88,7 @@ Novas na v1.2 (a interface só chama estas funções; não faz contas):
 - `avisoConferencia(custoAnterior, novoCusto): string | null` em `explicacao.ts` (v1.3) — RF-18: "Confira o valor: o custo subiu 62,5% em relação ao custo atual (R$ 4,00)." ou `null`.
 - `normalizarMoeda(texto): string` em `formatacao.ts` (v1.4) — RN-08: "4" → "4,00", "5.5" → "5,50"; texto inválido ou vazio volta igual. `formatarPercentual` passa a separar milhar com ponto ("10.900,0%").
 - `textoResultado(situacao, precoAtual, margemDesejada)` em `explicacao.ts` (v1.4) — RF-09: `{ frase, observacao? }`. Abaixo da meta: "Venda a R$ 5,87 para manter 25% de margem" (sem observação). Na meta: "Seu preço de R$ 5,50 já garante 25% de margem", com "O mínimo para manter 25% é R$ 5,33." ou, se o preço atual for igual ao sugerido, "Esse é o preço sugerido.".
+- `NOTA_ESCOPO_CALCULO` em `explicacao.ts` (v1.4) — RN-11: "Margem bruta sobre o preço de venda, calculada a partir do custo pago. Impostos sobre a venda e despesas fixas não entram nesta versão." Mostrada pela Ajuda e por `ComoChegamos`.
 - `lista.ts` — RF-12:
   - `organizarLista(produtos, { busca, filtro })`: filtra (busca sem diferenciar maiúsculas e acentos; filtro `todos` / `abaixo` / `na-meta`) e ordena (abaixo da meta primeiro, depois nome A–Z em pt-BR).
   - `resumoLista(produtos)` → "1 de 8 produtos abaixo da meta", "1 de 1 produto abaixo da meta", "Todos os 8 produtos estão na meta", "O produto está na meta" (um só, na meta) ou "Nenhum produto cadastrado".
@@ -127,15 +128,16 @@ tests/         domain.test.ts, storage.test.ts, tema.test.ts (contraste), layout
 - ADR-004 Dinheiro em centavos inteiros
 - ADR-005 Expo SDK 57, React Navigation e ferramentas de teste
 - ADR-006 Ícones com @expo/vector-icons; avisos e confirmação sem biblioteca extra
+- ADR-007 Margem desejada por produto
 
 ## 9. Rastreabilidade
 Cada RF/RN aparece em ao menos uma tarefa (`tasks.md`) e um teste. A matriz está no fim do `tasks.md`.
 
 ## 10. Tema e interação (v1.2)
 Tokens em `src/theme/tema.ts`; telas e componentes só usam tokens (RNF-05, verificado em `tests/varredura.test.ts`).
-- **Cores:** fundo, superfície, texto, texto suave, borda, primária (+ texto sobre primária), verde/vermelho (+ fundos claros), perigo. Todo par texto/fundo usado tem contraste ≥ 4,5:1 (RNF-06, verificado com `contraste.ts`).
+- **Cores:** fundo, superfície, texto, texto suave, borda, primária (+ texto sobre primária), verde/vermelho (+ fundos claros). Só azul, neutros, verde e vermelho; verde e vermelho têm sentido de situação (RNF-05). O histórico usa o azul. O alerta usa o ícone `alert-circle`, o mesmo do semáforo vermelho e dos erros de campo. Todo par texto/fundo usado tem contraste ≥ 4,5:1 (RNF-06, verificado com `contraste.ts`).
 - **Espaço:** escala 4, 8, 12, 16, 24, 32.
-- **Fonte:** 4 tamanhos: legenda 14, corpo 17, subtítulo 20, título 26 (os números importantes usam título). Pesos: normal, médio, forte. Números com `fontVariant: ['tabular-nums']` (RNF-08).
+- **Fonte:** 5 tamanhos: legenda 14, corpo 17, subtítulo 20, título 26 (os números importantes) e destaque 32 (só a frase da resposta, o maior elemento da tela de resultado). Pesos: normal, médio, forte. Números com `fontVariant: ['tabular-nums']` (RNF-08).
 - **Raio:** 8 (campos), 12 (cartões), redondo (selos).
 - **Sombra:** uma sombra suave para cartões.
 - **Toque:** mínimo de 48 px (RNF-07).

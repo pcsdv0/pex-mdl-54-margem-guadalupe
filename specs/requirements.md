@@ -14,6 +14,8 @@ Pergunta que o app responde: **"dado o custo que paguei hoje, a que preço devo 
 Um comerciante, usando o celular no balcão ou no recebimento de mercadoria. Sem treinamento, sem internet obrigatória.
 
 ## 4. Regras de negócio
+**Vocabulário (v1.4):** "margem desejada" é a margem que o comerciante quer manter, definida em cada produto. "Meta" é só o apelido curto da margem desejada, usado nos selos e rótulos pequenos ("Na meta", "Abaixo da meta", "Margem (meta 25%)"). Formulários, Ajuda e explicações dizem "margem desejada". Não existe outro nome (glossário).
+
 Valores monetários são tratados em **centavos (inteiros)**; porcentagens em número (25 = 25%).
 
 - **RN-01 Margem** = (preço − custo) ÷ preço. Exibida em %, com 1 casa decimal. Pode ser negativa.
@@ -26,6 +28,8 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - **RN-08 Leitura de valores**: o campo de dinheiro aceita vírgula ou ponto como separador decimal ("5,33" ou "5.33"), com até 2 casas, sem separador de milhar ("1.234" é recusado). Datas são exibidas como dd/mm/aaaa. Ao sair do campo de dinheiro, um valor válido passa a aparecer com duas casas ("4" → "4,00"; v1.4). Porcentagens grandes usam ponto de milhar na exibição ("10.900,0%").
 - **RN-09 Conferência do custo** (v1.3): quando a variação do novo custo em relação ao custo atual passa de +50% ou fica abaixo de −50%, o app mostra "Confira o valor". É só um aviso: a compra pode ser gravada mesmo assim. Exatamente +50% ou −50% não avisa.
 - **RN-10 Compra com custo igual ao anterior** (v1.4): a compra é gravada normalmente, como qualquer outra, e entra no histórico. A linha mostra "igual" com variação 0,0%. Gravar é a escolha porque o histórico registra o que foi comprado, mesmo sem mudança de preço do fornecedor; não há como corrigir uma compra depois de gravada (docs/depois.md).
+- **RN-11 Escopo do cálculo** (v1.4): "Margem bruta sobre o preço de venda, calculada a partir do custo pago. Impostos sobre a venda e despesas fixas não entram nesta versão." Essa frase aparece na Ajuda e em "Como chegamos nisso". Impostos e despesas continuam fora do escopo (§8).
+- **RN-12 Margem desejada por produto** (v1.4): cada produto tem a sua margem desejada (RN-07); não há margem por categoria nem uma margem única para o mercado. Decisão do ADR-007.
 
 ## 5. Requisitos funcionais
 | ID | Requisito | Regras |
@@ -38,23 +42,23 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 | RF-06 | Consultar o histórico de custos do produto (data e custo, mais recente primeiro). Compra com custo igual ao anterior também aparece (v1.4) | RN-04, RN-10 |
 | RF-07 | Guardar os dados no aparelho, preservando-os ao fechar o app | — |
 | RF-08 | Carregar produtos de exemplo para demonstração. Tocar duas vezes em "Carregar exemplos" carrega os 8 produtos uma vez só | — |
-| RF-09 | **Resposta em destaque:** na tela de resultado, um cartão grande responde à pergunta do app ("Venda a R$ 5,87 para manter 25% de margem"). Abaixo dele, a situação atual: preço, margem e semáforo com ícone e texto. **Quando o preço atual já garante a margem (verde, v1.4):** a resposta passa a ser "Seu preço de R$ 5,50 já garante 25% de margem", com a observação "O mínimo para manter 25% é R$ 5,33" (ou "Esse é o preço sugerido" se forem iguais); "Manter preço atual" vira o botão principal e "Usar o preço sugerido" fica secundário | RN-01, RN-02, RN-05, RN-06 |
-| RF-10 | **"Como chegamos nisso":** área que abre e fecha, com a conta feita com os números do produto e em linguagem simples (ex.: "R$ 4,40 ÷ (1 − 0,25) = R$ 5,87" e "(R$ 5,50 − R$ 4,40) ÷ R$ 5,50 = 20,0%") | RN-01, RN-02, RN-06 |
+| RF-09 | **Resposta em destaque:** na tela de resultado, um cartão grande responde à pergunta do app, com a frase no maior tamanho de letra da tela (v1.4) ("Venda a R$ 5,87 para manter 25% de margem"). Abaixo dele, a situação atual: preço, margem e semáforo com ícone e texto. **Quando o preço atual já garante a margem (verde, v1.4):** a resposta passa a ser "Seu preço de R$ 5,50 já garante 25% de margem", com a observação "O mínimo para manter 25% é R$ 5,33" (ou "Esse é o preço sugerido" se forem iguais); "Manter preço atual" vira o botão principal e "Usar o preço sugerido" fica secundário | RN-01, RN-02, RN-05, RN-06 |
+| RF-10 | **"Como chegamos nisso":** área que abre e fecha, com a conta feita com os números do produto e em linguagem simples (ex.: "R$ 4,40 ÷ (1 − 0,25) = R$ 5,87" e "(R$ 5,50 − R$ 4,40) ÷ R$ 5,50 = 20,0%"), terminando com a nota do escopo do cálculo (v1.4) | RN-01, RN-02, RN-06, RN-11 |
 | RF-11 | **Prévia ao digitar:** na tela Nova compra, enquanto o novo custo é digitado, mostrar em tempo real a margem com o preço atual, o semáforo e o preço sugerido. Sem valor válido, mostrar só uma orientação | RN-01, RN-02, RN-05, RN-08 |
 | RF-12 | **Lista mais útil:** produtos abaixo da meta primeiro (depois em ordem alfabética); resumo de uma frase no topo ("1 de 8 produtos abaixo da meta"), sem gráficos nem painéis; busca por nome (sem diferenciar maiúsculas e acentos); filtro Todos / Abaixo da meta / Na meta. O cartão vermelho mostra o preço sugerido ("Sugerido: R$ 8,67") | RN-02, RN-05 |
-| RF-13 | **Ajuda embutida:** textos curtos de apoio nos campos do formulário e um botão "?" no topo das telas, que abre uma tela de ajuda: o que é margem, margem desejada, preço sugerido e semáforo, com o exemplo do arroz | RN-01, RN-02, RN-05 |
+| RF-13 | **Ajuda embutida:** textos curtos de apoio nos campos do formulário e um botão "?" no topo das telas, que abre uma tela de ajuda: o que é margem, margem desejada, preço sugerido e semáforo, com o exemplo do arroz e a nota do escopo do cálculo (v1.4) | RN-01, RN-02, RN-05, RN-11 |
 | RF-14 | **Feedback:** aviso rápido na tela depois de cadastrar, salvar, aplicar preço, manter preço e excluir. Mensagens de erro sempre junto ao campo. A exclusão é confirmada numa janela do próprio app | RN-07 |
 | RF-15 | **Boas-vindas:** na primeira abertura, um cartão curto (3 linhas) explica o que o app faz. Pode ser dispensado e não volta depois (fica guardado no aparelho) | — |
 | RF-17 | **Apagar todos os dados** (v1.3): no fim da tela Ajuda, um botão apaga produtos, histórico e preferências, depois de confirmação numa janela do app, e o app volta ao estado de primeira abertura (com as boas-vindas) | — |
 | RF-18 | **Conferência do custo** (v1.3): na prévia da Nova compra, aviso "Confira o valor" quando a variação passa dos limites da RN-09; não impede a gravação | RN-04, RN-09 |
-| RF-16 | **Histórico com sentido da variação:** cada compra mostra seta para cima e "subiu" (vermelho) ou seta para baixo e "caiu" (verde), além da variação em % | RN-04 |
+| RF-16 | **Histórico com sentido da variação:** cada compra mostra seta para cima e "subiu" ou seta para baixo e "caiu", além da variação em %. Em azul, sem cor de semáforo: subir ou cair o custo não diz, sozinho, se a margem está na meta (v1.4) | RN-04 |
 
 ## 6. Requisitos não funcionais
 - RNF-01 Funciona offline.
 - RNF-02 Interface em português do Brasil, valores em R$ (formato 5,33), leitura conforme RN-08.
 - RNF-03 Registrar uma nova compra em no máximo 3 toques a partir da lista.
 - RNF-04 Fórmulas cobertas por testes automatizados.
-- RNF-05 **Tema único:** cores, espaçamentos (escala de 4/8), 5 tamanhos de fonte, raios e sombras definidos em `src/theme`. Nenhuma cor ou tamanho solto nas telas e componentes (verificado por teste automatizado).
+- RNF-05 **Tema único:** cores, espaçamentos (escala de 4/8), 5 tamanhos de fonte, raios e sombras definidos em `src/theme`. Paleta (v1.4): azul da marca (cabeçalho, botões, destaques), neutros, e verde e vermelho só com sentido de situação: verde = na meta ou feito; vermelho = abaixo da meta, erro ou ação que apaga. Nenhuma outra cor de destaque. Nenhuma cor ou tamanho solto nas telas e componentes (verificado por teste automatizado).
 - RNF-06 **Contraste:** texto com contraste mínimo de 4,5:1 sobre o fundo (verificado por teste automatizado). Semáforo sempre com cor + ícone + palavra ("Na meta", "Abaixo da meta").
 - RNF-07 **Toque e destaque:** áreas de toque de pelo menos 48 dp; um botão principal por tela, claramente destacado; botões secundários visualmente mais fracos.
 - RNF-08 **Números em destaque:** preço e margem grandes e alinhados (algarismos de largura fixa); rótulos pequenos e discretos.
@@ -93,13 +97,16 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - **CA-28 (RN-08)** Em Nova compra, digitar `4` e sair do campo mostra `4,00`; digitar `abc` mantém o texto e a mensagem de valor inválido. O prefixo "R$" aparece inteiro.
 - **CA-29 (RNF-11)** Em cada tamanho de tela e de fonte da RNF-11, "Margem (meta 25%)", "Preço de venda", a data do histórico (16/10/2026) e o campo de custo aparecem inteiros, sem corte. Os testes automáticos conferem as regras de disposição e que nenhuma tela limita o texto a uma linha; o aparelho confere o resto.
 - **CA-30 (RF-08, RF-17)** Repetir "Apagar todos os dados" → "Carregar exemplos" várias vezes sempre deixa 8 produtos: refrigerante abaixo da meta (18,8%, sugerido R$ 8,67), arroz a R$ 4,00 de custo e R$ 5,50 de preço, e a demonstração do arroz volta a dar R$ 5,87.
+- **CA-31 (RN-11, RF-13, RF-10)** Na Ajuda e em "Como chegamos nisso" (tela de resultado, aberto) aparece: "Margem bruta sobre o preço de venda, calculada a partir do custo pago. Impostos sobre a venda e despesas fixas não entram nesta versão."
+- **CA-32 (vocabulário)** Nenhum texto da interface chama a margem desejada de outra coisa ("margem alvo", "margem que você quer" etc.); os selos e rótulos pequenos usam "meta". O teste automático varre `src` e confere.
+- **CA-33 (RNF-05, RF-09, RF-16)** A frase da resposta usa o maior tamanho de letra do tema; o histórico não usa verde nem vermelho; um só ícone de alerta em todo o app. Os testes automáticos conferem.
 - **CA-21 (RNF-05, RNF-06)** O teste automatizado confirma contraste ≥ 4,5:1 nos pares de texto do tema e nenhuma cor ou tamanho de fonte solto em `src/screens` e `src/components`.
 
 ## 8. Fora do escopo (MVP)
-Estoque, vendas no caixa, relatórios, painéis e gráficos, tema escuro, modo paisagem, animações pesadas, login, app do cliente, backend e servidor, entrega e pedidos, leitor de código de barras, impostos e despesas fixas.
+Estoque, vendas no caixa, relatórios, painéis e gráficos, tema escuro, modo paisagem, animações pesadas, login, app do cliente, backend e servidor, entrega e pedidos, leitor de código de barras, impostos sobre a venda e despesas fixas (a margem é bruta, RN-11).
 
 ## 9. Produtos de exemplo (RF-08)
-Valores **ilustrativos**, para demonstração; trocar pelos reais do mercado antes da apresentação, se possível.
+Valores **ilustrativos**, para demonstração. Usar preços reais do mercado fica para depois (`docs/depois.md`); o app avisa nas telas que os exemplos não são preços reais.
 
 | Produto | Custo (R$) | Preço de venda (R$) | Margem desejada |
 | --- | --- | --- | --- |
@@ -114,9 +121,9 @@ Valores **ilustrativos**, para demonstração; trocar pelos reais do mercado ant
 
 (Na carga inicial, o refrigerante nasce em vermelho: margem 18,8% contra 25% desejada, e os demais em verde. Na demonstração, a nova compra do arroz a R$ 4,40 leva a margem de 27,3% a 20,0%, vermelha, e o preço sugerido é R$ 5,87.)
 
-## 10. Perguntas em aberto
-- Os preços e margens reais de 8 a 10 produtos do mercado (para trocar os de exemplo).
-- A margem desejada é a mesma para todos os produtos ou varia por categoria? (MVP: por produto.)
+## 10. Decisões sobre pontos que estavam em aberto
+- **Margem por produto ou por categoria:** por produto (RN-12, ADR-007). Margem por categoria virou ideia para depois (`docs/depois.md`).
+- **Preços e margens reais do mercado:** o protótipo usa os 8 exemplos ilustrativos do §9. Trocar pelos reais é trabalho para depois da apresentação (`docs/depois.md`).
 
 ## 11. Registro de mudanças
 | Versão | Data | O que mudou | Por quê |
@@ -144,3 +151,7 @@ Valores **ilustrativos**, para demonstração; trocar pelos reais do mercado ant
 | v1.4 | 16/10/2026 | **RN-10 (nova), RF-06, CA-26:** compra com custo igual ao anterior continua sendo gravada e aparece como "igual" no histórico. | Decisão que faltava na spec: o app já gravava duas vezes R$ 4,00; passa a ser regra escrita. |
 | v1.4 | 16/10/2026 | **RF-08/RF-17, CA-30:** "Apagar todos os dados" e "Carregar exemplos" são repetíveis para ensaios. | Preparar o ensaio da apresentação. O comportamento já existia (v1.3); passa a ter critério de aceite e teste. |
 | v1.4 | 16/10/2026 | **RNF-12 (nova), RNF-07:** configuração do APK de teste; toque mínimo em dp. | Preparar a instalação no celular sem o Expo Go. O build não é gerado nesta versão. |
+| v1.4 | 16/10/2026 | **RN-11 (nova), RF-10, RF-13, CA-31:** a margem é bruta, sobre o preço de venda, a partir do custo pago; impostos sobre a venda e despesas fixas não entram. A frase aparece na Ajuda e em "Como chegamos nisso". | Um comerciante pode achar que a margem do app já desconta imposto e despesa. A definição precisava estar escrita e visível. |
+| v1.4 | 16/10/2026 | **RN-12 (nova), §10:** margem desejada é por produto (ADR-007). As duas perguntas em aberto viraram decisão ou item de `docs/depois.md`; o §9 não pede mais para trocar os exemplos "se possível". | Não deixar pendência com cara de coisa esquecida na entrega. |
+| v1.4 | 16/10/2026 | **Vocabulário (§4), CA-32:** "margem desejada" é o termo do produto e "meta" é o apelido curto dele. Telas, Ajuda, README e testes seguem isso. | Os textos misturavam "a margem que você quer", "a sua margem" e "meta". |
+| v1.4 | 16/10/2026 | **RNF-05, RF-09, RF-16, CA-33:** paleta azul + verde/vermelho só de situação; frase da resposta no maior tamanho de letra (5º tamanho); histórico sem verde/vermelho; um só ícone de alerta. | Acabamento: a resposta deve ser o maior elemento do resultado, e a cor deve significar uma coisa só. |

@@ -68,6 +68,16 @@ Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só s�
 | T44 | `app.json` (nome, pacote, versionCode, ícone, splash), `eas.json` (perfil `preview` APK) e README do APK | RNF-12 | T43 | [x] |
 | T45 | Checklist com CA-26 a CA-30, README, `docs/processo-sdd.md` e `docs/depois.md` com os números reais | todos os CA novos | T44 | [x] |
 
+### v1.4 — acabamento (segunda rodada)
+
+| ID | Tarefa | Liga a | Depende de | Feito |
+| --- | --- | --- | --- | --- |
+| T46 | `NOTA_ESCOPO_CALCULO` + teste; nota na Ajuda e em "Como chegamos nisso" | RN-11, RF-10, RF-13, CA-31 | T45 | [ ] |
+| T47 | Vocabulário único: textos da interface, glossário e README; varredura de termos proibidos | CA-32 | T46 | [ ] |
+| T48 | Paleta e tipografia: tamanho `destaque` na resposta, histórico em azul, ícone de alerta único + testes | RNF-05, RF-09, RF-16, CA-33 | T47 | [ ] |
+| T49 | ADR-007; fim das pendências (§9, §10, `docs/depois.md`) com teste de varredura dos documentos; remover o arquivo de prompt de `docs/` | RN-12, RNF-04 | T48 | [ ] |
+| T50 | Checklist com CA-31 a CA-33 e conferência dos estados; README e `docs/processo-sdd.md` com os números reais | todos os CA novos | T49 | [ ] |
+
 ## Matriz de rastreabilidade
 | Requisito | Tarefas | Teste |
 | --- | --- | --- |
@@ -107,3 +117,7 @@ Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só s�
 | RNF-11 | T39, T40, T41 | layout.test (empilhar), varredura.test (sem limite de linhas), checklist CA-29 (só no aparelho) |
 | RF-08, RF-17 (CA-30) | T43 | storage.test (apagar e carregar várias vezes), checklist CA-30 |
 | RNF-12 | T44 | leitura de `app.json` e `eas.json`; build manual (fora desta versão) |
+| RN-11, RF-10, RF-13 | T46 | domain.test (NOTA_ESCOPO_CALCULO, CA-31), checklist CA-31 |
+| CA-32 (vocabulário) | T47 | varredura.test (termos proibidos em `src`) |
+| RNF-05, RF-09, RF-16 (CA-33) | T48 | tema.test (tamanho destaque), varredura.test (histórico sem verde/vermelho, um só ícone de alerta) |
+| RN-12 | T49 | ADR-007; docs.test (sem pendências nos documentos) |
