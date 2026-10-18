@@ -49,9 +49,9 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 | RF-13 | **Ajuda embutida:** textos curtos de apoio nos campos do formulário e um botão "?" no topo das telas, que abre uma tela de ajuda: o que é margem, margem desejada, preço sugerido e semáforo, com o exemplo do arroz e a nota do escopo do cálculo (v1.4) | RN-01, RN-02, RN-05, RN-11 |
 | RF-14 | **Feedback:** aviso rápido na tela depois de cadastrar, salvar, aplicar preço, manter preço e excluir. Mensagens de erro sempre junto ao campo. A exclusão é confirmada numa janela do próprio app | RN-07 |
 | RF-15 | **Boas-vindas:** na primeira abertura, um cartão curto (3 linhas) explica o que o app faz. Pode ser dispensado e não volta depois (fica guardado no aparelho) | — |
+| RF-16 | **Histórico com sentido da variação:** cada compra mostra seta para cima e "subiu" ou seta para baixo e "caiu", além da variação em %. Em azul, sem cor de semáforo: subir ou cair o custo não diz, sozinho, se a margem está na meta (v1.4) | RN-04 |
 | RF-17 | **Apagar todos os dados** (v1.3): no fim da tela Ajuda, um botão apaga produtos, histórico e preferências, depois de confirmação numa janela do app, e o app volta ao estado de primeira abertura (com as boas-vindas) | — |
 | RF-18 | **Conferência do custo** (v1.3): na prévia da Nova compra, aviso "Confira o valor" quando a variação passa dos limites da RN-09; não impede a gravação | RN-04, RN-09 |
-| RF-16 | **Histórico com sentido da variação:** cada compra mostra seta para cima e "subiu" ou seta para baixo e "caiu", além da variação em %. Em azul, sem cor de semáforo: subir ou cair o custo não diz, sozinho, se a margem está na meta (v1.4) | RN-04 |
 
 ## 6. Requisitos não funcionais
 - RNF-01 Funciona offline.
@@ -64,7 +64,7 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - RNF-08 **Números em destaque:** preço e margem grandes e alinhados (algarismos de largura fixa); rótulos pequenos e discretos.
 - RNF-09 **Teclado:** o teclado não cobre o campo em foco; tecla "próximo" passa ao campo seguinte; foco automático no primeiro campo.
 - RNF-10 **Acessibilidade:** botões e ícones com rótulo de acessibilidade (`accessibilityLabel`) em português.
-- RNF-11 **Telas e fontes** (v1.4): nenhum texto cortado em 320×568, 360×640, 411×891, 430×932 e tablet 768×1024, com a fonte do sistema em 100%, 130%, 150% e 200% e com "tamanho da tela" grande no Android. Texto nunca é limitado a uma linha nem termina em reticências; rótulo e valor nunca disputam a mesma linha (se não couberem lado a lado, ficam um embaixo do outro). Toda tela rola quando o conteúdo não cabe; botão nunca fica atrás do teclado, da barra de navegação ou do recorte da câmera. Em telas largas o conteúdo fica centralizado com largura máxima de 600 dp. Orientação travada em retrato.
+- RNF-11 **Telas e fontes** (v1.4): nenhum texto cortado em 320×568, 360×640, 411×891, 430×932 e tablet 768×1024, com a fonte do sistema em 100%, 130%, 150% e 200% e com "tamanho da tela" grande no Android. Texto nunca é limitado a uma linha nem termina em reticências; o símbolo "R$" nunca fica numa linha e o número na outra (v1.4, 18/10); rótulo e valor nunca disputam a mesma linha (se não couberem lado a lado, ficam um embaixo do outro). Toda tela rola quando o conteúdo não cabe; botão nunca fica atrás do teclado, da barra de navegação ou do recorte da câmera. Em telas largas o conteúdo fica centralizado com largura máxima de 600 dp. Orientação travada em retrato.
 - RNF-12 **Instalação** (v1.4): o projeto está configurado para gerar um APK de teste (perfil `preview` do EAS), com nome "Controle de Margem", pacote `br.edu.uninassau.controlemargem`, versão 1.0.0, versionCode 1, ícone e tela de abertura na cor do tema. O build em si não faz parte desta versão.
 
 ## 7. Critérios de aceite
@@ -88,6 +88,7 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - **CA-18 (RF-14)** Depois de salvar, aplicar preço e excluir aparece um aviso na tela; excluir pede confirmação numa janela do app.
 - **CA-19 (RF-15)** O cartão de boas-vindas aparece na primeira abertura; depois de dispensado, não volta ao reabrir o app.
 - **CA-20 (RF-16)** No histórico do arroz após a compra a R$ 4,40, a linha de R$ 4,40 mostra seta para cima, "subiu" e +10,0%; a de R$ 4,00 mostra "—".
+- **CA-21 (RNF-05, RNF-06)** O teste automatizado confirma contraste ≥ 4,5:1 nos pares de texto do tema e nenhuma cor ou tamanho de fonte solto em `src/screens` e `src/components`.
 - **CA-22 (RF-01, RF-08)** Tocar duas vezes rápido em "Carregar exemplos" deixa 8 produtos, não 16; tocar duas vezes em "Salvar produto" cadastra um produto só.
 - **CA-23 (RF-02)** Na edição de um produto, o que foi digitado e ainda não salvo continua nos campos depois de abrir a Ajuda ("?") ou o Histórico e voltar.
 - **CA-24 (RF-17)** Em Ajuda → "Apagar todos os dados" → confirmar, a lista fica vazia e o cartão de boas-vindas volta; "Cancelar" não apaga nada.
@@ -100,7 +101,7 @@ Valores monetários são tratados em **centavos (inteiros)**; porcentagens em n�
 - **CA-31 (RN-11, RF-13, RF-10)** Na Ajuda e em "Como chegamos nisso" (tela de resultado, aberto) aparece: "Margem bruta sobre o preço de venda, calculada a partir do custo pago. Impostos sobre a venda e despesas fixas não entram nesta versão."
 - **CA-32 (vocabulário)** Nenhum texto da interface chama a margem desejada de outra coisa ("margem alvo", "margem que você quer" etc.); os selos e rótulos pequenos usam "meta". O teste automático varre `src` e confere.
 - **CA-33 (RNF-05, RF-09, RF-16)** A frase da resposta usa o maior tamanho de letra do tema; o histórico não usa verde nem vermelho; um só ícone de alerta em todo o app. Os testes automáticos conferem.
-- **CA-21 (RNF-05, RNF-06)** O teste automatizado confirma contraste ≥ 4,5:1 nos pares de texto do tema e nenhuma cor ou tamanho de fonte solto em `src/screens` e `src/components`.
+- **CA-34 (RNF-11, RNF-02)** O símbolo "R$" e o número nunca ficam em linhas separadas: em botões, frases, cartões e avisos, "R$ 5,87" quebra inteiro ou não quebra (ex.: "Aplicar preço sugerido (R$ 5,87)" em 320 dp). O teste automático confere que todo valor formatado usa espaço que não quebra.
 
 ## 8. Fora do escopo (MVP)
 Estoque, vendas no caixa, relatórios, painéis e gráficos, tema escuro, modo paisagem, animações pesadas, login, app do cliente, backend e servidor, entrega e pedidos, leitor de código de barras, impostos sobre a venda e despesas fixas (a margem é bruta, RN-11).
@@ -156,3 +157,4 @@ Valores **ilustrativos**, para demonstração. Usar preços reais do mercado fic
 | v1.4 | 16/10/2026 | **Vocabulário (§4), CA-32:** "margem desejada" é o termo do produto e "meta" é o apelido curto dele. Telas, Ajuda, README e testes seguem isso, inclusive a pergunta do app (§2), que agora termina em "manter a margem desejada?". | Os textos misturavam "a margem que você quer", "a sua margem" e "meta". |
 | v1.4 | 16/10/2026 | **RNF-05, RF-09, RF-16, CA-33:** paleta azul + verde/vermelho só de situação; frase da resposta no maior tamanho de letra (5º tamanho); histórico sem verde/vermelho; um só ícone de alerta. | Acabamento: a resposta deve ser o maior elemento do resultado, e a cor deve significar uma coisa só. |
 | v1.4 | 16/10/2026 | **Novo `specs/SPEC.md`:** documento-mestre do SDD com objetivo, escopo, princípios do processo, índice dos documentos e estado atual. Nenhuma regra mudou. | Quem abre a pasta `specs/` precisa de uma porta de entrada que diga o que é o projeto, como se trabalha e onde está cada documento. |
+| v1.4 | 18/10/2026 | **RNF-11, CA-34:** "R$" e o número nunca se separam na quebra de linha (espaço que não quebra em todo valor formatado). Ordem das tabelas de RF e CA ajustada (RF-16 antes de RF-17; CA-21 depois de CA-20), sem mudar conteúdo. | Os prints da tela de resultado mostraram o botão "Aplicar preço sugerido (R$" com "5,87)" na linha de baixo. Em tela estreita ou fonte grande, o mesmo podia acontecer na frase da resposta e no "Sugerido: R$ 8,67" da lista. |

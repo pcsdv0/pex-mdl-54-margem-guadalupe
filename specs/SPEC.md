@@ -35,11 +35,11 @@ Usuário: um comerciante, no celular, no balcão ou no recebimento de mercadoria
 ## Estado atual
 - **Versão da spec:** v1.4
 - **Tarefas concluídas:** 49
-- **Tarefas no total:** 51
+- **Tarefas no total:** 52
 - **Requisitos funcionais:** 18
 - **Requisitos não funcionais:** 12
 - **Regras de negócio:** 12
-- **Critérios de aceite:** 33
+- **Critérios de aceite:** 34
 - **ADRs:** 7
 
 Faltam as tarefas T15 (checklist executado no Expo Go) e T16 (revisão final), que só fecham depois de a equipe rodar o `tests/checklist-manual.md` no celular. Os números acima são conferidos por `tests/spec-mestre.test.ts`.
