@@ -207,19 +207,27 @@ describe('validarProduto e validarCusto (RN-07)', () => {
 
 describe('formatarReais (RNF-02)', () => {
   test('centavos → R$ com vírgula', () => {
-    expect(formatarReais(533)).toBe('R$ 5,33');
-    expect(formatarReais(500)).toBe('R$ 5,00');
-    expect(formatarReais(5)).toBe('R$ 0,05');
-    expect(formatarReais(0)).toBe('R$ 0,00');
+    expect(formatarReais(533)).toBe('R$\u00a05,33');
+    expect(formatarReais(500)).toBe('R$\u00a05,00');
+    expect(formatarReais(5)).toBe('R$\u00a00,05');
+    expect(formatarReais(0)).toBe('R$\u00a00,00');
   });
 
   test('milhares com ponto', () => {
-    expect(formatarReais(123456)).toBe('R$ 1.234,56');
-    expect(formatarReais(100000000)).toBe('R$ 1.000.000,00');
+    expect(formatarReais(123456)).toBe('R$\u00a01.234,56');
+    expect(formatarReais(100000000)).toBe('R$\u00a01.000.000,00');
   });
 
   test('valor negativo', () => {
-    expect(formatarReais(-150)).toBe('-R$ 1,50');
+    expect(formatarReais(-150)).toBe('-R$\u00a01,50');
+  });
+
+  test('CA-34: "R$" e o número nunca se separam (espaço que não quebra, sem espaço comum)', () => {
+    for (const centavos of [0, 5, 533, 587, 867, 123456, -150]) {
+      const texto = formatarReais(centavos);
+      expect(texto).toContain('R$\u00a0');
+      expect(texto).not.toContain(' ');
+    }
   });
 });
 
@@ -311,14 +319,14 @@ describe('situacaoProduto (RF-09, RF-11)', () => {
 
 describe('fraseResposta (RF-09)', () => {
   test('CA-12: "Venda a R$ 5,87 para manter 25% de margem"', () => {
-    expect(fraseResposta(587, 25)).toBe('Venda a R$ 5,87 para manter 25% de margem');
+    expect(fraseResposta(587, 25)).toBe('Venda a R$\u00a05,87 para manter 25% de margem');
   });
 });
 
 describe('explicarPrecoSugerido (RF-10)', () => {
   test('CA-13: mostra a conta com os números do produto', () => {
     const passos = explicarPrecoSugerido(440, 25);
-    expect(passos).toContain('R$ 4,40 ÷ (1 − 0,25) = R$ 5,87');
+    expect(passos).toContain('R$\u00a04,40 ÷ (1 − 0,25) = R$\u00a05,87');
   });
 
   test('explica em linguagem simples o que significa a margem desejada', () => {
@@ -334,26 +342,26 @@ describe('explicarPrecoSugerido (RF-10)', () => {
   test('não fala em arredondamento quando a conta é exata', () => {
     // R$ 3,00 ÷ 0,75 = R$ 4,00 exatos
     const passos = explicarPrecoSugerido(300, 25);
-    expect(passos).toContain('R$ 3,00 ÷ (1 − 0,25) = R$ 4,00');
+    expect(passos).toContain('R$\u00a03,00 ÷ (1 − 0,25) = R$\u00a04,00');
     expect(passos.join(' ')).not.toMatch(/arredond/i);
   });
 
   test('margem de um dígito vira 0,07 na conta', () => {
-    expect(explicarPrecoSugerido(1000, 7)).toContain('R$ 10,00 ÷ (1 − 0,07) = R$ 10,75');
+    expect(explicarPrecoSugerido(1000, 7)).toContain('R$\u00a010,00 ÷ (1 − 0,07) = R$\u00a010,75');
   });
 });
 
 describe('explicarMargem (RF-10)', () => {
   test('CA-13: mostra a conta da margem atual', () => {
     const passos = explicarMargem(550, 440);
-    expect(passos).toContain('(R$ 5,50 − R$ 4,40) ÷ R$ 5,50 = 20,0%');
-    expect(passos.join(' ')).toMatch(/sobram R\$ 1,10/);
+    expect(passos).toContain('(R$\u00a05,50 − R$\u00a04,40) ÷ R$\u00a05,50 = 20,0%');
+    expect(passos.join(' ')).toMatch(/sobram R\$\u00a01,10/);
   });
 
   test('preço abaixo do custo: explica que falta dinheiro', () => {
     const passos = explicarMargem(400, 500);
-    expect(passos).toContain('(R$ 4,00 − R$ 5,00) ÷ R$ 4,00 = -25,0%');
-    expect(passos.join(' ')).toMatch(/faltam R\$ 1,00/);
+    expect(passos).toContain('(R$\u00a04,00 − R$\u00a05,00) ÷ R$\u00a04,00 = -25,0%');
+    expect(passos.join(' ')).toMatch(/faltam R\$\u00a01,00/);
   });
 });
 
@@ -455,13 +463,13 @@ describe('variacaoSuspeita (RN-09)', () => {
 describe('avisoConferencia (RF-18)', () => {
   test('CA-25: custo que subiu demais', () => {
     expect(avisoConferencia(400, 650)).toBe(
-      'Confira o valor: o custo subiu 62,5% em relação ao custo atual (R$ 4,00).',
+      'Confira o valor: o custo subiu 62,5% em relação ao custo atual (R$\u00a04,00).',
     );
   });
 
   test('CA-25: custo que caiu demais', () => {
     expect(avisoConferencia(400, 190)).toBe(
-      'Confira o valor: o custo caiu 52,5% em relação ao custo atual (R$ 4,00).',
+      'Confira o valor: o custo caiu 52,5% em relação ao custo atual (R$\u00a04,00).',
     );
   });
 
@@ -519,15 +527,15 @@ describe('textoResultado (RF-09, CA-12, CA-27)', () => {
   test('CA-12: abaixo da meta mantém "Venda a R$ 5,87 para manter 25% de margem", sem observação', () => {
     const s = situacaoProduto(550, 440, 25);
     expect(textoResultado(s, 550, 25)).toEqual({
-      frase: 'Venda a R$ 5,87 para manter 25% de margem',
+      frase: 'Venda a R$\u00a05,87 para manter 25% de margem',
     });
   });
 
   test('CA-27: na meta, diz que o preço atual já garante a margem e mostra o mínimo', () => {
     const s = situacaoProduto(550, 400, 25);
     expect(textoResultado(s, 550, 25)).toEqual({
-      frase: 'Seu preço de R$ 5,50 já garante 25% de margem',
-      observacao: 'O mínimo para manter 25% é R$ 5,33.',
+      frase: 'Seu preço de R$\u00a05,50 já garante 25% de margem',
+      observacao: 'O mínimo para manter 25% é R$\u00a05,33.',
     });
   });
 
@@ -535,7 +543,7 @@ describe('textoResultado (RF-09, CA-12, CA-27)', () => {
     const s = situacaoProduto(533, 400, 25);
     expect(s.status).toBe('verde');
     expect(textoResultado(s, 533, 25)).toEqual({
-      frase: 'Seu preço de R$ 5,33 já garante 25% de margem',
+      frase: 'Seu preço de R$\u00a05,33 já garante 25% de margem',
       observacao: 'Esse é o preço sugerido.',
     });
   });

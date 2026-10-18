@@ -1,7 +1,11 @@
 // RNF-02 e RN-08: exibição em pt-BR e leitura do que o comerciante digita.
 // A conversão de/para centavos acontece só aqui (ADR-004).
 
-/** 533 → "R$ 5,33"; 123456 → "R$ 1.234,56". */
+/**
+ * 533 → "R$ 5,33"; 123456 → "R$ 1.234,56".
+ * Entre "R$" e o número vai um espaço que não quebra (\u00a0), para o valor nunca
+ * ficar dividido em duas linhas (RNF-11, CA-34).
+ */
 export function formatarReais(centavos: number): string {
   const sinal = centavos < 0 ? '-' : '';
   const abs = Math.abs(Math.round(centavos));
@@ -9,7 +13,7 @@ export function formatarReais(centavos: number): string {
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   const cents = (abs % 100).toString().padStart(2, '0');
-  return `${sinal}R$ ${reais},${cents}`;
+  return `${sinal}R$\u00a0${reais},${cents}`;
 }
 
 /** 20 → "20,0%"; com sinal: 10 → "+10,0%"; 10900 → "10.900,0%". null → "—" (sem variação, CA-06). */

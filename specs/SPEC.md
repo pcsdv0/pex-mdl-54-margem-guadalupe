@@ -34,7 +34,7 @@ Usuário: um comerciante, no celular, no balcão ou no recebimento de mercadoria
 
 ## Estado atual
 - **Versão da spec:** v1.4
-- **Tarefas concluídas:** 49
+- **Tarefas concluídas:** 50
 - **Tarefas no total:** 52
 - **Requisitos funcionais:** 18
 - **Requisitos não funcionais:** 12

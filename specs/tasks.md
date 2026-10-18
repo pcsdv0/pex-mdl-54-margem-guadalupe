@@ -78,7 +78,7 @@ Funções novas de domínio e de layout nascem com teste antes. T15 e T16 só s�
 | T49 | ADR-007; fim dos pontos soltos (§9, §10, `docs/depois.md`) com teste de varredura dos documentos | RN-12, RNF-04 | T48 | [x] |
 | T50 | Checklist com CA-31 a CA-33 e conferência dos estados; README e `docs/processo-sdd.md` com os números reais | todos os CA novos | T49 | [x] |
 | T51 | `specs/SPEC.md` (documento-mestre) com números conferidos por teste; citado no README e em `docs/processo-sdd.md` | processo SDD | T50 | [x] |
-| T52 | `formatarReais` com espaço que não quebra entre "R$" e o número + testes; textos fixos com "R$" na Ajuda | RNF-11, RNF-02, CA-34 | T51 | [ ] |
+| T52 | `formatarReais` com espaço que não quebra entre "R$" e o número + testes; textos fixos com "R$" na Ajuda | RNF-11, RNF-02, CA-34 | T51 | [x] |
 
 ## Matriz de rastreabilidade
 | Requisito | Tarefas | Teste |

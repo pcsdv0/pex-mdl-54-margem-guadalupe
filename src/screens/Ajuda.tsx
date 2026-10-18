@@ -67,7 +67,7 @@ export function AjudaScreen({ navigation }: Props) {
         <Secao icone="flag-outline" titulo="Margem desejada">
           <Text style={estilos.texto}>
             É a porcentagem do preço de venda que você quer que sobre em cada produto; cada produto tem a
-            sua. Com {ARROZ.margemDesejada}%, de cada R$ 1,00 vendido sobram{' '}
+            sua. Com {ARROZ.margemDesejada}%, de cada {formatarReais(100)} vendido sobram{' '}
             {formatarReais(ARROZ.margemDesejada /* 25% de 100 centavos */)}. Nos selos, ela aparece
             como "meta".
           </Text>

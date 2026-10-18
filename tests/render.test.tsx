@@ -91,7 +91,7 @@ describe.each(COMBINACOES)('$largura x $altura, fonte $escala', ({ largura, altu
     );
     const lista = textos(arvore.root);
     expect(lista).toEqual(
-      expect.arrayContaining(['Preço de venda', 'Margem (meta 25%)', 'R$ 5,50', '20,0%', 'Sugerido: R$ 5,87']),
+      expect.arrayContaining(['Preço de venda', 'Margem (meta 25%)', 'R$\u00a05,50', '20,0%', 'Sugerido: R$\u00a05,87']),
     );
     arvore.root
       .findAll((n) => (n.type as unknown) === 'Text')
@@ -104,7 +104,7 @@ describe.each(COMBINACOES)('$largura x $altura, fonte $escala', ({ largura, altu
   test('ProdutoCard: preço e margem seguem a regra de disposição', () => {
     const arvore = montar(<ProdutoCard produto={produto} onPress={() => {}} />);
     expect(textos(arvore.root)).toEqual(
-      expect.arrayContaining(['Arroz 1 kg', 'Preço', 'Margem (meta 25%)', 'R$ 5,50', '20,0%']),
+      expect.arrayContaining(['Arroz 1 kg', 'Preço', 'Margem (meta 25%)', 'R$\u00a05,50', '20,0%']),
     );
     const rotuloMargem = arvore.root.find(
       (n) => (n.type as unknown) === 'Text' && n.children.join('') === 'Margem (meta 25%)',

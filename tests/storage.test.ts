@@ -235,7 +235,7 @@ describe('apagar todos os dados (RF-17)', () => {
       // A demonstração volta a dar R$ 5,87 (CA-12).
       const demo = situacaoProduto(arroz.precoVenda, 440, arroz.margemDesejada);
       expect(fraseResposta(demo.precoSugerido, arroz.margemDesejada)).toBe(
-        'Venda a R$ 5,87 para manter 25% de margem',
+        'Venda a R$\u00a05,87 para manter 25% de margem',
       );
     }
   });

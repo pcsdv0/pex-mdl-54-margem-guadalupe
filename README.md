@@ -30,7 +30,7 @@ Para voltar ao estado inicial (antes de um ensaio ou da apresentação): toque n
 ## Como testar
 
 ```bash
-npm test           # 364 testes: fórmulas, validações, armazenamento, layout por tela e fonte, vocabulário, documentos, APK
+npm test           # 391 testes: fórmulas, validações, armazenamento, layout por tela e fonte, vocabulário, documentos, APK
 npx tsc --noEmit   # checagem de tipos do TypeScript
 ```
 

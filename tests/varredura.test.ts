@@ -36,6 +36,13 @@ describe('varredura das telas e componentes (RNF-05, RNF-10)', () => {
     expect(ler(arquivo)).not.toMatch(/numberOfLines|ellipsizeMode|adjustsFontSizeToFit/);
   });
 
+  test.each(arquivos)('CA-34: %s não escreve "R$" seguido de espaço comum', (arquivo) => {
+    const codigo = ler(arquivo)
+      .split('\n')
+      .filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l));
+    expect(codigo.join('\n')).not.toMatch(/R\$ /);
+  });
+
   test.each(arquivos)('RNF-10: todo Pressable de %s tem rótulo de acessibilidade', (arquivo) => {
     const linhas = ler(arquivo).split('\n');
     linhas.forEach((linha, i) => {
